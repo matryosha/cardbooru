@@ -6,85 +6,98 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Newtonsoft.Json;
 
-namespace Cardbooru
-{
-     public class Model {
-         private const int DefaultLimitForRequest = 10;
-         private const string Danbooru = "https://danbooru.donmai.us";
-         private HttpClient _client;
+namespace Cardbooru {
+    internal enum ImageSizeType {
+        Preview,
+        Full
+    }
 
-         public List<BooruImage> BooruImagesList { get; set; }
+    public class Model {
+        private const int DefaultLimitForRequest = 10;
+        private const string Danbooru = "https://danbooru.donmai.us";
+        private HttpClient _client;
 
-         public async Task<string> GetImages(int pageNum) {
-             if (BooruImagesList == null)
-                 BooruImagesList = new List<BooruImage>();
+        public List<BooruImage> BooruImagesList { get; set; }
 
-             var posts = await GetClient()
-                 .GetStringAsync(Danbooru + $"/posts.json?limit={DefaultLimitForRequest}&page={pageNum}");
+        public async Task<string> GetImages(int pageNum) {
+            if (BooruImagesList == null)
+                BooruImagesList = new List<BooruImage>();
 
-             BooruImagesList = JsonConvert.DeserializeObject<List<BooruImage>>(posts);
+            var posts = await GetClient()
+                .GetStringAsync(Danbooru + $"/posts.json?limit={DefaultLimitForRequest}&page={pageNum}");
 
-             return "okay";
-         }
+            BooruImagesList = JsonConvert.DeserializeObject<List<BooruImage>>(posts);
 
-         private HttpClient GetClient() {
-             if (_client == null) return new HttpClient();
-             return _client;
-         }
+            return "okay";
+        }
 
-         public Task<ImageSource> GetPreviewImage(BooruImage imageClass) {
-             //Check if image has been cached
-             if (isHaveCache(imageClass.Hash))
-                 return GetImageFromCache(imageClass.Hash + "_preview");
-             //Caching image and save it
-             return CacheAndReturnPreviewImage(imageClass.PreviewUrl, imageClass.Hash);
-         }
+        private HttpClient GetClient() {
+            if (_client == null) return new HttpClient();
+            return _client;
+        }
 
-         private bool isHaveCache(string hash) {
-             return false;
-         }
+        public Task<ImageSource> GetPreviewImage(BooruImage imageClass) {
+            //Check if image has been cached
+            if (isHaveCache(imageClass.Hash))
+                return GetImageFromCache(imageClass.Hash, ImageSizeType.Preview);
+            //Caching image and save it
+            return CacheAndReturnImage(imageClass.PreviewUrl, imageClass.Hash, ImageSizeType.Preview);
+        }
 
-         private async Task<ImageSource> CacheAndReturnPreviewImage(string url, string name) {
-             var bytesImage = await GetImageBytes(url);
-             BitmapFrame bitmap;
-             using (var mStream = new MemoryStream(bytesImage)) {
-                 bitmap = BitmapFrame.Create(mStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-             }
+        private bool isHaveCache(string path) {
+            return File.Exists(GetImageCacheDir() + path);
+        }
 
-             File.WriteAllBytes($"{GetImageCacheDir()}{name}" + "_preview", bytesImage);
+        private async Task<ImageSource> CacheAndReturnImage(string url, string inputPath, ImageSizeType type) {
+            var properPath = GetProperPath(inputPath, type);
+            var bytesImage = await GetImageBytes(url);
+            BitmapFrame bitmap;
+            using (var mStream = new MemoryStream(bytesImage)) {
+                bitmap = BitmapFrame.Create(mStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+            }
+
+            File.WriteAllBytes($"{GetImageCacheDir()}{properPath}", bytesImage);
 
 
-             return bitmap;
-         }
+            return bitmap;
+        }
 
-         private async Task<ImageSource> GetImageFromCache(string path) {
-             byte[] buff;
-             using (var file = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true)) {
-                 buff = new byte[file.Length];
-                 await file.ReadAsync(buff, 0, (int) file.Length);
-             }
+        private async Task<ImageSource> GetImageFromCache(string inputPath, ImageSizeType type) {
+            byte[] buff;
+            var properPath = GetProperPath(inputPath, type);
 
-             BitmapFrame bitmap;
-             using (var mStream = new MemoryStream(buff)) {
-                 bitmap = BitmapFrame.Create(mStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-             }
+            using (var file = new FileStream(properPath, FileMode.Open, FileAccess.Read, FileShare.Read,
+                4096, true)) {
+                buff = new byte[file.Length];
+                await file.ReadAsync(buff, 0, (int) file.Length);
+            }
 
-             return bitmap;
-         }
+            BitmapFrame bitmap;
+            using (var mStream = new MemoryStream(buff)) {
+                bitmap = BitmapFrame.Create(mStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+            }
 
-         private string GetImageCacheDir() {
-             var path = "cache/image/";
-             if (Directory.Exists(path))
-                 return path;
-             Directory.CreateDirectory(path);
-             return path;
+            return bitmap;
+        }
 
-         } 
+        private string GetImageCacheDir() {
+            var path = "cache/image/";
+            if (Directory.Exists(path))
+                return path;
+            Directory.CreateDirectory(path);
+            return path;
+        }
 
-         /// <param name="url">Without danbooru prefix</param>
-         private async Task<byte[]> GetImageBytes(string url) {
-             var bytes = await GetClient().GetByteArrayAsync(Danbooru + url);
-             return bytes;
-         }
-     }
+        private string GetProperPath(string input, ImageSizeType type) {
+            if (type == ImageSizeType.Preview)
+                return input + "_preview";
+            return input + "_full";
+        }
+
+        /// <param name="url">Without danbooru prefix</param>
+        private async Task<byte[]> GetImageBytes(string url) {
+            var bytes = await GetClient().GetByteArrayAsync(Danbooru + url);
+            return bytes;
+        }
+    }
 }
