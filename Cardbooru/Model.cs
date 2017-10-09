@@ -38,13 +38,13 @@ namespace Cardbooru {
 
         public Task<ImageSource> GetPreviewImage(BooruImage imageClass) {
             //Check if image has been cached
-            if (isHaveCache(imageClass.Hash))
+            if (IsHaveCache(imageClass.Hash))
                 return GetImageFromCache(imageClass.Hash, ImageSizeType.Preview);
             //Caching image and save it
             return CacheAndReturnImage(imageClass.PreviewUrl, imageClass.Hash, ImageSizeType.Preview);
         }
 
-        private bool isHaveCache(string path) {
+        private bool IsHaveCache(string path) {
             return File.Exists(GetImageCacheDir() + path);
         }
 

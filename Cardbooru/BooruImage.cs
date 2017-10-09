@@ -1,11 +1,8 @@
-﻿using System.Windows.Controls;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Cardbooru
 {
-    class BooruImage {
-
-        private Image _image;
+    public class BooruImage {
 
         [JsonProperty("id")]
         public string Id { get; set; }
@@ -18,6 +15,7 @@ namespace Cardbooru
 
         [JsonProperty("md5")]
         public string Hash { get; set; }
+
 
     }
 }

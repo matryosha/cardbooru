@@ -6,8 +6,16 @@
         xmlns:local="clr-namespace:Cardbooru"
         mc:Ignorable="d"
         Title="Cardbooru" Height="720" Width="1280">
+
+    <Window.Resources>
+        <Button x:Key="TileBrush" ></Button>
+    </Window.Resources>
+    
     <Border Padding="5">
     <Grid>
+        
+        
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60"/>
             <ColumnDefinition Width="*"/>
@@ -20,7 +28,7 @@
 
             <ScrollViewer Grid.Column="1">
                 <WrapPanel  >
-                    <Button Margin="40"   Width="150" Height="250" >Home</Button>
+                    <Image Margin="40"   Width="150" Height="250" ></Image>
                     <Button Margin="40"   Width="150" Height="250" >Home</Button>
                     <Button Margin="40"   Width="150" Height="250" >Home</Button>
                     <Button Margin="40"   Width="150" Height="250" >Home</Button>
