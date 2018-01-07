@@ -1,9 +1,13 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Controls;
+using System.Windows.Media;
 using Newtonsoft.Json;
 
-namespace Cardbooru
+namespace Cardbooru 
 {
-    public class BooruImage {
+    public class BooruImage:INotifyPropertyChanged {
 
         [JsonProperty("id")]
         public string Id { get; set; }
@@ -15,11 +19,41 @@ namespace Cardbooru
         public string ImageUrl { get; set; }
 
         [JsonProperty("md5")]
-        public string Hash { get; set; }
+        public string Hash {
+            get => hash;
+            set {
+                hash = value;
+                OnPropertyChanged("Hash");
+            }
+        }
 
-        public Image PreviewImage { get; set; }
+        private string hash;
+
+        public Image PreviewImage {
+            get => previewImage;
+            set {
+                previewImage = value;
+                OnPropertyChanged("PreviewImage");
+                OnPropertyChanged("PreviewImageSource");      
+            } }
+
+        private Image previewImage;
+
+        public ImageSource PreviewImageSource {
+            get => PreviewImage.Source;
+            set {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                PreviewImageSource = value;
+                OnPropertyChanged("PreviewImageSource");
+            }
+        }
 
         public Image FullImage { get; set; }
-        
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

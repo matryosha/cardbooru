@@ -25,31 +25,12 @@
             <Button   Width="60" Height="60" >Home</Button>
             <Button   Width="60" Height="60" >Home</Button>
         </WrapPanel>
-
-            <ScrollViewer Grid.Column="1">
-                <WrapPanel  >
-                    <Image Margin="40"   Width="150" Height="250" ></Image>
-                    <Button Margin="40"   Width="150" Height="250" >Home</Button>
-                    <Button Margin="40"   Width="150" Height="250" >Home</Button>
-                    <Button Margin="40"   Width="150" Height="250" >Home</Button>
-                    <Button Margin="40"   Width="150" Height="250" >Home</Button>
-                    <Button Margin="40"   Width="150" Height="250" >Home</Button>
-                    <Button Margin="40"   Width="150" Height="250" >Home</Button>
-                    <Button Margin="40"   Width="150" Height="250" >Home</Button>
-                    <Button Margin="40"   Width="150" Height="250" >Home</Button>
-                    <Button Margin="40"   Width="150" Height="250" >Home</Button>
-                    <Button Margin="40"   Width="150" Height="250" >Home</Button>
-                    <Button Margin="40"   Width="150" Height="250" >Home</Button>
-
-
-
-
-
-                </WrapPanel>
-            </ScrollViewer>
         
+        <ListBox Grid.Column="1" ItemsSource="{Binding BoouruList}" >
+            
+        </ListBox>
         
-        
-    </Grid>
+
+        </Grid>
     </Border>
 </Window>

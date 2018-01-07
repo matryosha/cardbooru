@@ -6,11 +6,16 @@
         xmlns:local="clr-namespace:TestFromWpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        
+    </Window.Resources>
     <StackPanel>
         <WrapPanel Name="WrapPanelMain"></WrapPanel>
         <Image x:Name="MainImage"></Image>
         <Button Click="ButtonBase_OnClick">Click</Button>
         <Button Click="Action">Action</Button>
+        <TextBlock Name="TextBlock" TextAlignment="Center"></TextBlock>
+        <TextBox Name="InputText"></TextBox>
         <ItemsControl Name="ItemsControlMain" ItemsSource="{Binding listButtons}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
