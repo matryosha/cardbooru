@@ -10,6 +10,7 @@
         <WrapPanel Name="WrapPanelMain"></WrapPanel>
         <Image x:Name="MainImage"></Image>
         <Button Click="ButtonBase_OnClick">Click</Button>
+        <Button Click="Action">Action</Button>
         <ItemsControl Name="ItemsControlMain" ItemsSource="{Binding listButtons}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>

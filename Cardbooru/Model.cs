@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Newtonsoft.Json;
@@ -13,7 +14,7 @@ namespace Cardbooru {
     }
 
     public class Model {
-        private const int DefaultLimitForRequest = 10;
+        private const int DefaultLimitForRequest = 50;
         private const string Danbooru = "https://danbooru.donmai.us";
         private HttpClient _client;
 
@@ -27,6 +28,10 @@ namespace Cardbooru {
                 .GetStringAsync(Danbooru + $"/posts.json?limit={DefaultLimitForRequest}&page={pageNum}");
 
             BooruImagesList = JsonConvert.DeserializeObject<List<BooruImage>>(posts);
+            foreach (BooruImage booruImage in BooruImagesList) {
+                booruImage.PreviewImage = new Image();
+                booruImage.PreviewImage.Source = await GetPreviewImage(booruImage);
+            }
 
             return "okay";
         }

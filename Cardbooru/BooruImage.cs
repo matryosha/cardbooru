@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Windows.Controls;
+using Newtonsoft.Json;
 
 namespace Cardbooru
 {
@@ -16,6 +17,9 @@ namespace Cardbooru
         [JsonProperty("md5")]
         public string Hash { get; set; }
 
+        public Image PreviewImage { get; set; }
 
+        public Image FullImage { get; set; }
+        
     }
 }
