@@ -22,12 +22,19 @@
         </Grid.ColumnDefinitions>
         
         <WrapPanel Orientation="Vertical">
-            <Button   Width="60" Height="60" >Home</Button>
-            <Button   Width="60" Height="60" >Home</Button>
+            <Button   Width="60" Height="60" Click="Action2" >Home</Button>
+            <Button   Width="60" Height="60" Click="Action">Home</Button>
         </WrapPanel>
-        
-        <ListBox Grid.Column="1" ItemsSource="{Binding BoouruList}" >
-            
+
+        <ListBox Grid.Column="1" ItemsSource="{Binding BooruImagesList}" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding Path=Hash}"></TextBlock>
+                        
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
         
 

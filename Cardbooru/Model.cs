@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,29 +15,37 @@ namespace Cardbooru {
     }
 
     public class Model {
-        private const int DefaultLimitForRequest = 10;
+        private const int DefaultLimitForRequest = 5;
         private const string Danbooru = "https://danbooru.donmai.us";
         private HttpClient _client;
 
-        public List<BooruImage> BooruImagesList { get; set; }
+        private ObservableCollection<BooruImage> booruImagesList;
+
+        public ObservableCollection<BooruImage> BooruImagesList => booruImagesList ??
+                                                                   (booruImagesList =
+                                                                       new ObservableCollection<BooruImage>());
 
         public async Task<string> GetImages(int pageNum)
         {
-            if (BooruImagesList == null)
-                BooruImagesList = new List<BooruImage>();
 
             var posts = await GetClient()
                 .GetStringAsync(Danbooru + $"/posts.json?limit={DefaultLimitForRequest}&page={pageNum}");
 
-            BooruImagesList = JsonConvert.DeserializeObject<List<BooruImage>>(posts);
-            await LoadPreviewImages();
+            var collection = JsonConvert.DeserializeObject<ObservableCollection<BooruImage>>(posts);
+            await LoadPreviewImages(collection);
+
+            foreach (var booruImage in collection) {
+                BooruImagesList.Add(booruImage);
+                await Task.Delay(1000);
+            }
+            
 
             return "okay";
         }
 
-        private async Task LoadPreviewImages()
+        private async Task LoadPreviewImages(ObservableCollection<BooruImage> list)
         {
-            foreach (BooruImage booruImage in BooruImagesList)
+            foreach (BooruImage booruImage in list)
             {
                 booruImage.PreviewImage = new Image();
                 booruImage.PreviewImage.Source = await GetPreviewImage(booruImage);
