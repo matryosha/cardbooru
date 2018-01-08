@@ -29,6 +29,8 @@ namespace Cardbooru
 
         private string hash;
 
+        public bool IsHasBadPrewImage { get; set; }
+
         public Image PreviewImage {
             get => previewImage;
             set {

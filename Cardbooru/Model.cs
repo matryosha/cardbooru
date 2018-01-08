@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Net.Http;
@@ -15,9 +16,10 @@ namespace Cardbooru {
     }
 
     public class Model {
-        private const int DefaultLimitForRequest = 5;
+        private const int DefaultLimitForRequest = 100;
         private const string Danbooru = "https://danbooru.donmai.us";
         private HttpClient _client;
+        private BitmapFrame defaultImage;
 
         private ObservableCollection<BooruImage> booruImagesList;
 
@@ -32,12 +34,14 @@ namespace Cardbooru {
                 .GetStringAsync(Danbooru + $"/posts.json?limit={DefaultLimitForRequest}&page={pageNum}");
 
             var collection = JsonConvert.DeserializeObject<ObservableCollection<BooruImage>>(posts);
+            //test
+            
+            //test
             await LoadPreviewImages(collection);
 
-            foreach (var booruImage in collection) {
-                BooruImagesList.Add(booruImage);
-                await Task.Delay(1000);
-            }
+            //foreach (var booruImage in collection) {
+            //    BooruImagesList.Add(booruImage);
+            //}
             
 
             return "okay";
@@ -49,7 +53,14 @@ namespace Cardbooru {
             {
                 booruImage.PreviewImage = new Image();
                 booruImage.PreviewImage.Source = await GetPreviewImage(booruImage);
+                if (booruImage.PreviewImage.Source == null) {
+                    booruImage.PreviewImage.Source = LoadDefImage();
+                    booruImage.IsHasBadPrewImage = true;
+                    Console.WriteLine(booruImage.Hash);
+                }
+                BooruImagesList.Add(booruImage);
             }
+            
         }
 
         private HttpClient GetClient() {
@@ -73,9 +84,17 @@ namespace Cardbooru {
             var properPath = GetProperPath(inputPath, type);
             var bytesImage = await GetImageBytes(url);
             BitmapFrame bitmap;
-            using (var mStream = new MemoryStream(bytesImage)) {
-                bitmap = BitmapFrame.Create(mStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+            try {
+                using (var mStream = new MemoryStream(bytesImage))
+                {
+                    bitmap = BitmapFrame.Create(mStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                }
             }
+            catch (Exception e) {
+                Console.WriteLine(e);
+                bitmap = null;
+            }
+            
 
             File.WriteAllBytes($"{GetImageCacheDir()}{properPath}", bytesImage);
 
@@ -119,6 +138,17 @@ namespace Cardbooru {
         private async Task<byte[]> GetImageBytes(string url) {
             var bytes = await GetClient().GetByteArrayAsync(Danbooru + url);
             return bytes;
+        }
+
+        private BitmapFrame LoadDefImage() {
+            if (defaultImage == null) {
+                using (var fStream = File.OpenRead("res/default.jpg"))// ??????????????????????????????
+                {
+                    defaultImage = BitmapFrame.Create(fStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                }
+            }
+            return defaultImage;
+        
         }
     }
 }

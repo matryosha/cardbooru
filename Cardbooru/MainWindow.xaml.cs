@@ -21,7 +21,6 @@ namespace Cardbooru
         private  async void Action(object sender, RoutedEventArgs e) {
            await model.GetImages(1);
            
-           //model.BooruImagesList.Add(new BooruImage(){Hash = "Ololo"});
            Console.WriteLine(model.BooruImagesList.Count.ToString());
         }
 

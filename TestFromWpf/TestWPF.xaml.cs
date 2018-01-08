@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,7 +22,11 @@ namespace TestFromWpf
         public MainWindow()
         {
             InitializeComponent();
-
+            using (var fStream = File.OpenRead("default.jpg"))
+            {
+                MainImage.Source = BitmapFrame.Create(fStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+            }
+            //MainImage.Source = BitmapFrame.Create();
         }
 
         private async void  ButtonBase_OnClick(object sender, RoutedEventArgs e) {
