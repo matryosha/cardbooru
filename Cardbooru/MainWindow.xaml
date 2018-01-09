@@ -26,15 +26,19 @@
             <Button   Width="60" Height="60" Click="Action">Home</Button>
         </WrapPanel>
 
-        <ListBox Grid.Column="1" ItemsSource="{Binding BooruImagesList}" >
+            <ListBox Grid.Column="1" ItemsSource="{Binding BooruImagesList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
-                        <TextBlock Text="{Binding Path=Hash}"></TextBlock>
-                        
+                        <Image Source="{Binding Path=PreviewImageSource}" Height="250" Width="250" Margin="10"></Image>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" IsItemsHost="True"></WrapPanel>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
         </ListBox>
         
 
