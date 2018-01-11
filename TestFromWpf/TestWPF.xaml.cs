@@ -23,15 +23,15 @@ namespace TestFromWpf
             
         }
 
-        private void Action(object sender, RoutedEventArgs e) {
-            var image = new BitmapImage();
-            image.BeginInit();
-            image.UriSource = new Uri("pack://application:,,,/ajax-loader (2).gif");
-            image.EndInit();
-            //MainImage.Width = 50;
-            //MainImage.Height = 50;
-            ImageBehavior.SetAnimatedSource(MainImage, image);
-            MainImage.Stretch = Stretch.None;
+        private async void Action(object sender, RoutedEventArgs e) {
+
+            var worker = new BooruWorker();
+            var booru=  new BooruImage();
+            booru.FullUrl =
+                "/data/__ayase_eli_and_sonoda_umi_love_live_and_love_live_school_idol_project_drawn_by_skull573__051f3655cc45c8c57c050d45516ef6ed.png";
+            booru.Hash = "test-full";
+            await worker.LoadFullImage(booru);
+            MainImage.Source = booru.FullImage.Source;
 
         }
 

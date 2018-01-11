@@ -16,7 +16,7 @@ namespace Cardbooru
         public string PreviewUrl { get; set; }
 
         [JsonProperty("large_file_url")]
-        public string ImageUrl { get; set; }
+        public string FullUrl { get; set; }
 
         [JsonProperty("md5")]
         public string Hash {

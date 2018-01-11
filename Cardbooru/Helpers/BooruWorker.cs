@@ -46,9 +46,11 @@ namespace Cardbooru
             }
             else {
                 //Caching image and save it
-                image = await CacheAndReturnImage(booruImage.PreviewUrl, booruImage.Hash, ImageSizeType.Full);
+                image = await CacheAndReturnImage(booruImage.FullUrl, booruImage.Hash, ImageSizeType.Full);
             }
-            
+
+            booruImage.FullImage = new Image();
+            booruImage.FullImage.Source = image;
         }
 
         public async Task LoadPreviewImages(ObservableCollection<BooruImage> booruImagesMetaData, ObservableCollection<BooruImage> realBooruImages)
