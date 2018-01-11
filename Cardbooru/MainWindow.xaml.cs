@@ -8,7 +8,7 @@ namespace Cardbooru
     public partial class MainWindow : Window
     {
 
-        private Model model = new Model();
+        private MainWidowViewModel model = new MainWidowViewModel();
 
         public MainWindow()
         {
@@ -19,9 +19,9 @@ namespace Cardbooru
         }
 
         private  async void Action(object sender, RoutedEventArgs e) {
-           await model.GetImages(1);
+           //await model.FillBooruImages(1);
            
-           Console.WriteLine(model.BooruImagesList.Count.ToString());
+           Console.WriteLine(model.BooruImages.Count.ToString());
         }
 
         private void Action2(object sender, RoutedEventArgs e) {

@@ -11,11 +11,11 @@ namespace Tests
     class TestConsole
     {
         static void Main(string[] args) {
-            Model model = new Model();
-            Task.WaitAll(model.GetImages(2));
-            Console.WriteLine(model.BooruImagesList.Count);
+            BooruWorker _booruWorker = new BooruWorker();
+            Task.WaitAll(_booruWorker.FillBooruImages(2));
+            Console.WriteLine(_booruWorker.BooruImages.Count);
 
-            foreach (var booruImage in model.BooruImagesList) {
+            foreach (var booruImage in _booruWorker.BooruImages) {
                 Console.WriteLine($@"Id={booruImage.Id}");
                 Console.WriteLine($@"Hash={booruImage.Hash}");
                 Console.WriteLine($@"UrlPreview={booruImage.PreviewUrl}");

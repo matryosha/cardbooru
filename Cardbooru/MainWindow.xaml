@@ -22,11 +22,11 @@
         </Grid.ColumnDefinitions>
         
         <WrapPanel Orientation="Vertical">
-            <Button   Width="60" Height="60" Click="Action2" >Home</Button>
+            <Button   Width="60" Height="60" Command="{Binding LoadCommand}" >Home</Button>
             <Button   Width="60" Height="60" Click="Action" >Home</Button>
         </WrapPanel>
 
-            <ListBox Margin="5 0 0 0" Grid.Column="1" ItemsSource="{Binding BooruImagesList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox Margin="5 0 0 0" Grid.Column="1" ItemsSource="{Binding BooruImages}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>

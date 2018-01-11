@@ -74,13 +74,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BooruImage.cs" />
+    <Compile Include="Helpers\Base\RelayCommand.cs" />
+    <Compile Include="MainWidowViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model.cs" />
+    <Compile Include="BooruWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

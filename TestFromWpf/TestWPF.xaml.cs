@@ -16,7 +16,7 @@ namespace TestFromWpf
 
 
         List<Button> listsButtons = new List<Button>();
-        private Model model;
+        private BooruWorker _booruWorker;
         int index = 0;
         BooruImage booruImage;
         public MainWindow()
@@ -30,12 +30,12 @@ namespace TestFromWpf
         }
 
         private async void  ButtonBase_OnClick(object sender, RoutedEventArgs e) {
-            model = new Model();
+            _booruWorker = new BooruWorker();
 
             Image image = new Image();
             
 
-            image.Source = await model.GetPreviewImage(booruImage = new BooruImage()
+            image.Source = await _booruWorker.GetPreviewImage(booruImage = new BooruImage()
             {
                 Hash = "d34e4cf0a437a5d65f8e82b7bcd02606",
                 Id = "2",
@@ -43,17 +43,17 @@ namespace TestFromWpf
             });
 
             booruImage.PreviewImage = new Image();
-            booruImage.PreviewImage.Source = await model.GetPreviewImage(booruImage);
+            booruImage.PreviewImage.Source = await _booruWorker.GetPreviewImage(booruImage);
 
             Binding myBinding = new Binding("PreviewImageSource");
             myBinding.Source = booruImage;
             MainImage.SetBinding(Image.SourceProperty, myBinding);
 
-            await model.GetImages(1);
+            await _booruWorker.FillBooruImages(1);
         }
 
         private void Action(object sender, RoutedEventArgs e) {
-            booruImage.PreviewImage = model.BooruImagesList[index].PreviewImage;
+            booruImage.PreviewImage = _booruWorker.BooruImages[index].PreviewImage;
             index++;
         }
 

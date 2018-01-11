@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Net.Http;
@@ -9,45 +8,34 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Newtonsoft.Json;
 
-namespace Cardbooru {
+namespace Cardbooru
+{
     internal enum ImageSizeType {
         Preview,
         Full
     }
 
-    public class Model {
+    public class BooruWorker {
         private const int DefaultLimitForRequest = 100;
         private const string Danbooru = "https://danbooru.donmai.us";
         private HttpClient _client;
-        private BitmapFrame defaultImage;
+        private BitmapFrame _defaultImage;
 
-        private ObservableCollection<BooruImage> booruImagesList;
 
-        public ObservableCollection<BooruImage> BooruImagesList => booruImagesList ??
-                                                                   (booruImagesList =
-                                                                       new ObservableCollection<BooruImage>());
-
-        public async Task<string> GetImages(int pageNum)
+        public async Task FillBooruImages(int pageNum, ObservableCollection<BooruImage> realBooruImages)
         {
-
+            //Get json file with posts 
             var posts = await GetClient()
                 .GetStringAsync(Danbooru + $"/posts.json?limit={DefaultLimitForRequest}&page={pageNum}");
 
+            //Convert to collection
             var collection = JsonConvert.DeserializeObject<ObservableCollection<BooruImage>>(posts);
-            //test
-            
-            //test
-            await LoadPreviewImages(collection);
 
-            //foreach (var booruImage in collection) {
-            //    BooruImagesList.Add(booruImage);
-            //}
-            
-
-            return "okay";
+            //Load preview image in each boouruImageClass
+            await LoadPreviewImages(collection, realBooruImages);
         }
 
-        private async Task LoadPreviewImages(ObservableCollection<BooruImage> list)
+        private async Task LoadPreviewImages(ObservableCollection<BooruImage> list, ObservableCollection<BooruImage> realBooruImages)
         {
             foreach (BooruImage booruImage in list)
             {
@@ -58,14 +46,13 @@ namespace Cardbooru {
                     booruImage.IsHasBadPrewImage = true;
                     Console.WriteLine(booruImage.Hash);
                 }
-                BooruImagesList.Add(booruImage);
+                realBooruImages.Add(booruImage);
             }
             
         }
 
         private HttpClient GetClient() {
-            if (_client == null) return new HttpClient();
-            return _client;
+            return _client ?? (_client = new HttpClient());
         }
 
         public Task<ImageSource> GetPreviewImage(BooruImage imageClass) {
@@ -141,13 +128,13 @@ namespace Cardbooru {
         }
 
         private BitmapFrame LoadDefImage() {
-            if (defaultImage == null) {
+            if (_defaultImage == null) {
                 using (var fStream = File.OpenRead("res/default.jpg"))// ??????????????????????????????
                 {
-                    defaultImage = BitmapFrame.Create(fStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                    _defaultImage = BitmapFrame.Create(fStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
                 }
             }
-            return defaultImage;
+            return _defaultImage;
         
         }
     }
