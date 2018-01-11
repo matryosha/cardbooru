@@ -36,6 +36,18 @@ namespace Cardbooru
 
 
         public async Task LoadFullImage(BooruImage booruImage) {
+            if(booruImage == null)
+                throw new Exception("no boouru image");
+
+            ImageSource image;
+            //Check if image has been cached
+            if (IsHaveCache(booruImage.Hash, ImageSizeType.Full)) {
+                image = await GetImageFromCache(booruImage.Hash, ImageSizeType.Full);
+            }
+            else {
+                //Caching image and save it
+                image = await CacheAndReturnImage(booruImage.PreviewUrl, booruImage.Hash, ImageSizeType.Full);
+            }
             
         }
 
