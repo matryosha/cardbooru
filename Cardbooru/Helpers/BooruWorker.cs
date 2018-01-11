@@ -21,7 +21,6 @@ namespace Cardbooru
         private HttpClient _client;
         private BitmapFrame _defaultImage;
 
-
         public async Task FillBooruImages(int pageNum, ObservableCollection<BooruImage> realBooruImages)
         {
             //Get json file with posts 
@@ -56,9 +55,6 @@ namespace Cardbooru
         }
 
         private Task<ImageSource> GetPreviewImage(BooruImage imageClass) {
-            //Return nothing when booruimage doesnt have a hash field
-            //if (string.IsNullOrEmpty(imageClass.Hash)) return null;
-
             //Check if image has been cached
             if (IsHaveCache(imageClass.Hash, ImageSizeType.Preview))
                 return GetImageFromCache(imageClass.Hash, ImageSizeType.Preview);
@@ -87,10 +83,8 @@ namespace Cardbooru
                 bitmap = null;
             }
             
-
             File.WriteAllBytes($"{GetImageCacheDir()}{properPath}", bytesImage);
-
-
+            
             return bitmap;
         }
 
@@ -143,7 +137,6 @@ namespace Cardbooru
                 }
             }
             return _defaultImage;
-        
         }
 
         private HttpClient GetClient()
