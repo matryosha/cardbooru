@@ -35,27 +35,30 @@ namespace Cardbooru
             await LoadPreviewImages(collection, realBooruImages);
         }
 
+
+        public async Task LoadFullImage(BooruImage booruImage) {
+            
+        }
+
         private async Task LoadPreviewImages(ObservableCollection<BooruImage> list, ObservableCollection<BooruImage> realBooruImages)
         {
             foreach (BooruImage booruImage in list)
             {
                 booruImage.PreviewImage = new Image();
                 booruImage.PreviewImage.Source = await GetPreviewImage(booruImage);
-                if (booruImage.PreviewImage.Source == null) {
+                if (booruImage.PreviewImage.Source == null)
+                {
                     booruImage.PreviewImage.Source = LoadDefImage();
                     booruImage.IsHasBadPrewImage = true;
                     Console.WriteLine(booruImage.Hash);
                 }
                 realBooruImages.Add(booruImage);
             }
-            
+
         }
 
-        private HttpClient GetClient() {
-            return _client ?? (_client = new HttpClient());
-        }
-
-        public Task<ImageSource> GetPreviewImage(BooruImage imageClass) {
+        private Task<ImageSource> GetPreviewImage(BooruImage imageClass)
+        {
             //Check if image has been cached
             if (IsHaveCache(imageClass.Hash))
                 return GetImageFromCache(imageClass.Hash, ImageSizeType.Preview);
@@ -137,5 +140,11 @@ namespace Cardbooru
             return _defaultImage;
         
         }
+
+        private HttpClient GetClient()
+        {
+            return _client ?? (_client = new HttpClient());
+        }
+
     }
 }

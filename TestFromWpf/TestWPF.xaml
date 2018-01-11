@@ -9,7 +9,7 @@
     <Window.Resources>
         
     </Window.Resources>
-    <StackPanel>
+    <StackPanel Margin="10">
         <WrapPanel Name="WrapPanelMain"></WrapPanel>
         <Image x:Name="MainImage"></Image>
         <Button Click="ButtonBase_OnClick">Click</Button>

@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cardbooru
 {
-    public class MainWidowViewModel : INotifyPropertyChanged {
-        private int currentPage;
+    public class MainWindowViewModel : INotifyPropertyChanged {
+        private int _currentPage;
+        private bool _isLoadling;
 
         private BooruWorker booruWorker; // TODO Make Interface
 
@@ -18,8 +14,8 @@ namespace Cardbooru
             new ObservableCollection<BooruImage>();
         
 
-        public MainWidowViewModel() {
-            currentPage = 1;
+        public MainWindowViewModel() {
+            _currentPage = 1;
             booruWorker = new BooruWorker();
         }
 
@@ -29,7 +25,11 @@ namespace Cardbooru
         private RelayCommand loadPreviewImages;
         public RelayCommand LoadCommand => loadPreviewImages ?? 
             (loadPreviewImages = new RelayCommand(async o => {
-                await booruWorker.FillBooruImages(currentPage, BooruImages);
+                if(_isLoadling) return;
+                _isLoadling = true;
+                await booruWorker.FillBooruImages(_currentPage, BooruImages);
+                _currentPage++;
+                _isLoadling = false;
             }));
 
         #endregion

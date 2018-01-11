@@ -6,10 +6,10 @@
         xmlns:local="clr-namespace:Cardbooru"
         mc:Ignorable="d"
         Title="Cardbooru" Height="720" Width="1280">
-    
-    
+
+
     <Window.DataContext>
-        <local:MainWidowViewModel/>
+        <local:MainWindowViewModel/>
     </Window.DataContext>
     <Border Padding="5">
     <Grid>
@@ -22,9 +22,8 @@
         </Grid.ColumnDefinitions>
         
         <WrapPanel Orientation="Vertical">
-            <Button   Width="60" Height="60" Command="{Binding LoadCommand}" >Test Load</Button>
-            <Button   Width="60" Height="60">Home</Button>
-        </WrapPanel>
+                <Button   Width="60" Height="60" Command="{Binding LoadCommand}" >Test Load</Button>
+            </WrapPanel>
 
             <ListBox Margin="5 0 0 0" Grid.Column="1" ItemsSource="{Binding BooruImages}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemTemplate>
