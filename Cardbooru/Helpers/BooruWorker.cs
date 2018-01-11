@@ -40,34 +40,36 @@ namespace Cardbooru
             
         }
 
-        private async Task LoadPreviewImages(ObservableCollection<BooruImage> list, ObservableCollection<BooruImage> realBooruImages)
+        public async Task LoadPreviewImages(ObservableCollection<BooruImage> booruImagesMetaData, ObservableCollection<BooruImage> realBooruImages)
         {
-            foreach (BooruImage booruImage in list)
+            foreach (BooruImage booruImage in booruImagesMetaData)
             {
+                //check for empty booru
+                if (string.IsNullOrEmpty(booruImage.Hash)) continue;
+
                 booruImage.PreviewImage = new Image();
                 booruImage.PreviewImage.Source = await GetPreviewImage(booruImage);
-                if (booruImage.PreviewImage.Source == null)
-                {
-                    booruImage.PreviewImage.Source = LoadDefImage();
-                    booruImage.IsHasBadPrewImage = true;
-                    Console.WriteLine(booruImage.Hash);
-                }
+                await Task.Delay(200);
                 realBooruImages.Add(booruImage);
             }
 
         }
 
-        private Task<ImageSource> GetPreviewImage(BooruImage imageClass)
-        {
+        private Task<ImageSource> GetPreviewImage(BooruImage imageClass) {
+            //Return nothing when booruimage doesnt have a hash field
+            //if (string.IsNullOrEmpty(imageClass.Hash)) return null;
+
             //Check if image has been cached
-            if (IsHaveCache(imageClass.Hash))
+            if (IsHaveCache(imageClass.Hash, ImageSizeType.Preview))
                 return GetImageFromCache(imageClass.Hash, ImageSizeType.Preview);
             //Caching image and save it
             return CacheAndReturnImage(imageClass.PreviewUrl, imageClass.Hash, ImageSizeType.Preview);
         }
 
-        private bool IsHaveCache(string path) {
-            return File.Exists(GetImageCacheDir() + path);
+        private bool IsHaveCache(string path, ImageSizeType type) {
+            if(type == ImageSizeType.Preview)
+                return File.Exists(GetImageCacheDir() + path + "_preview");
+            return File.Exists(GetImageCacheDir() + path + "_full");
         }
 
         private async Task<ImageSource> CacheAndReturnImage(string url, string inputPath, ImageSizeType type) {
@@ -93,8 +95,10 @@ namespace Cardbooru
         }
 
         private async Task<ImageSource> GetImageFromCache(string inputPath, ImageSizeType type) {
+            if (inputPath == null) return null;
+
             byte[] buff;
-            var properPath = GetProperPath(inputPath, type);
+            var properPath = GetImageCacheDir() + GetProperPath(inputPath, type);
 
             using (var file = new FileStream(properPath, FileMode.Open, FileAccess.Read, FileShare.Read,
                 4096, true)) {
@@ -104,6 +108,7 @@ namespace Cardbooru
 
             BitmapFrame bitmap;
             using (var mStream = new MemoryStream(buff)) {
+                Console.WriteLine(properPath);
                 bitmap = BitmapFrame.Create(mStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
             }
 
