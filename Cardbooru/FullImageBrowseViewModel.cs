@@ -26,6 +26,14 @@ namespace Cardbooru
             FullImage = image;
         }
 
+        private RelayCommand _closeImageCommand;
+
+        public RelayCommand CloseImageCommand {
+            get => _closeImageCommand ?? (_closeImageCommand = new RelayCommand(o => {
+                _fullImage = null;
+
+            }))
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
