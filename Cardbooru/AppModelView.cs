@@ -8,11 +8,17 @@ using System.Threading.Tasks;
 
 namespace Cardbooru
 {
-    public class AppModelView : INotifyPropertyChanged
-    {
+    public class AppModelView : INotifyPropertyChanged {
 
-        public MainWindowViewModel CurrentView { get; set; }
+        private MainWindowViewModel _currentView;
 
+        public MainWindowViewModel CurrentView {
+            get => _currentView;
+            set {
+                _currentView = value;
+                OnPropertyChanged("CurrentView");
+            }
+        }
 
         public AppModelView() {
             CurrentView = new MainWindowViewModel();
