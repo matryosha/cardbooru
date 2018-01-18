@@ -120,7 +120,8 @@
     <Compile Include="FullImageBrowseView.xaml.cs">
       <DependentUpon>FullImageBrowseView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FullImageBrowseViewModel.cs" />
+    <Compile Include="FullImageBrowsingViewModel.cs" />
+    <Compile Include="Helpers\Base\CloseFullImageMessage.cs" />
     <Compile Include="Helpers\Base\IUserControlViewModel.cs" />
     <Compile Include="Helpers\Base\OpenFullImageMessage.cs" />
     <Compile Include="Helpers\Base\RelayCommand.cs" />

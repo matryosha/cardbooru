@@ -16,7 +16,8 @@ namespace Cardbooru
 
         private IUserControlViewModel _currentView;
         private IMvxMessenger _messenger;
-        private IDisposable _token;
+        private IDisposable _tokenFromBrowseImage;
+        private IDisposable _tokenFromFullImageBrowse;
         private List<IUserControlViewModel> _viewModels;
 
         public List<IUserControlViewModel> ViewModels => _viewModels ?? (_viewModels = new List<IUserControlViewModel>());
@@ -31,14 +32,19 @@ namespace Cardbooru
 
         public AppModelView() {
             _messenger = IdkInjection.MessengerHub;
-            _token = _messenger.Subscribe<OpenFullImageMessage>(ShowFullImage);
+            _tokenFromBrowseImage = _messenger.Subscribe<OpenFullImageMessage>(ShowFullImage);
+            _tokenFromFullImageBrowse = _messenger.Subscribe<CloseFullImageMessage>(ChangeViewToBrowseImage);
             CurrentView = new BrowseImagesViewModel();
             ViewModels.Add(CurrentView);
         }
 
         private void ShowFullImage(OpenFullImageMessage fullImage) {
-            var fullImageView = new FullImageBrowseViewModel(fullImage.BooruImage.FullImage.Source);
+            var fullImageView = new FullImageBrowsingViewModel(fullImage.BooruImage.FullImage.Source);
             CurrentView = fullImageView;
+        }
+
+        private void ChangeViewToBrowseImage(CloseFullImageMessage message) {
+            CurrentView = ViewModels[0];
         }
 
         private void ChangeView(IUserControlViewModel viewModel) {

@@ -24,5 +24,10 @@ namespace Cardbooru
         {
             InitializeComponent();
         }
+
+        private void FullImage_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            var contex = DataContext as FullImageBrowsingViewModel;
+            contex.CloseImageCommand.Execute(sender);
+        }
     }
 }

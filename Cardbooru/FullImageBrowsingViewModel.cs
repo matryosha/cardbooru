@@ -7,7 +7,7 @@ using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru
 {
-    class FullImageBrowseViewModel : 
+    class FullImageBrowsingViewModel : 
         INotifyPropertyChanged, IUserControlViewModel {
 
         public IMvxMessenger Messenger { get; }
@@ -21,7 +21,7 @@ namespace Cardbooru
             }
         }
 
-        public FullImageBrowseViewModel(ImageSource image) {
+        public FullImageBrowsingViewModel(ImageSource image) {
             Messenger = IdkInjection.MessengerHub;
             FullImage = image;
         }
@@ -31,7 +31,7 @@ namespace Cardbooru
         public RelayCommand CloseImageCommand {
             get => _closeImageCommand ?? (_closeImageCommand = new RelayCommand(o => {
                 _fullImage = null;
-
+                Messenger.Publish(new CloseFullImageMessage(this));
             }));
         }
 
