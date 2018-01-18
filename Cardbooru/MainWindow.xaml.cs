@@ -16,9 +16,13 @@ namespace Cardbooru
 
         private void Item_OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
             
+            
+        }
+
+        private void EventSetter_OnHandler(object sender, MouseButtonEventArgs e) {
             var contex = DataContext as MainWindowViewModel;
-            var list = sender as ListBox; 
-            contex.OpenFullCommnad.Execute(list.SelectedItem);
+            var list = sender as ListBoxItem;
+            contex.OpenFullCommnad.Execute(list.Content);
         }
     }
 }

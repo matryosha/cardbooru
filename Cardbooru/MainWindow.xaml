@@ -39,6 +39,11 @@
                         <WrapPanel Orientation="Horizontal" IsItemsHost="True"></WrapPanel>
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="EventSetter_OnHandler"></EventSetter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
             </ListBox>
 
 
