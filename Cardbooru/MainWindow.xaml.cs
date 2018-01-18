@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Cardbooru
 {
@@ -12,5 +14,11 @@ namespace Cardbooru
             InitializeComponent();      
         }
 
+        private void Item_OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            
+            var contex = DataContext as MainWindowViewModel;
+            var list = sender as ListBox; 
+            contex.OpenFullCommnad.Execute(list.SelectedItem);
+        }
     }
 }

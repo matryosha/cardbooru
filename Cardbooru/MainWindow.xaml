@@ -25,7 +25,8 @@
                 <Button   Width="60" Height="60" Command="{Binding LoadCommand}" >Test Load</Button>
             </StackPanel>
 
-            <ListBox Margin="5 0 0 0" Grid.Column="1" ItemsSource="{Binding BooruImages}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox Margin="5 0 0 0" Grid.Column="1" ItemsSource="{Binding BooruImages}" 
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="Item_OnMouseDoubleClick">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>

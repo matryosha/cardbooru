@@ -81,6 +81,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="FullImageBrowseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -95,7 +99,14 @@
     </Compile>
     <Compile Include="BooruImage.cs" />
     <Compile Include="Bootstrap\MessengerPluginBootstrap.cs" />
+    <Compile Include="FullImageBrowseView.xaml.cs">
+      <DependentUpon>FullImageBrowseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FullImageBrowseViewModel.cs" />
+    <Compile Include="Helpers\Base\IUserControlViewModel.cs" />
+    <Compile Include="Helpers\Base\OpenFullImageMessage.cs" />
     <Compile Include="Helpers\Base\RelayCommand.cs" />
+    <Compile Include="IDKInjection.cs" />
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

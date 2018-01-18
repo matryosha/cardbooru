@@ -7,20 +7,21 @@ using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru
 {
-    public class MainWindowViewModel : INotifyPropertyChanged {
+    public class MainWindowViewModel : 
+        INotifyPropertyChanged, IUserControlViewModel {
         private int _currentPage;
         private bool _isLoadling;
         private OpenFullImageMessage _openFullImageMessage;
-        private IMvxMessenger _messenger;
 
         private BooruWorker booruWorker; // TODO Make Interface and make static?
 
+        public IMvxMessenger Messenger { get; }
         public ObservableCollection<BooruImage> BooruImages { get; set; } = 
             new ObservableCollection<BooruImage>();
         
 
         public MainWindowViewModel() {
-            _messenger = Mvx.Resolve<IMvxMessenger>();
+            Messenger = IdkInjection.MessengerHub;
             _currentPage = 1;
             booruWorker = new BooruWorker();
         }
@@ -42,9 +43,12 @@ namespace Cardbooru
 
         public RelayCommand OpenFullCommnad => _openFullImage ??
                                                (_loadPreviewImages = new RelayCommand(async o => {
+                                                   var boouru = o as BooruImage;
+                                                   await booruWorker.LoadFullImage(boouru);
                                                    _openFullImageMessage = new OpenFullImageMessage(this, o as BooruImage);
-                                                   _messenger.Publish(_openFullImageMessage);
+                                                   Messenger.Publish(_openFullImageMessage);
                                                }));
+
         #endregion
 
 
@@ -53,5 +57,7 @@ namespace Cardbooru
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        
     }
 }

@@ -10,20 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MvvmCross.Platform;
-using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru
 {
     /// <summary>
-    /// Interaction logic for AppView.xaml
+    /// Interaction logic for FullImageBrowseView.xaml
     /// </summary>
-    public partial class AppView : Window
+    public partial class FullImageBrowseView : UserControl
     {
-        public AppView()
+        public FullImageBrowseView()
         {
-            InitializeComponent(); 
+            InitializeComponent();
         }
     }
 }

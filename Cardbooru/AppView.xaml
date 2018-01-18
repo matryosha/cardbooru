@@ -10,6 +10,9 @@
         <DataTemplate DataType="{x:Type local:MainWindowViewModel}">
             <local:MainWindow/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type local:FullImageBrowseViewModel}">
+            <local:FullImageBrowseView/>
+        </DataTemplate>
     </Window.Resources>
     <Grid>
 
