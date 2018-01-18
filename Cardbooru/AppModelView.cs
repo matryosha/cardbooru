@@ -32,7 +32,7 @@ namespace Cardbooru
         public AppModelView() {
             _messenger = IdkInjection.MessengerHub;
             _token = _messenger.Subscribe<OpenFullImageMessage>(ShowFullImage);
-            CurrentView = new MainWindowViewModel();
+            CurrentView = new BrowseImagesViewModel();
             ViewModels.Add(CurrentView);
         }
 

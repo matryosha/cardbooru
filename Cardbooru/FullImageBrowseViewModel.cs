@@ -32,7 +32,7 @@ namespace Cardbooru
             get => _closeImageCommand ?? (_closeImageCommand = new RelayCommand(o => {
                 _fullImage = null;
 
-            }))
+            }));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

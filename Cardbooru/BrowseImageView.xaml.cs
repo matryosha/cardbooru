@@ -6,10 +6,10 @@ using System.Windows.Input;
 namespace Cardbooru
 {
 
-    public partial class MainWindow : UserControl
+    public partial class BrowseImageView : UserControl
     {
 
-        public MainWindow()
+        public BrowseImageView()
         {
             InitializeComponent();      
         }
@@ -20,7 +20,7 @@ namespace Cardbooru
         }
 
         private void EventSetter_OnHandler(object sender, MouseButtonEventArgs e) {
-            var contex = DataContext as MainWindowViewModel;
+            var contex = DataContext as BrowseImagesViewModel;
             var list = sender as ListBoxItem;
             contex.OpenFullCommnad.Execute(list.Content);
         }

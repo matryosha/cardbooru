@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="AppView" Height="600" Width="1250">
     <Window.Resources>
-        <DataTemplate DataType="{x:Type local:MainWindowViewModel}">
-            <local:MainWindow/>
+        <DataTemplate DataType="{x:Type local:BrowseImagesViewModel}">
+            <local:BrowseImageView/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type local:FullImageBrowseViewModel}">
             <local:FullImageBrowseView/>

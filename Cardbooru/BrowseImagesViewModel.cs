@@ -7,7 +7,7 @@ using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru
 {
-    public class MainWindowViewModel : 
+    public class BrowseImagesViewModel : 
         INotifyPropertyChanged, IUserControlViewModel {
         private int _currentPage;
         private bool _isLoadling;
@@ -20,7 +20,7 @@ namespace Cardbooru
             new ObservableCollection<BooruImage>();
         
 
-        public MainWindowViewModel() {
+        public BrowseImagesViewModel() {
             Messenger = IdkInjection.MessengerHub;
             _currentPage = 1;
             booruWorker = new BooruWorker();
