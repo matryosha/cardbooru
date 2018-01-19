@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
-using Cardbooru;
 using Cardbooru.Models.Base;
 using MvvmCross.Plugins.Messenger;
 

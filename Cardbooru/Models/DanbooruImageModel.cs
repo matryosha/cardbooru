@@ -1,13 +1,10 @@
-﻿using System.Windows.Controls;
-using Cardbooru.Models.Base;
+﻿using Cardbooru.Models.Base;
 using Newtonsoft.Json;
-
 
 namespace Cardbooru.Models
 {
-    public class DanbooruImageModel :
-        BooruImageModelBase
-    {
+    public class DanbooruImageModel : BooruImageModelBase {
+
         [JsonProperty("id")]
         public override string Id { get => base.Id; set => base.Id = value; }
         [JsonProperty("preview_file_url")]
@@ -16,7 +13,6 @@ namespace Cardbooru.Models
         public override string FullImageUrl { get => base.FullImageUrl; set => base.FullImageUrl = value; }
         [JsonProperty("md5")]
         public override string Hash { get => base.Hash; set => base.Hash = value; }
-        public override Image PreviewImage { get => base.PreviewImage; set => base.PreviewImage = value; }
-        public override Image FullImage { get => base.FullImage; set => base.FullImage = value; }
+
     }
 }

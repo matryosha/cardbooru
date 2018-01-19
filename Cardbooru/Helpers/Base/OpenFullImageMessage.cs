@@ -1,5 +1,4 @@
-﻿using Cardbooru;
-using Cardbooru.Models.Base;
+﻿using Cardbooru.Models.Base;
 using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru.Helpers.Base

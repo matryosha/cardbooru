@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
-using Cardbooru;
 using Cardbooru.Models.Base;
 using MvvmCross.Plugins.Messenger;
 
@@ -42,7 +41,7 @@ namespace Cardbooru.BrowseImages
             (_loadPreviewImages = new RelayCommand(async o => {
                 if(_isLoadling) return;
                 _isLoadling = true;
-                await booruWorker.FillBooruImages(_currentPage, BooruImages, BooruType.Danbooru);
+                await booruWorker.FillBooruImages(_currentPage, BooruImages, BooruType.SafeBooru);
                 _currentPage++;
                 _isLoadling = false;
             }));
