@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
+using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
+using Cardbooru;
 using MvvmCross.Plugins.Messenger;
 
-namespace Cardbooru
+namespace Cardbooru.FullImageBrowsing
 {
     class FullImageBrowsingViewModel : 
         INotifyPropertyChanged, IUserControlViewModel {

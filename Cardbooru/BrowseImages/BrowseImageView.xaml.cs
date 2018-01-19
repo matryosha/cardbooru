@@ -1,8 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Cardbooru;
 
-namespace Cardbooru
+namespace Cardbooru.BrowseImages
 {
 
     public partial class BrowseImageView : UserControl {

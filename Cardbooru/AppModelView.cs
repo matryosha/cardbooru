@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Cardbooru.BrowseImages;
+using Cardbooru.FullImageBrowsing;
+using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
 
 namespace Cardbooru

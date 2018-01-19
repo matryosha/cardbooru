@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Cardbooru;
 using Newtonsoft.Json;
 
-namespace Cardbooru
+namespace Cardbooru.Helpers
 {
     internal enum ImageSizeType {
         Preview,

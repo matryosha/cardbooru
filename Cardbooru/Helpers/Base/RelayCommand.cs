@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Cardbooru
+namespace Cardbooru.Helpers.Base
 {
     public class RelayCommand : ICommand {
         private Action<object> execute;

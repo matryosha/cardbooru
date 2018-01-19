@@ -115,6 +115,7 @@
     <Compile Include="AppView.xaml.cs">
       <DependentUpon>AppView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\Base\BooruImageModeBasel.cs" />
     <Compile Include="Models\BooruImageModel.cs" />
     <Compile Include="FullImageBrowsing\FullImageBrowsingView.xaml.cs">
       <DependentUpon>FullImageBrowsingView.xaml</DependentUpon>
@@ -133,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\BooruWorker.cs" />
+    <Compile Include="Models\DanbooruImageModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

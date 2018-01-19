@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Cardbooru
+namespace Cardbooru.FullImageBrowsing
 {
     public partial class FullImageBrowsingView : UserControl
     {

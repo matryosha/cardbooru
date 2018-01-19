@@ -5,6 +5,7 @@ using System.Net.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 using Cardbooru;
+using Cardbooru.Helpers;
 
 namespace Tests
 {

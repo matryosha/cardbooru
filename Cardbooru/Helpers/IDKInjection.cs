@@ -13,9 +13,10 @@
 /// 
 ///  
 /// 
+
 using MvvmCross.Plugins.Messenger;
 
-namespace Cardbooru
+namespace Cardbooru.Helpers
 {
     public static class IdkInjection {
 

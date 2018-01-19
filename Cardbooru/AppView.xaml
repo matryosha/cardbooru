@@ -4,15 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cardbooru"
+        xmlns:browseImages="clr-namespace:Cardbooru.BrowseImages"
+        xmlns:fullImageBrowsing="clr-namespace:Cardbooru.FullImageBrowsing"
         mc:Ignorable="d"
         Title="AppView" Height="600" Width="1250">
 
     <Window.Resources>
-        <DataTemplate DataType="{x:Type local:BrowseImagesViewModel}">
-            <local:BrowseImageView/>
+        <DataTemplate DataType="{x:Type browseImages:BrowseImagesViewModel}">
+            <browseImages:BrowseImageView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type local:FullImageBrowsingViewModel}">
-            <local:FullImageBrowsingView/>
+        <DataTemplate DataType="{x:Type fullImageBrowsing:FullImageBrowsingViewModel}">
+            <fullImageBrowsing:FullImageBrowsingView/>
         </DataTemplate>
     </Window.Resources>
     <Grid>

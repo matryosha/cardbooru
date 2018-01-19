@@ -1,10 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
+using Cardbooru;
 using MvvmCross.Plugins.Messenger;
 
-namespace Cardbooru
+namespace Cardbooru.BrowseImages
 {
     public class BrowseImagesViewModel : 
         INotifyPropertyChanged, IUserControlViewModel {
