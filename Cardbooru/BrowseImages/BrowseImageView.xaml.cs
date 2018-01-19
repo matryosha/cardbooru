@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using Cardbooru;
+using Cardbooru.Models.Base;
 
 namespace Cardbooru.BrowseImages
 {
@@ -23,7 +24,7 @@ namespace Cardbooru.BrowseImages
         private void BrowseImageView_OnLoaded(object sender, RoutedEventArgs e) {
             if(mainListBox.Items.Count == 0) return;
             var contex = DataContext as BrowseImagesViewModel;
-            var item = contex.CurrentOpenedItemState as BooruImageModel;
+            var item = contex.CurrentOpenedItemState as BooruImageModelBase;
             mainListBox.ScrollIntoView(item);
         }
     }

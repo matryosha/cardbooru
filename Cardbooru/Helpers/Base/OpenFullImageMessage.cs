@@ -1,4 +1,5 @@
 ﻿using Cardbooru;
+using Cardbooru.Models.Base;
 using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru.Helpers.Base
@@ -6,10 +7,10 @@ namespace Cardbooru.Helpers.Base
     class OpenFullImageMessage :
         MvxMessage
     {
-        public OpenFullImageMessage(object sender, BooruImageModel booruImageModel) : base(sender) {
+        public OpenFullImageMessage(object sender, BooruImageModelBase booruImageModel) : base(sender) {
             BooruImageModel = booruImageModel;
         }
 
-        public BooruImageModel BooruImageModel { get; private set; }
+        public BooruImageModelBase BooruImageModel { get; private set; }
     }
 }

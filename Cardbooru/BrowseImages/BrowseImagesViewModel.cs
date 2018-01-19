@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
 using Cardbooru;
+using Cardbooru.Models.Base;
 using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru.BrowseImages
@@ -23,8 +24,8 @@ namespace Cardbooru.BrowseImages
         private BooruWorker booruWorker; // TODO Make Interface and make static?
 
         public IMvxMessenger Messenger { get; }
-        public ObservableCollection<BooruImageModel> BooruImages { get; set; } = 
-            new ObservableCollection<BooruImageModel>();
+        public ObservableCollection<BooruImageModelBase> BooruImages { get; set; } = 
+            new ObservableCollection<BooruImageModelBase>();
         
 
         public BrowseImagesViewModel() {
@@ -41,7 +42,7 @@ namespace Cardbooru.BrowseImages
             (_loadPreviewImages = new RelayCommand(async o => {
                 if(_isLoadling) return;
                 _isLoadling = true;
-                await booruWorker.FillBooruImages(_currentPage, BooruImages);
+                await booruWorker.FillBooruImages(_currentPage, BooruImages, BooruType.Danbooru);
                 _currentPage++;
                 _isLoadling = false;
             }));
@@ -50,10 +51,10 @@ namespace Cardbooru.BrowseImages
 
         public RelayCommand OpenFullCommnad => _openFullImageCommand ??
                                                (_openFullImageCommand = new RelayCommand(async o => {
-                                                   var boouru = o as BooruImageModel;
+                                                   var boouru = o as BooruImageModelBase;
                                                    //call method to draw loading image
                                                    await booruWorker.LoadFullImage(boouru);
-                                                   _openFullImageMessage = new OpenFullImageMessage(this, o as BooruImageModel);
+                                                   _openFullImageMessage = new OpenFullImageMessage(this, o as BooruImageModelBase);
                                                    Messenger.Publish(_openFullImageMessage);
                                                }));
 

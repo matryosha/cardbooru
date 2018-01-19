@@ -7,6 +7,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Cardbooru;
+using Cardbooru.Models;
+using Cardbooru.Models.Base;
 using Newtonsoft.Json;
 
 namespace Cardbooru.Helpers
@@ -16,27 +18,45 @@ namespace Cardbooru.Helpers
         Full
     }
 
+    public enum BooruType
+    {
+        Danbooru,
+        SafeBooru
+    }
+
+
     public class BooruWorker {
         private const int DefaultLimitForRequest = 100;
         private const string Danbooru = "https://danbooru.donmai.us";
         private HttpClient _client;
         private BitmapFrame _defaultImage;
 
-        public async Task FillBooruImages(int pageNum, ObservableCollection<BooruImageModel> realBooruImages)
+        public async Task FillBooruImages(int pageNum, ObservableCollection<BooruImageModelBase> realBooruImages, BooruType booruType)
         {
             //Get json file with posts 
             var posts = await GetClient()
                 .GetStringAsync(Danbooru + $"/posts.json?limit={DefaultLimitForRequest}&page={pageNum}");
 
-            //Convert to collection
-            var collection = JsonConvert.DeserializeObject<ObservableCollection<BooruImageModel>>(posts);
+            ObservableCollection<BooruImageModelBase> collection = new ObservableCollection<BooruImageModelBase>();
+            switch (booruType) {
+                case BooruType.Danbooru:
+                    ObservableCollection<DanbooruImageModel> stricklyCollection = JsonConvert.DeserializeObject<ObservableCollection<DanbooruImageModel>>(posts);
+                    collection = new ObservableCollection<BooruImageModelBase>(stricklyCollection);
+                    break;
+                case BooruType.SafeBooru:
+                    break;
+            }
+            //Convert to collection depends on type of booru
+            //var collection = JsonConvert.DeserializeObject<ObservableCollection<BooruImageModel>>(posts);
+            //
 
-            //Load preview image in each boouruImageClass
+            
+                //Load preview image in each boouruImageClass
             await LoadPreviewImages(collection, realBooruImages);
         }
 
 
-        public async Task LoadFullImage(BooruImageModel booruImageModel) {
+        public async Task LoadFullImage(BooruImageModelBase booruImageModel) {
             if(booruImageModel == null)
                 throw new Exception("no boouru image");
 
@@ -47,16 +67,16 @@ namespace Cardbooru.Helpers
             }
             else {
                 //Caching image and save it
-                image = await CacheAndReturnImage(booruImageModel.FullUrl, booruImageModel.Hash, ImageSizeType.Full);
+                image = await CacheAndReturnImage(booruImageModel.FullImageUrl, booruImageModel.Hash, ImageSizeType.Full);
             }
 
             booruImageModel.FullImage = new Image();
             booruImageModel.FullImage.Source = image;
         }
 
-        public async Task LoadPreviewImages(ObservableCollection<BooruImageModel> booruImagesMetaData, ObservableCollection<BooruImageModel> realBooruImages)
+        public async Task LoadPreviewImages(ObservableCollection<BooruImageModelBase> booruImagesMetaData, ObservableCollection<BooruImageModelBase> realBooruImages)
         {
-            foreach (BooruImageModel booruImage in booruImagesMetaData)
+            foreach (BooruImageModelBase booruImage in booruImagesMetaData)
             {
                 //check for empty booru
                 if (string.IsNullOrEmpty(booruImage.Hash)) continue;
@@ -68,12 +88,12 @@ namespace Cardbooru.Helpers
 
         }
 
-        private Task<ImageSource> GetPreviewImage(BooruImageModel imageModelClass) {
+        private Task<ImageSource> GetPreviewImage(BooruImageModelBase imageModelClass) {
             //Check if image has been cached
             if (IsHaveCache(imageModelClass.Hash, ImageSizeType.Preview))
                 return GetImageFromCache(imageModelClass.Hash, ImageSizeType.Preview);
             //Caching image and save it
-            return CacheAndReturnImage(imageModelClass.PreviewUrl, imageModelClass.Hash, ImageSizeType.Preview);
+            return CacheAndReturnImage(imageModelClass.PreviewImageUrl, imageModelClass.Hash, ImageSizeType.Preview);
         }
 
         private bool IsHaveCache(string path, ImageSizeType type) {

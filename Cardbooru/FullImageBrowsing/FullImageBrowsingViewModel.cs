@@ -4,6 +4,7 @@ using System.Windows.Media;
 using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
 using Cardbooru;
+using Cardbooru.Models.Base;
 using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru.FullImageBrowsing
@@ -22,9 +23,9 @@ namespace Cardbooru.FullImageBrowsing
             }
         }
 
-        private BooruImageModel _booruImageModel;
+        private BooruImageModelBase _booruImageModel;
 
-        public FullImageBrowsingViewModel(BooruImageModel booruImageModel) {
+        public FullImageBrowsingViewModel(BooruImageModelBase booruImageModel) {
             Messenger = IdkInjection.MessengerHub;
             _booruImageModel = booruImageModel;
         }
