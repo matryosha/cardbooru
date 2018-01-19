@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using Cardbooru.Helpers.Base;
-using MvvmCross.Platform;
 using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru

@@ -12,7 +12,7 @@
             <local:BrowseImageView/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type local:FullImageBrowsingViewModel}">
-            <local:FullImageBrowseView/>
+            <local:FullImageBrowsingView/>
         </DataTemplate>
     </Window.Resources>
     <Grid>

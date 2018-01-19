@@ -5,14 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cardbooru"
         mc:Ignorable="d" d:DesignWidth="859" d:DesignHeight="611.5"
-        Unloaded="BrowseImageView_OnUnloaded" Loaded="BrowseImageView_OnLoaded" >
-
-
+        Loaded="BrowseImageView_OnLoaded" >
 
     <Border Padding="5">
         <Grid>
-
-
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="60"/>
@@ -24,8 +20,7 @@
             </StackPanel>
 
             <ListBox Margin="5 0 0 0" Grid.Column="1" ItemsSource="{Binding BooruImages}" 
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="Item_OnMouseDoubleClick"
-                     Name="mainListBox">
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="mainListBox">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -44,7 +39,6 @@
                     </Style>
                 </ListBox.ItemContainerStyle>
             </ListBox>
-
 
         </Grid>
     </Border>

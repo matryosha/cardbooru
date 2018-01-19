@@ -3,24 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using Cardbooru.Helpers.Base;
-using MvvmCross.Platform;
-using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru
 {
     public class AppModelView : INotifyPropertyChanged {
 
         private IUserControlViewModel _currentView;
-        private IMvxMessenger _messenger;
         private IDisposable _tokenFromBrowseImage;
         private IDisposable _tokenFromFullImageBrowse;
         private List<IUserControlViewModel> _viewModels;
-        private UserControl _browseImageView;
 
         public List<IUserControlViewModel> ViewModels => _viewModels ?? (_viewModels = new List<IUserControlViewModel>());
 
@@ -33,9 +25,9 @@ namespace Cardbooru
         }
 
         public AppModelView() {
-            _messenger = IdkInjection.MessengerHub;
-            _tokenFromBrowseImage = _messenger.Subscribe<OpenFullImageMessage>(ShowFullImage);
-            _tokenFromFullImageBrowse = _messenger.Subscribe<CloseFullImageMessage>(ChangeViewToBrowseImage);
+            var messenger = IdkInjection.MessengerHub;
+            _tokenFromBrowseImage = messenger.Subscribe<OpenFullImageMessage>(ShowFullImage);
+            _tokenFromFullImageBrowse = messenger.Subscribe<CloseFullImageMessage>(ChangeViewToBrowseImage);
             CurrentView = new BrowseImagesViewModel();
             ViewModels.Add(CurrentView);
         }

@@ -1,18 +1,17 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Security.RightsManagement;
 using Cardbooru.Helpers.Base;
-using MvvmCross.Platform;
 using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru
 {
     public class BrowseImagesViewModel : 
         INotifyPropertyChanged, IUserControlViewModel {
+
         private int _currentPage;
         /// <summary>
-        /// show whether pictures loading to list or not
+        /// Indicate whether pictures loading to list or not
         /// </summary>
         private bool _isLoadling;
         private OpenFullImageMessage _openFullImageMessage;
@@ -48,7 +47,7 @@ namespace Cardbooru
         private RelayCommand _openFullImageCommand;
 
         public RelayCommand OpenFullCommnad => _openFullImageCommand ??
-                                               (_loadPreviewImages = new RelayCommand(async o => {
+                                               (_openFullImageCommand = new RelayCommand(async o => {
                                                    var boouru = o as BooruImageModel;
                                                    //call method to draw loading image
                                                    await booruWorker.LoadFullImage(boouru);

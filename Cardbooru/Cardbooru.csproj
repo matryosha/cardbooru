@@ -99,11 +99,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FullImageBrowseView.xaml">
+    <Page Include="FullImageBrowsing\FullImageBrowsingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="BrowseImageView.xaml">
+    <Page Include="BrowseImages\BrowseImageView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -115,19 +115,18 @@
     <Compile Include="AppView.xaml.cs">
       <DependentUpon>AppView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BooruImageModel.cs" />
-    <Compile Include="Bootstrap\MessengerPluginBootstrap.cs" />
-    <Compile Include="FullImageBrowseView.xaml.cs">
-      <DependentUpon>FullImageBrowseView.xaml</DependentUpon>
+    <Compile Include="Models\BooruImageModel.cs" />
+    <Compile Include="FullImageBrowsing\FullImageBrowsingView.xaml.cs">
+      <DependentUpon>FullImageBrowsingView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FullImageBrowsingViewModel.cs" />
+    <Compile Include="FullImageBrowsing\FullImageBrowsingViewModel.cs" />
     <Compile Include="Helpers\Base\CloseFullImageMessage.cs" />
     <Compile Include="Helpers\Base\IUserControlViewModel.cs" />
     <Compile Include="Helpers\Base\OpenFullImageMessage.cs" />
     <Compile Include="Helpers\Base\RelayCommand.cs" />
-    <Compile Include="IDKInjection.cs" />
-    <Compile Include="BrowseImagesViewModel.cs" />
-    <Compile Include="BrowseImageView.xaml.cs">
+    <Compile Include="Helpers\IDKInjection.cs" />
+    <Compile Include="BrowseImages\BrowseImagesViewModel.cs" />
+    <Compile Include="BrowseImages\BrowseImageView.xaml.cs">
       <DependentUpon>BrowseImageView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -170,6 +169,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
