@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Cardbooru"
         mc:Ignorable="d"
         Title="AppView" Height="600" Width="1250">
+
     <Window.Resources>
         <DataTemplate DataType="{x:Type local:BrowseImagesViewModel}">
             <local:BrowseImageView/>

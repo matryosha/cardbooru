@@ -26,7 +26,7 @@ namespace TestFromWpf
         private async void Action(object sender, RoutedEventArgs e) {
 
             var worker = new BooruWorker();
-            var booru=  new BooruImage();
+            var booru=  new BooruImageModel();
             booru.FullUrl =
                 "/data/__ayase_eli_and_sonoda_umi_love_live_and_love_live_school_idol_project_drawn_by_skull573__051f3655cc45c8c57c050d45516ef6ed.png";
             booru.Hash = "test-full";

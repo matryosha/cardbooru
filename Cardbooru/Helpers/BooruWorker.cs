@@ -21,59 +21,58 @@ namespace Cardbooru
         private HttpClient _client;
         private BitmapFrame _defaultImage;
 
-        public async Task FillBooruImages(int pageNum, ObservableCollection<BooruImage> realBooruImages)
+        public async Task FillBooruImages(int pageNum, ObservableCollection<BooruImageModel> realBooruImages)
         {
             //Get json file with posts 
             var posts = await GetClient()
                 .GetStringAsync(Danbooru + $"/posts.json?limit={DefaultLimitForRequest}&page={pageNum}");
 
             //Convert to collection
-            var collection = JsonConvert.DeserializeObject<ObservableCollection<BooruImage>>(posts);
+            var collection = JsonConvert.DeserializeObject<ObservableCollection<BooruImageModel>>(posts);
 
             //Load preview image in each boouruImageClass
             await LoadPreviewImages(collection, realBooruImages);
         }
 
 
-        public async Task LoadFullImage(BooruImage booruImage) {
-            if(booruImage == null)
+        public async Task LoadFullImage(BooruImageModel booruImageModel) {
+            if(booruImageModel == null)
                 throw new Exception("no boouru image");
 
             ImageSource image;
             //Check if image has been cached
-            if (IsHaveCache(booruImage.Hash, ImageSizeType.Full)) {
-                image = await GetImageFromCache(booruImage.Hash, ImageSizeType.Full);
+            if (IsHaveCache(booruImageModel.Hash, ImageSizeType.Full)) {
+                image = await GetImageFromCache(booruImageModel.Hash, ImageSizeType.Full);
             }
             else {
                 //Caching image and save it
-                image = await CacheAndReturnImage(booruImage.FullUrl, booruImage.Hash, ImageSizeType.Full);
+                image = await CacheAndReturnImage(booruImageModel.FullUrl, booruImageModel.Hash, ImageSizeType.Full);
             }
 
-            booruImage.FullImage = new Image();
-            booruImage.FullImage.Source = image;
+            booruImageModel.FullImage = new Image();
+            booruImageModel.FullImage.Source = image;
         }
 
-        public async Task LoadPreviewImages(ObservableCollection<BooruImage> booruImagesMetaData, ObservableCollection<BooruImage> realBooruImages)
+        public async Task LoadPreviewImages(ObservableCollection<BooruImageModel> booruImagesMetaData, ObservableCollection<BooruImageModel> realBooruImages)
         {
-            foreach (BooruImage booruImage in booruImagesMetaData)
+            foreach (BooruImageModel booruImage in booruImagesMetaData)
             {
                 //check for empty booru
                 if (string.IsNullOrEmpty(booruImage.Hash)) continue;
 
                 booruImage.PreviewImage = new Image();
                 booruImage.PreviewImage.Source = await GetPreviewImage(booruImage);
-                await Task.Delay(200);
                 realBooruImages.Add(booruImage);
             }
 
         }
 
-        private Task<ImageSource> GetPreviewImage(BooruImage imageClass) {
+        private Task<ImageSource> GetPreviewImage(BooruImageModel imageModelClass) {
             //Check if image has been cached
-            if (IsHaveCache(imageClass.Hash, ImageSizeType.Preview))
-                return GetImageFromCache(imageClass.Hash, ImageSizeType.Preview);
+            if (IsHaveCache(imageModelClass.Hash, ImageSizeType.Preview))
+                return GetImageFromCache(imageModelClass.Hash, ImageSizeType.Preview);
             //Caching image and save it
-            return CacheAndReturnImage(imageClass.PreviewUrl, imageClass.Hash, ImageSizeType.Preview);
+            return CacheAndReturnImage(imageModelClass.PreviewUrl, imageModelClass.Hash, ImageSizeType.Preview);
         }
 
         private bool IsHaveCache(string path, ImageSizeType type) {

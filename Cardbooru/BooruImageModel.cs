@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Cardbooru 
 {
-    public class BooruImage:INotifyPropertyChanged {
+    public class BooruImageModel:INotifyPropertyChanged {
 
         [JsonProperty("id")]
         public string Id { get; set; }

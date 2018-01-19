@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Security.RightsManagement;
 using Cardbooru.Helpers.Base;
 using MvvmCross.Platform;
 using MvvmCross.Plugins.Messenger;
@@ -10,14 +11,19 @@ namespace Cardbooru
     public class BrowseImagesViewModel : 
         INotifyPropertyChanged, IUserControlViewModel {
         private int _currentPage;
+        /// <summary>
+        /// show whether pictures loading to list or not
+        /// </summary>
         private bool _isLoadling;
         private OpenFullImageMessage _openFullImageMessage;
+
+        public object CurrentOpenedItemState { get; private set; }
 
         private BooruWorker booruWorker; // TODO Make Interface and make static?
 
         public IMvxMessenger Messenger { get; }
-        public ObservableCollection<BooruImage> BooruImages { get; set; } = 
-            new ObservableCollection<BooruImage>();
+        public ObservableCollection<BooruImageModel> BooruImages { get; set; } = 
+            new ObservableCollection<BooruImageModel>();
         
 
         public BrowseImagesViewModel() {
@@ -39,16 +45,27 @@ namespace Cardbooru
                 _isLoadling = false;
             }));
 
-        private RelayCommand _openFullImage;
+        private RelayCommand _openFullImageCommand;
 
-        public RelayCommand OpenFullCommnad => _openFullImage ??
+        public RelayCommand OpenFullCommnad => _openFullImageCommand ??
                                                (_loadPreviewImages = new RelayCommand(async o => {
-                                                   var boouru = o as BooruImage;
+                                                   var boouru = o as BooruImageModel;
+                                                   //call method to draw loading image
                                                    await booruWorker.LoadFullImage(boouru);
-                                                   _openFullImageMessage = new OpenFullImageMessage(this, o as BooruImage);
+                                                   _openFullImageMessage = new OpenFullImageMessage(this, o as BooruImageModel);
                                                    Messenger.Publish(_openFullImageMessage);
                                                }));
 
+
+        private RelayCommand _saveStateCommand;
+
+        public RelayCommand SaveStateCommand => _saveStateCommand ??
+                                                (_saveStateCommand = new RelayCommand(openedListItem => {
+                                                    CurrentOpenedItemState = openedListItem;
+                                                }));
+
+        private RelayCommand _loadStateCommand;
+        public RelayCommand LoadStateCommand => _loadStateCommand ?? (_loadStateCommand = new RelayCommand(o => { }));
         #endregion
 
 
@@ -58,6 +75,7 @@ namespace Cardbooru
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        
         
     }
 }

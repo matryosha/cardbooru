@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using Cardbooru.Helpers.Base;
 using MvvmCross.Platform;
 using MvvmCross.Plugins.Messenger;
@@ -19,6 +20,7 @@ namespace Cardbooru
         private IDisposable _tokenFromBrowseImage;
         private IDisposable _tokenFromFullImageBrowse;
         private List<IUserControlViewModel> _viewModels;
+        private UserControl _browseImageView;
 
         public List<IUserControlViewModel> ViewModels => _viewModels ?? (_viewModels = new List<IUserControlViewModel>());
 
@@ -39,12 +41,12 @@ namespace Cardbooru
         }
 
         private void ShowFullImage(OpenFullImageMessage fullImage) {
-            var fullImageView = new FullImageBrowsingViewModel(fullImage.BooruImage.FullImage.Source);
+            var fullImageView = new FullImageBrowsingViewModel(fullImage.BooruImageModel);
             CurrentView = fullImageView;
         }
 
         private void ChangeViewToBrowseImage(CloseFullImageMessage message) {
-            CurrentView = ViewModels[0];
+            CurrentView = ViewModels[0];    
         }
 
         private void ChangeView(IUserControlViewModel viewModel) {

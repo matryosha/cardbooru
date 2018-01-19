@@ -14,25 +14,27 @@ namespace Cardbooru
 
         private ImageSource _fullImage;
         public ImageSource FullImage {
-            get => _fullImage;
+            get => _booruImageModel.FullImage.Source;
             set {
                 _fullImage = value;
                 OnPropertyChanged("FullImage");
             }
         }
 
-        public FullImageBrowsingViewModel(ImageSource image) {
+        private BooruImageModel _booruImageModel;
+
+        public FullImageBrowsingViewModel(BooruImageModel booruImageModel) {
             Messenger = IdkInjection.MessengerHub;
-            FullImage = image;
+            _booruImageModel = booruImageModel;
         }
 
         private RelayCommand _closeImageCommand;
 
         public RelayCommand CloseImageCommand {
             get => _closeImageCommand ?? (_closeImageCommand = new RelayCommand(o => {
-                _fullImage = null;
+                _booruImageModel.FullImage = null;
                 Messenger.Publish(new CloseFullImageMessage(this));
-            }));
+                }));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

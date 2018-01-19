@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cardbooru"
         mc:Ignorable="d" d:DesignWidth="859" d:DesignHeight="611.5"
-        >
+        Unloaded="BrowseImageView_OnUnloaded" Loaded="BrowseImageView_OnLoaded" >
 
 
 
@@ -24,7 +24,8 @@
             </StackPanel>
 
             <ListBox Margin="5 0 0 0" Grid.Column="1" ItemsSource="{Binding BooruImages}" 
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="Item_OnMouseDoubleClick">
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="Item_OnMouseDoubleClick"
+                     Name="mainListBox">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -34,7 +35,7 @@
                 </ListBox.ItemTemplate>
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" IsItemsHost="True"></WrapPanel>
+                        <WrapPanel Name="wrapPanel" Orientation="Horizontal" IsItemsHost="True"></WrapPanel>
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
                 <ListBox.ItemContainerStyle>

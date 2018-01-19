@@ -115,7 +115,7 @@
     <Compile Include="AppView.xaml.cs">
       <DependentUpon>AppView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BooruImage.cs" />
+    <Compile Include="BooruImageModel.cs" />
     <Compile Include="Bootstrap\MessengerPluginBootstrap.cs" />
     <Compile Include="FullImageBrowseView.xaml.cs">
       <DependentUpon>FullImageBrowseView.xaml</DependentUpon>
