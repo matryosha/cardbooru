@@ -41,7 +41,7 @@ namespace Cardbooru.BrowseImages
             (_loadPreviewImages = new RelayCommand(async o => {
                 if(_isLoadling) return;
                 _isLoadling = true;
-                await booruWorker.FillBooruImages(_currentPage, BooruImages, BooruType.SafeBooru);
+                await booruWorker.FillBooruImages(_currentPage, BooruImages, BooruType.Danbooru);
                 _currentPage++;
                 _isLoadling = false;
             }));

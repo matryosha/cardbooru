@@ -13,6 +13,7 @@ namespace Cardbooru.Models
         public override string FullImageUrl { get => base.FullImageUrl; set => base.FullImageUrl = value; }
         [JsonProperty("md5")]
         public override string Hash { get => base.Hash; set => base.Hash = value; }
-
+        [JsonProperty("tag_string")]
+        public override string TagsString { get; set; }
     }
 }

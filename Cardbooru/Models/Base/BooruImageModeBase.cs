@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
@@ -14,9 +15,12 @@ namespace Cardbooru.Models.Base
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public virtual string TagsString { get; set; }
         public virtual string Id { get; set; }
         public virtual string PreviewImageUrl { get; set; }
         public virtual string FullImageUrl { get; set; }
+        public virtual List<string> TagsList { get; set; } = new List<string>();
+        
         public virtual Image FullImage { get; set; }
         public virtual string Hash {
             get => _hash;

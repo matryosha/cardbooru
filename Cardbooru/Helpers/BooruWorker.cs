@@ -67,6 +67,15 @@ namespace Cardbooru.Helpers
                     break;
             }
 
+            //Make tags list
+            foreach (var booruImageModelBase in collection) {
+                var tagsArr = booruImageModelBase.TagsString.Split(' ');
+                booruImageModelBase.TagsString = null;
+                foreach (string s in tagsArr) {
+                    booruImageModelBase.TagsList.Add(s);
+                }
+            }
+
            
             //Load preview image in each boouruImageClass
             await LoadPreviewImages(collection, realBooruImages);

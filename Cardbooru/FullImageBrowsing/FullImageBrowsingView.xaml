@@ -7,6 +7,34 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-            <Image Source="{Binding FullImage}" Stretch="Uniform" MouseLeftButtonDown="FullImage_OnMouseLeftButtonDown"></Image>
+        <Grid.Background>
+            <SolidColorBrush Color="Black" Opacity="0.8"></SolidColorBrush>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Image Source="{Binding FullImage}" 
+               Stretch="Uniform" MouseLeftButtonDown="FullImage_OnMouseLeftButtonDown"
+               Grid.ColumnSpan="4"></Image>
+        <StackPanel>
+            <StackPanel.Background>
+                <SolidColorBrush Color="Black" Opacity="0.5"/>
+            </StackPanel.Background>
+            <ListBox>
+                <ListBox.Background>
+                    <SolidColorBrush Opacity="0"/>
+                </ListBox.Background>
+                <ListBox.BorderBrush>
+                    <SolidColorBrush Opacity="0"></SolidColorBrush>
+                </ListBox.BorderBrush>
+            </ListBox>
+        </StackPanel>
+        
     </Grid>
 </UserControl>
+
+
+
