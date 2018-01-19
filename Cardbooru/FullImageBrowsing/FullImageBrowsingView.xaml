@@ -18,12 +18,15 @@
         </Grid.ColumnDefinitions>
         <Image Source="{Binding FullImage}" 
                Stretch="Uniform" MouseLeftButtonDown="FullImage_OnMouseLeftButtonDown"
+               MouseRightButtonDown="FullImage_OnMouseRightButtonDown"
                Grid.ColumnSpan="4"></Image>
-        <StackPanel>
-            <StackPanel.Background>
+        <Grid Name="TagsPanel" Visibility="Hidden">
+            <Grid.Background>
                 <SolidColorBrush Color="Black" Opacity="0.5"/>
-            </StackPanel.Background>
-            <ListBox>
+            </Grid.Background>
+            <ListBox ItemsSource="{Binding TagsList}" 
+                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                 <ListBox.Background>
                     <SolidColorBrush Opacity="0"/>
                 </ListBox.Background>
@@ -31,7 +34,7 @@
                     <SolidColorBrush Opacity="0"></SolidColorBrush>
                 </ListBox.BorderBrush>
             </ListBox>
-        </StackPanel>
+        </Grid>
         
     </Grid>
 </UserControl>

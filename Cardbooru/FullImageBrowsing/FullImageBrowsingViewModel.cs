@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using Cardbooru.Helpers;
@@ -12,6 +13,7 @@ namespace Cardbooru.FullImageBrowsing
         INotifyPropertyChanged, IUserControlViewModel {
 
         public IMvxMessenger Messenger { get; }
+        public List<string> TagsList { get; set; }
 
         private ImageSource _fullImage;
         public ImageSource FullImage {
@@ -27,6 +29,7 @@ namespace Cardbooru.FullImageBrowsing
         public FullImageBrowsingViewModel(BooruImageModelBase booruImageModel) {
             Messenger = IdkInjection.MessengerHub;
             _booruImageModel = booruImageModel;
+            TagsList = booruImageModel.TagsList;
         }
 
         private RelayCommand _closeImageCommand;
