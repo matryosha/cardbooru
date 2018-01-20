@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Cardbooru"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+             d:DesignHeight="300" d:DesignWidth="300" Name="MainUserControl">
+    <Grid Name="MainGrid">
         <Grid.Background>
             <SolidColorBrush Color="Black" Opacity="0.8"></SolidColorBrush>
         </Grid.Background>
@@ -29,7 +29,7 @@
                         <DoubleAnimation
                                 Storyboard.TargetName="FullImage"
                             Storyboard.TargetProperty="Opacity"
-                            From="0.0" To="1.0" Duration="0:0:0.2"></DoubleAnimation>
+                            From="0.0" To="1.0" Duration="0:0:0.2"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
@@ -50,7 +50,6 @@
                 </ListBox.BorderBrush>
             </ListBox>
         </Grid>
-        
     </Grid>
 </UserControl>
 
