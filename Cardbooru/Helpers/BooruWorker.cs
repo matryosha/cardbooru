@@ -85,6 +85,8 @@ namespace Cardbooru.Helpers
         public async Task LoadFullImage(BooruImageModelBase booruImageModel) {
             if(booruImageModel == null)
                 throw new Exception("no boouru image");
+            if(booruImageModel.FullImage!=null)
+                return;
 
             ImageSource image;
             //Check if image has been cached
@@ -109,6 +111,14 @@ namespace Cardbooru.Helpers
 
                 booruImage.PreviewImage = new Image();
                 booruImage.PreviewImage.Source = await GetPreviewImage(booruImage);
+                if (booruImage.PreviewImage.Source == null) {
+                    await LoadFullImage(booruImage);
+                    if (booruImage.FullImage == null) {
+                        booruImage.FullImage = new Image();
+                        booruImage.PreviewImage.Source = booruImage.FullImage.Source = LoadDefImage();
+                    }
+                    booruImage.PreviewImage.Source = booruImage.FullImage.Source;
+                }
                 realBooruImages.Add(booruImage);
             }
 
@@ -139,7 +149,6 @@ namespace Cardbooru.Helpers
                 }
             }
             catch (Exception e) {
-                Console.WriteLine(e);
                 bitmap = null;
             }
             
@@ -162,8 +171,12 @@ namespace Cardbooru.Helpers
 
             BitmapFrame bitmap;
             using (var mStream = new MemoryStream(buff)) {
-                Console.WriteLine(properPath);
-                bitmap = BitmapFrame.Create(mStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                try {
+                    bitmap = BitmapFrame.Create(mStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                }
+                catch (Exception e) {
+                    bitmap = null;
+                }
             }
 
             return bitmap;
