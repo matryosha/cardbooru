@@ -28,7 +28,7 @@
                         </Style>
                     </ColumnDefinition.Style>
                 </ColumnDefinition>
-                    <ColumnDefinition Name="ListBoxColumn" Width="*"/>
+                    <ColumnDefinition Name="ListBoxColumn" Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Vertical" Margin="5 5 5 5">
                 <Button   Name="TestBut" Width="60" Height="60" Command="{Binding LoadCommand}" >Test Load</Button>
@@ -36,16 +36,18 @@
             <Canvas Grid.Column="1" ZIndex="1000">
                 <ToggleButton Name="Toggle" Margin="10">asdasd</ToggleButton>
             </Canvas>
-            
+            <!--ScrollViewer.VerticalScrollBarVisibility="Disabled"-->
             <ListBox  Grid.Column="1" ItemsSource="{Binding BooruImages}" 
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="mainListBox"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                       Name="mainListBox" Padding="0" Margin="0"
                      Background="#424242" BorderThickness="0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
                             <Image Source="{Binding Path=PreviewImageSource}" 
                                    Height="{DynamicResource ImageItemHeight}" Width="{DynamicResource ImageItemWidth}"
-                                   Margin="10"></Image>
+                                   Margin="0"></Image>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -56,7 +58,10 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Background" Value="White"/>
                         <EventSetter Event="PreviewMouseLeftButtonDown" Handler="EventSetter_OnHandler"></EventSetter>
                     </Style>
                 </ListBox.ItemContainerStyle>
