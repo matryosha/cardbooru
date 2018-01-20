@@ -16,10 +16,25 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Image Source="{Binding FullImage}" 
-               Stretch="Uniform" MouseLeftButtonDown="FullImage_OnMouseLeftButtonDown"
-               MouseRightButtonDown="FullImage_OnMouseRightButtonDown"
-               Grid.ColumnSpan="4"></Image>
+        <Image
+            Name="FullImage"
+            Source="{Binding FullImage}" 
+            Stretch="Uniform" MouseLeftButtonDown="FullImage_OnMouseLeftButtonDown"
+            MouseRightButtonDown="FullImage_OnMouseRightButtonDown"
+            Grid.ColumnSpan="4">
+            <Image.Triggers>
+                <EventTrigger RoutedEvent="Image.Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                        <DoubleAnimation
+                                Storyboard.TargetName="FullImage"
+                            Storyboard.TargetProperty="Opacity"
+                            From="0.0" To="1.0" Duration="0:0:0.2"></DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Image.Triggers>
+            </Image>
         <Grid Name="TagsPanel" Visibility="Hidden">
             <Grid.Background>
                 <SolidColorBrush Color="Black" Opacity="0.5"/>
