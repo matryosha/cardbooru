@@ -18,10 +18,10 @@
                 <ColumnDefinition>
                     <ColumnDefinition.Style>
                         <Style TargetType="ColumnDefinition">
-                            <Setter Property="Width" Value="70"/>
+                            <Setter Property="Width" Value="0"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ElementName=Toggle, Path=IsChecked}" Value="true" >
-                                    <Setter Property="Width" Value="0"></Setter>
+                                    <Setter Property="Width" Value="70"></Setter>
                                 </DataTrigger>
                                 
                             </Style.Triggers>
@@ -34,12 +34,12 @@
                 <Button   Name="TestBut" Width="60" Height="60" Command="{Binding LoadCommand}" >Test Load</Button>
             </StackPanel>
             <Canvas Grid.Column="1" ZIndex="1000">
-                <ToggleButton Name="Toggle" Margin="10">asdasd</ToggleButton>
+                <ToggleButton Name="Toggle" Margin="10" Checked="Toggle_OnChecked">asdasd</ToggleButton>
             </Canvas>
             <!--ScrollViewer.VerticalScrollBarVisibility="Disabled"-->
             <ListBox  Grid.Column="1" ItemsSource="{Binding BooruImages}" 
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                      
                        Name="mainListBox" Padding="0" Margin="0"
                      Background="#424242" BorderThickness="0">
                 <ListBox.ItemTemplate>
@@ -58,10 +58,9 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
-                        <Setter Property="Padding" Value="0"/>
-                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="Padding" Value="0"/>  <!--disable one of the internal padding-->
+                        <Setter Property="Margin" Value="20"/>
                         <Setter Property="BorderThickness" Value="0"/>
-                        <Setter Property="Background" Value="White"/>
                         <EventSetter Event="PreviewMouseLeftButtonDown" Handler="EventSetter_OnHandler"></EventSetter>
                     </Style>
                 </ListBox.ItemContainerStyle>

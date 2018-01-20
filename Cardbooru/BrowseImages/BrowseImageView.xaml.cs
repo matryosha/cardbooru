@@ -2,15 +2,16 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
+using System.Windows.Threading;
 using Cardbooru.Models.Base;
 
 namespace Cardbooru.BrowseImages
 {
     public partial class BrowseImageView : UserControl {
 
+        private static Action EmptyDelegate = delegate () { };
         private const double MaxImageWidth = 320;
-        private const double MinImageWidth = 250;
+        //private const double MinImageWidth = 250;
 
         public BrowseImageView()
         {
@@ -20,9 +21,6 @@ namespace Cardbooru.BrowseImages
         private void EventSetter_OnHandler(object sender, MouseButtonEventArgs e) {
             var contex = DataContext as BrowseImagesViewModel;
             var listItem = sender as ListBoxItem;
-            var a = listItem.ActualWidth; //Margin 10 : 4 rows = 281; Margin 0 : 4 rows = 261;
-            var b = listItem.Width;
-            var c = Resources["ImageItemWidth"];//Margin 10 :4 rows = 251; Margin 0 : 4 rows = 251
             contex.SaveStateCommand.Execute(listItem.Content);
             contex.OpenFullCommnad.Execute(listItem.Content);
         }
@@ -39,25 +37,24 @@ namespace Cardbooru.BrowseImages
             if (double.IsNaN(ListBoxColumn.ActualWidth)) return;
 
 
-            var widthOfListBox = ListBoxColumn.ActualWidth - 2; // 17 -- width of scrollbar
-            var capacityOfMaxImageSize = (int) widthOfListBox / (int) MaxImageWidth;
+            var widthOfListBox = ListBoxColumn.ActualWidth - 2 - 17; // 17 -- width of scrollbar 
+            // 2 -- internal listbox margin that no possible to turn of (sure, manystringcode method exist)
+            //https://stackoverflow.com/questions/38289768/how-to-remove-margin-on-listbox-itemscontainer-in-wpf
+
+            var capacityOfMaxImageSize = (int)widthOfListBox / (int)MaxImageWidth;
             if (widthOfListBox / capacityOfMaxImageSize >= MaxImageWidth) ++capacityOfMaxImageSize;
 
+            //double newImageSize = widthOfListBox / capacityOfMaxImageSize; //whitout margin
+            widthOfListBox = widthOfListBox - capacityOfMaxImageSize * 40; // 40 -- margin(x2 because both side)
             double newImageSize = widthOfListBox / capacityOfMaxImageSize;
 
-            //while (newImageSize > MaxImageWidth) {
-            //    newImageSize -= MinImageWidth;
-            //    if (MaxImageWidth >= widthOfListBox ) {
-            //        newImageSize = widthOfListBox;
-            //        break;
-            //    }
-            //    if (newImageSize < MinImageWidth) {
-            //        newImageSize += ++capacityOfMaxImageSize / 2;
-            //    }
-            //}
-            Resources["ImageItemHeight"] = Resources["ImageItemWidth"] = newImageSize  ;
+            Resources["ImageItemHeight"] = Resources["ImageItemWidth"] = newImageSize;
+            
 
         }
+
+
+        private void Toggle_OnChecked(object sender, RoutedEventArgs e) { }
 
     }
 }
