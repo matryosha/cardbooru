@@ -1,16 +1,20 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using Cardbooru.Models.Base;
 
 namespace Cardbooru.BrowseImages
 {
-
     public partial class BrowseImageView : UserControl {
+
+        private const double MaxImageWidth = 300;
+        private const double MinImageWidth = 250;
 
         public BrowseImageView()
         {
-            InitializeComponent();      
+            InitializeComponent();   
         }
 
         private void EventSetter_OnHandler(object sender, MouseButtonEventArgs e) {
@@ -26,5 +30,19 @@ namespace Cardbooru.BrowseImages
             var item = contex.CurrentOpenedItemState as BooruImageModelBase;
             mainListBox.ScrollIntoView(item);
         }
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo) {
+            base.OnRenderSizeChanged(sizeInfo);
+            if (double.IsNaN(ListBoxColumn.ActualWidth)) return;
+            var widthOfListBox = ListBoxColumn.ActualWidth;
+            var capacityOfMaxImageSize = (int) widthOfListBox / (int) MaxImageWidth;
+
+            double newImageSize = widthOfListBox / capacityOfMaxImageSize;
+            while (newImageSize > MaxImageWidth)
+                newImageSize = widthOfListBox / ++capacityOfMaxImageSize;
+            Resources["ImageItemHeight"] = Resources["ImageItemWidth"] = newImageSize - 40;
+
+        }
+
     }
 }

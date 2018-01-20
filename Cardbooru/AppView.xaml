@@ -17,7 +17,7 @@
             <fullImageBrowsing:FullImageBrowsingView/>
         </DataTemplate>
     </Window.Resources>
-    <Grid>
+    <Grid Background="#212121">
 
         <ContentControl Content="{Binding CurrentView}"></ContentControl>
 

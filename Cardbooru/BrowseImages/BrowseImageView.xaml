@@ -3,28 +3,49 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:Cardbooru"
-        mc:Ignorable="d" d:DesignWidth="859" d:DesignHeight="611.5"
-        Loaded="BrowseImageView_OnLoaded" >
-
-    <Border Padding="5">
+        mc:Ignorable="d" d:DesignWidth="859" d:DesignHeight="611.5" 
+        Loaded="BrowseImageView_OnLoaded">
+    <UserControl.Resources>
+        <System:Double x:Key="ImageItemHeight">250</System:Double>
+        <System:Double x:Key="ImageItemWidth">250</System:Double>
+    </UserControl.Resources>
+    <Border >
         <Grid>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="60"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition>
+                    <ColumnDefinition.Style>
+                        <Style TargetType="ColumnDefinition">
+                            <Setter Property="Width" Value="70"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=Toggle, Path=IsChecked}" Value="true" >
+                                    <Setter Property="Width" Value="0"></Setter>
+                                </DataTrigger>
+                                
+                            </Style.Triggers>
+                        </Style>
+                    </ColumnDefinition.Style>
+                </ColumnDefinition>
+                    <ColumnDefinition Name="ListBoxColumn" Width="*"/>
             </Grid.ColumnDefinitions>
-
-            <StackPanel Orientation="Vertical">
-                <Button   Width="60" Height="60" Command="{Binding LoadCommand}" >Test Load</Button>
+            <StackPanel Orientation="Vertical" Margin="5 5 5 5">
+                <Button   Name="TestBut" Width="60" Height="60" Command="{Binding LoadCommand}" >Test Load</Button>
             </StackPanel>
-
-            <ListBox Margin="5 0 0 0" Grid.Column="1" ItemsSource="{Binding BooruImages}" 
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="mainListBox">
+            <Canvas Grid.Column="1" ZIndex="1000">
+                <ToggleButton Name="Toggle" Margin="10">asdasd</ToggleButton>
+            </Canvas>
+            
+            <ListBox  Grid.Column="1" ItemsSource="{Binding BooruImages}" 
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="mainListBox"
+                     Background="#424242" BorderThickness="0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <Image Source="{Binding Path=PreviewImageSource}" Height="250" Width="250" Margin="10"></Image>
+                            <Image Source="{Binding Path=PreviewImageSource}" 
+                                   Height="{DynamicResource ImageItemHeight}" Width="{DynamicResource ImageItemWidth}"
+                                   Margin="10"></Image>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -35,6 +56,7 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
                         <EventSetter Event="PreviewMouseLeftButtonDown" Handler="EventSetter_OnHandler"></EventSetter>
                     </Style>
                 </ListBox.ItemContainerStyle>
