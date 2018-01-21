@@ -35,6 +35,7 @@ namespace Cardbooru.BrowseImages
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo) {
             base.OnRenderSizeChanged(sizeInfo);
             if (double.IsNaN(ListBoxColumn.ActualWidth)) return;
+            if (Resources["ImageItemHeight"] == null) return;
 
 
             var widthOfListBox = ListBoxColumn.ActualWidth - 2 - 17; // 17 -- width of scrollbar 

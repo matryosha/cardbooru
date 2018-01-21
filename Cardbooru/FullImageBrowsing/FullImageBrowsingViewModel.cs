@@ -17,7 +17,7 @@ namespace Cardbooru.FullImageBrowsing
 
         private ImageSource _fullImage;
         public ImageSource FullImage {
-            get => _booruImageModel.FullImage.Source;
+            get => BooruImageModel.FullImage.Source;
             set {
                 _fullImage = value;
                 OnPropertyChanged("FullImage");
@@ -26,9 +26,17 @@ namespace Cardbooru.FullImageBrowsing
 
         private BooruImageModelBase _booruImageModel;
 
+        public BooruImageModelBase BooruImageModel {
+            get => _booruImageModel;
+            set {
+                _booruImageModel = value;
+                OnPropertyChanged("BooruImageModel");
+            } 
+        }
+
         public FullImageBrowsingViewModel(BooruImageModelBase booruImageModel) {
             Messenger = IdkInjection.MessengerHub;
-            _booruImageModel = booruImageModel;
+            BooruImageModel = booruImageModel;
             TagsList = booruImageModel.TagsList;
         }
 
@@ -36,7 +44,8 @@ namespace Cardbooru.FullImageBrowsing
 
         public RelayCommand CloseImageCommand {
             get => _closeImageCommand ?? (_closeImageCommand = new RelayCommand(o => {
-                _booruImageModel.FullImage = null;
+                BooruImageModel.FullImage = null;
+                BooruImageModel.IsFullImageLoaded = false;
                 Messenger.Publish(new CloseFullImageMessage(this));
                 }));
         }

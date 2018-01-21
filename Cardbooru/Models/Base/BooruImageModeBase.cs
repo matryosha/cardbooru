@@ -22,6 +22,13 @@ namespace Cardbooru.Models.Base
         public virtual List<string> TagsList { get; set; } = new List<string>();
         
         public virtual Image FullImage { get; set; }
+        public ImageSource FullImageSource {
+            get => FullImage.Source;
+            set {
+                FullImageSource = value;
+                OnPropertyChanged("FullImageSource");
+            }
+        }
         private bool _isImageLoaded;
 
         public bool IsFullImageLoaded {

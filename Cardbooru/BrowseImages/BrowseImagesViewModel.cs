@@ -51,10 +51,9 @@ namespace Cardbooru.BrowseImages
         public RelayCommand OpenFullCommnad => _openFullImageCommand ??
                                                (_openFullImageCommand = new RelayCommand(async o => {
                                                    var boouru = o as BooruImageModelBase;
-                                                   //call method to draw loading image
-                                                   await booruWorker.LoadFullImage(boouru);
                                                    _openFullImageMessage = new OpenFullImageMessage(this, o as BooruImageModelBase);
                                                    Messenger.Publish(_openFullImageMessage);
+                                                   await booruWorker.LoadFullImage(boouru);
                                                }));
 
 

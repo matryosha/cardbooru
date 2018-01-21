@@ -100,6 +100,7 @@ namespace Cardbooru.Helpers
 
             booruImageModel.FullImage = new Image();
             booruImageModel.FullImage.Source = image;
+            booruImageModel.IsFullImageLoaded = true;
         }
 
         public async Task LoadPreviewImages(ObservableCollection<BooruImageModelBase> booruImagesMetaData, ObservableCollection<BooruImageModelBase> realBooruImages)

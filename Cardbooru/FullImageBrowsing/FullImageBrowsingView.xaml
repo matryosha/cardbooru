@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:gif="http://wpfanimatedgif.codeplex.com"
+             xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
              xmlns:local="clr-namespace:Cardbooru"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Name="MainUserControl">
@@ -19,17 +19,14 @@
         </Grid.ColumnDefinitions>
         <Image
             Name="FullImage"
-            
             MouseLeftButtonDown="FullImage_OnMouseLeftButtonDown"
             MouseRightButtonDown="FullImage_OnMouseRightButtonDown"
             Grid.ColumnSpan="4">
             <Image.Style>
                 <Style TargetType="Image">
-                    <Setter Property="gif:ImageBehavior.AnimatedSource" Value="/res/loader.gif"></Setter>
-                    <Setter Property="Stretch" Value="None"></Setter>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsFullImageLoaded}" Value="True">
-                            <Setter Property="Source" Value="{Binding FullImage}"></Setter>
+                        <DataTrigger Binding="{Binding Path=BooruImageModel.IsFullImageLoaded}" Value="True">
+                            <Setter Property="Source" Value="{Binding Path=BooruImageModel.FullImageSource}"/>
                             <Setter Property="Stretch" Value="Uniform"></Setter>
                         </DataTrigger>
                     </Style.Triggers>
@@ -48,6 +45,19 @@
                 </EventTrigger>
             </Image.Triggers>
             </Image>
+        <Image Grid.ColumnSpan="4"> <!--Change to material design progress bar?-->
+            <Image.Style>
+                <Style TargetType="Image">
+                    <Setter Property="gif:AnimationBehavior.SourceUri" Value="/res/loader.gif" />
+                    <Setter Property="Stretch" Value="None" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=BooruImageModel.IsFullImageLoaded}" Value="True">
+                            <Setter Property="gif:AnimationBehavior.SourceUri" Value="{x:Null}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+        </Image>
         <Grid Name="TagsPanel" Visibility="Hidden">
             <Grid.Background>
                 <SolidColorBrush Color="Black" Opacity="0.5"/>
@@ -65,6 +75,10 @@
         </Grid>
     </Grid>
 </UserControl>
+
+
+
+
 
 
 

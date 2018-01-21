@@ -7,7 +7,7 @@
         xmlns:browseImages="clr-namespace:Cardbooru.BrowseImages"
         xmlns:fullImageBrowsing="clr-namespace:Cardbooru.FullImageBrowsing"
         mc:Ignorable="d"
-        Title="AppView" Height="600" Width="1250">
+        Title="Cardbooru" Height="600" Width="1250">
 
     <Window.Resources>
         <DataTemplate DataType="{x:Type browseImages:BrowseImagesViewModel}">
