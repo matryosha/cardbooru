@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:Cardbooru"
         mc:Ignorable="d" d:DesignWidth="859" d:DesignHeight="611.5" 
         Loaded="BrowseImageView_OnLoaded">
@@ -11,58 +12,84 @@
         <System:Double x:Key="ImageItemHeight">250</System:Double>
         <System:Double x:Key="ImageItemWidth">250</System:Double>
     </UserControl.Resources>
-
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition>
-                <ColumnDefinition.Style>
-                    <Style TargetType="ColumnDefinition">
-                        <Setter Property="Width" Value="0" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=Toggle, Path=IsChecked}" Value="true">
-                                <Setter Property="Width" Value="70" />
-                            </DataTrigger>
-
-                        </Style.Triggers>
+    <materialDesign:DrawerHost>
+        <materialDesign:DrawerHost.LeftDrawerContent>
+            <StackPanel Background="#212121" Width="150">
+                <Button Command="{Binding LoadCommand}"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        ToolTip="{StaticResource MaterialDesignFlatButton}">Load</Button>
+            </StackPanel>
+        </materialDesign:DrawerHost.LeftDrawerContent>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Name="ListBoxColumn" Width="*" />
+            </Grid.ColumnDefinitions>
+            <Canvas ZIndex="1000">
+                <Button Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}"
+                        CommandParameter="{x:Static Dock.Left}" Canvas.Top="436"/>
+                <materialDesign:PackIcon Kind="Menu" Width="35" Height="35" Opacity="0.3" 
+                                         Canvas.Left="20" Canvas.Top="20" Name="OpenDrawerButton">
+                    <materialDesign:PackIcon.Background>
+                        <SolidColorBrush Color="#FAFAFA" Opacity="0"></SolidColorBrush>
+                    </materialDesign:PackIcon.Background>
+                    <materialDesign:PackIcon.Triggers>
+                        
+                        <EventTrigger RoutedEvent="materialDesign:PackIcon.MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="OpenDrawerButton"
+                                                     Storyboard.TargetProperty="Background.Opacity"
+                                                     To="0.3" Duration="0:0:0.5"
+                                                     FillBehavior="HoldEnd"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="materialDesign:PackIcon.MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="OpenDrawerButton"
+                                                     Storyboard.TargetProperty="Background.Opacity"
+                                                     To="0.0" Duration="0:0:0.5"
+                                                     FillBehavior="HoldEnd"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </materialDesign:PackIcon.Triggers>
+                    
+                </materialDesign:PackIcon>
+            </Canvas>
+            <!--ScrollViewer.VerticalScrollBarVisibility="Disabled"-->
+            <ListBox Grid.Column="1" ItemsSource="{Binding BooruImages}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     Name="mainListBox" Padding="0" Margin="0"
+                     Background="#424242" BorderThickness="0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <Image Source="{Binding Path=PreviewImageSource}"
+                                   Height="{DynamicResource ImageItemHeight}" Width="{DynamicResource ImageItemWidth}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Name="wrapPanel" Orientation="Horizontal" IsItemsHost="True" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="0" />
+                        <!--disable one of the internal padding-->
+                        <Setter Property="Margin" Value="20" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="EventSetter_OnHandler" />
                     </Style>
-                </ColumnDefinition.Style>
-            </ColumnDefinition>
-            <ColumnDefinition Name="ListBoxColumn" Width="*" />
-        </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Vertical" Margin="5 5 5 5">
-            <Button Name="TestBut" Width="60" Height="60" Command="{Binding LoadCommand}">Test Load</Button>
-        </StackPanel>
-        <Canvas Grid.Column="1" ZIndex="1000">
-            <ToggleButton Name="Toggle" Margin="10" Checked="Toggle_OnChecked">menu</ToggleButton>
-        </Canvas>
-        <!--ScrollViewer.VerticalScrollBarVisibility="Disabled"-->
-        <ListBox Grid.Column="1" ItemsSource="{Binding BooruImages}"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 Name="mainListBox" Padding="0" Margin="0"
-                 Background="#424242" BorderThickness="0">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                        <Image Source="{Binding Path=PreviewImageSource}"
-                               Height="{DynamicResource ImageItemHeight}" Width="{DynamicResource ImageItemWidth}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Name="wrapPanel" Orientation="Horizontal" IsItemsHost="True" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Padding" Value="0" />  <!--disable one of the internal padding-->
-                    <Setter Property="Margin" Value="20" />
-                    <Setter Property="BorderThickness" Value="0" />
-                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="EventSetter_OnHandler" />
-                </Style>
-            </ListBox.ItemContainerStyle>
-        </ListBox>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
 
-    </Grid>
+        </Grid>
+    </materialDesign:DrawerHost>
+    
     
 </UserControl>
+ 
