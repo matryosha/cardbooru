@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:gif="http://wpfanimatedgif.codeplex.com"
              xmlns:local="clr-namespace:Cardbooru"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Name="MainUserControl">
@@ -18,10 +19,22 @@
         </Grid.ColumnDefinitions>
         <Image
             Name="FullImage"
-            Source="{Binding FullImage}" 
-            Stretch="Uniform" MouseLeftButtonDown="FullImage_OnMouseLeftButtonDown"
+            
+            MouseLeftButtonDown="FullImage_OnMouseLeftButtonDown"
             MouseRightButtonDown="FullImage_OnMouseRightButtonDown"
             Grid.ColumnSpan="4">
+            <Image.Style>
+                <Style TargetType="Image">
+                    <Setter Property="gif:ImageBehavior.AnimatedSource" Value="/res/loader.gif"></Setter>
+                    <Setter Property="Stretch" Value="None"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsFullImageLoaded}" Value="True">
+                            <Setter Property="Source" Value="{Binding FullImage}"></Setter>
+                            <Setter Property="Stretch" Value="Uniform"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
             <Image.Triggers>
                 <EventTrigger RoutedEvent="Image.Loaded">
                     <BeginStoryboard>
