@@ -152,8 +152,13 @@ namespace Cardbooru.Helpers
             catch (Exception e) {
                 bitmap = null;
             }
+
+            using (FileStream stream = File.Open($"{GetImageCacheDir()}{properPath}", FileMode.OpenOrCreate)) {
+                //stream.Seek(0, SeekOrigin.End);
+                await stream.WriteAsync(bytesImage, 0, bytesImage.Length);
+            }
+            //File.WriteAllBytes($"{GetImageCacheDir()}{properPath}", bytesImage);
             
-            File.WriteAllBytes($"{GetImageCacheDir()}{properPath}", bytesImage);
             
             return bitmap;
         }
