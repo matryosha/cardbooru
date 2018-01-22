@@ -117,6 +117,7 @@
     <Compile Include="AppView.xaml.cs">
       <DependentUpon>AppView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Base\WrapperStream.cs" />
     <Compile Include="Models\Base\BooruImageModeBase.cs" />
     <Compile Include="FullImageBrowsing\FullImageBrowsingView.xaml.cs">
       <DependentUpon>FullImageBrowsingView.xaml</DependentUpon>
