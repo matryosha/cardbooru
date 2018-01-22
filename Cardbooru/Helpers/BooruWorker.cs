@@ -142,7 +142,7 @@ namespace Cardbooru.Helpers
         private async Task<ImageSource> CacheAndReturnImage(string url, string inputPath, ImageSizeType type) {
             var properPath = GetProperPath(inputPath, type);
             var bytesImage = await GetImageBytes(url);
-            BitmapFrame bitmap = await CreateBitmapAsync(bytesImage);
+            BitmapFrame bitmap =  await Task.Run(() => CreateBitmapFrame(bytesImage));
             
 
             using (FileStream stream = File.Open($"{GetImageCacheDir()}{properPath}", FileMode.OpenOrCreate)) {
@@ -167,15 +167,8 @@ namespace Cardbooru.Helpers
                 await file.ReadAsync(buff, 0, (int) file.Length);
             }
 
-            BitmapFrame bitmap;
-            using (var mStream = new MemoryStream(buff)) {
-                try {
-                    bitmap = BitmapFrame.Create(mStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-                }
-                catch (Exception e) {
-                    bitmap = null;
-                }
-            }
+            BitmapFrame bitmap = await Task.Run((() => CreateBitmapFrame(buff)));
+            
 
             return bitmap;
         }
@@ -215,7 +208,7 @@ namespace Cardbooru.Helpers
             return _client ?? (_client = new HttpClient());
         }
 
-        private async Task<BitmapFrame> CreateBitmapAsync(byte[] data)
+        private BitmapFrame CreateBitmapFrame(byte[] data)
         {
             BitmapFrame bitmap;
             try
