@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:Cardbooru"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d" d:DesignWidth="859" d:DesignHeight="611.5" 
         Loaded="BrowseImageView_OnLoaded">
     <UserControl.Resources>
@@ -43,8 +44,20 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
+                        <i:Interaction.Triggers>
+                            <!--In the begining I use just event in ItemContainerStyle but it caused ui freezing-->
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RelativeSource=
+                                        {RelativeSource FindAncestor, 
+                                        AncestorType={x:Type UserControl}}, 
+                                        Path=DataContext.OpenFullCommnad}" CommandParameter="{Binding RelativeSource=
+                                        {RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, 
+                                        Path=Content}">
+                                </i:InvokeCommandAction>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <Image Source="{Binding Path=PreviewImageSource}"
-                               Height="{DynamicResource ImageItemHeight}" Width="{DynamicResource ImageItemWidth}" />
+                               Height="{DynamicResource ImageItemHeight}" Width="{DynamicResource ImageItemWidth}"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -58,7 +71,6 @@
                     <Setter Property="Padding" Value="0" />  <!--disable one of the internal padding-->
                     <Setter Property="Margin" Value="20" />
                     <Setter Property="BorderThickness" Value="0" />
-                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="EventSetter_OnHandler" />
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>

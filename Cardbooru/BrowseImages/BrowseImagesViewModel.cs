@@ -50,19 +50,12 @@ namespace Cardbooru.BrowseImages
 
         public RelayCommand OpenFullCommnad => _openFullImageCommand ??
                                                (_openFullImageCommand = new RelayCommand(async o => {
+                                                   CurrentOpenedItemState = o;
                                                    var boouru = o as BooruImageModelBase;
                                                    _openFullImageMessage = new OpenFullImageMessage(this, o as BooruImageModelBase);
                                                    Messenger.Publish(_openFullImageMessage);
                                                    await booruWorker.LoadFullImage(boouru);
                                                }));
-
-
-        private RelayCommand _saveStateCommand;
-
-        public RelayCommand SaveStateCommand => _saveStateCommand ??
-                                                (_saveStateCommand = new RelayCommand(openedListItem => {
-                                                    CurrentOpenedItemState = openedListItem;
-                                                }));
 
         private RelayCommand _loadStateCommand;
         public RelayCommand LoadStateCommand => _loadStateCommand ?? (_loadStateCommand = new RelayCommand(o => { }));
