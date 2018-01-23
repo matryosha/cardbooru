@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Cardbooru.Helpers.Base;
 using Cardbooru.Models;
 using Cardbooru.Models.Base;
 using Newtonsoft.Json;
@@ -142,19 +143,13 @@ namespace Cardbooru.Helpers
         private async Task<ImageSource> CacheAndReturnImage(string url, string inputPath, ImageSizeType type) {
             var properPath = GetProperPath(inputPath, type);
             var bytesImage = await GetImageBytes(url);
-            BitmapFrame bitmap;
-            try {
-                using (var mStream = new MemoryStream(bytesImage))
-                {
-                    bitmap = BitmapFrame.Create(mStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-                }
-            }
-            catch (Exception e) {
-                bitmap = null;
-            }
+            BitmapSource bitmap =  await Task.Run(() => CreateBitmapFrame(bytesImage));
             
-            File.WriteAllBytes($"{GetImageCacheDir()}{properPath}", bytesImage);
-            
+            using (FileStream stream = File.Open($"{GetImageCacheDir()}{properPath}", FileMode.OpenOrCreate)) {
+                //stream.Seek(0, SeekOrigin.End);
+                await stream.WriteAsync(bytesImage, 0, bytesImage.Length);
+            }
+
             return bitmap;
         }
 
@@ -170,15 +165,8 @@ namespace Cardbooru.Helpers
                 await file.ReadAsync(buff, 0, (int) file.Length);
             }
 
-            BitmapFrame bitmap;
-            using (var mStream = new MemoryStream(buff)) {
-                try {
-                    bitmap = BitmapFrame.Create(mStream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-                }
-                catch (Exception e) {
-                    bitmap = null;
-                }
-            }
+            BitmapSource bitmap = await Task.Run((() => CreateBitmapFrame(buff)));
+            
 
             return bitmap;
         }
@@ -218,5 +206,30 @@ namespace Cardbooru.Helpers
             return _client ?? (_client = new HttpClient());
         }
 
+        private BitmapSource CreateBitmapFrame(byte[] data)
+        {
+            BitmapImage image;
+            try
+            {
+                // early I created BitmapFrame but it appers to consuming REALLY a lot of memory (about 1gig after loading 400 images)
+                // So it sucks
+                //   bitmap = BitmapFrame.Create(wpapper, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+
+                using (var wpapper = new WrappingStream(new MemoryStream(data)))
+                {
+                    image = new BitmapImage();
+                    image.BeginInit();
+                    image.CacheOption = BitmapCacheOption.OnLoad;
+                    image.StreamSource = wpapper;
+                    image.EndInit();
+                    image.Freeze();
+                }
+            }
+            catch (Exception e)
+            {
+                image = null;
+            }
+            return image;
+        }
     }
 }
