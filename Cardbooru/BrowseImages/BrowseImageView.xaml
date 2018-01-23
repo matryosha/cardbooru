@@ -125,6 +125,18 @@
                     </Style>
                 </ListBox.ItemContainerStyle>
             </ListBox>
+            <ProgressBar VerticalAlignment="Bottom" IsIndeterminate="True" Height="2">
+                <ProgressBar.Style>
+                    <Style TargetType="ProgressBar">
+                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLoading}" Value="true">
+                                <Setter Property="Visibility" Value="Visible"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ProgressBar.Style>
+            </ProgressBar>
         </Grid>
     </materialDesign:DrawerHost>
 

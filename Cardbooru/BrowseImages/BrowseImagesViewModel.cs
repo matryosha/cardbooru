@@ -12,10 +12,15 @@ namespace Cardbooru.BrowseImages
         INotifyPropertyChanged, IUserControlViewModel {
 
         private int _currentPage;
+        private bool _isLoading;
         /// <summary>
         /// Indicate whether pictures loading to list or not
         /// </summary>
-        private bool _isLoadling;
+        public bool IsLoading { get => _isLoading;
+            set {
+                _isLoading = value;
+                OnPropertyChanged("IsLoading");
+            } }
         private OpenFullImageMessage _openFullImageMessage;
 
         public object CurrentOpenedItemState { get; private set; }
@@ -39,11 +44,11 @@ namespace Cardbooru.BrowseImages
         private RelayCommand _loadPreviewImages;
         public RelayCommand LoadCommand => _loadPreviewImages ?? 
             (_loadPreviewImages = new RelayCommand(async o => {
-                if(_isLoadling) return;
-                _isLoadling = true;
+                if(IsLoading) return;
+                IsLoading = true;
                 await booruWorker.FillBooruImages(_currentPage, BooruImages, BooruType.SafeBooru);
                 _currentPage++;
-                _isLoadling = false;
+                IsLoading = false;
             }));
 
         private RelayCommand _openFullImageCommand;
