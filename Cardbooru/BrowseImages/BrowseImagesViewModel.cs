@@ -54,7 +54,7 @@ namespace Cardbooru.BrowseImages
 
         private RelayCommand _openFullImageCommand;
 
-        public RelayCommand OpenFullCommnad => _openFullImageCommand ??
+        public RelayCommand OpenFullCommand => _openFullImageCommand ??
                                                (_openFullImageCommand = new RelayCommand(async o => {
                                                    CurrentOpenedItemState = o;
                                                    var boouru = o as BooruImageModelBase;

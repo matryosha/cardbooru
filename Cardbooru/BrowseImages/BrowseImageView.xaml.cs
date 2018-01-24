@@ -28,7 +28,7 @@ namespace Cardbooru.BrowseImages
 
 
             var widthOfListBox = ListBoxColumn.ActualWidth - 2 - 17; // 17 -- width of scrollbar 
-            // 2 -- internal listbox margin that no possible to turn of (sure, manystringcode method exist)
+            // 2 -- internal listbox margin that no possible to turn off (sure, manystringscode method exist)
             //https://stackoverflow.com/questions/38289768/how-to-remove-margin-on-listbox-itemscontainer-in-wpf
 
             var capacityOfMaxImageSize = (int)widthOfListBox / (int)MaxImageWidth;

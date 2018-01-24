@@ -101,7 +101,7 @@
                                     <i:InvokeCommandAction Command="{Binding RelativeSource=
                                         {RelativeSource FindAncestor, 
                                         AncestorType={x:Type UserControl}}, 
-                                        Path=DataContext.OpenFullCommnad}" CommandParameter="{Binding RelativeSource=
+                                        Path=DataContext.OpenFullCommand}" CommandParameter="{Binding RelativeSource=
                                         {RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, 
                                         Path=Content}">
                                     </i:InvokeCommandAction>
