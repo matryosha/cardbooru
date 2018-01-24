@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Cardbooru.Helpers;
@@ -21,7 +23,30 @@ namespace Cardbooru.BrowseImages
             set {
                 _isLoading = value;
                 OnPropertyChanged("IsLoading");
-            } }
+            }
+        }
+
+
+        private bool _isErrorOccured;
+        
+        public bool IsErrorOccured {
+            get => _isErrorOccured;
+            set {
+                _isErrorOccured = value;
+                OnPropertyChanged("IsErrorOccured");
+            }
+        }
+
+        private string _errorInfo;
+        
+        public string ErrorInfo {
+            get => _errorInfo;
+            set {
+                _errorInfo = value;
+                OnPropertyChanged("ErrorInfo");
+            }
+        }
+
         private OpenFullImageMessage _openFullImageMessage;
 
         public object CurrentOpenedItemState { get; private set; }
@@ -46,10 +71,23 @@ namespace Cardbooru.BrowseImages
         public RelayCommand LoadCommand => _loadPreviewImages ?? 
             (_loadPreviewImages = new RelayCommand(async o => {
                 if(IsLoading) return;
+                if(_currentPage==1) BooruImages.Clear();
                 IsLoading = true;
-                await booruWorker.FillBooruImages(_currentPage, BooruImages, BooruType.SafeBooru);
+                try {
+                    await booruWorker.FillBooruImages(_currentPage, BooruImages, BooruType.SafeBooru);
+                }
+                catch (HttpRequestException e) {
+                    ToggleErrorOccured.Execute(new object());
+                    ErrorInfo = e.Message;
+                }
+                catch (Exception e) {
+                    ToggleErrorOccured.Execute(new object());
+                    ErrorInfo = e.Message;
+                }
+                finally {
+                    IsLoading = false;
+                }
                 _currentPage++;
-                IsLoading = false;
             }));
 
         private RelayCommand _openFullImageCommand;
@@ -60,8 +98,28 @@ namespace Cardbooru.BrowseImages
                                                    var boouru = o as BooruImageModelBase;
                                                    _openFullImageMessage = new OpenFullImageMessage(this, o as BooruImageModelBase);
                                                    Messenger.Publish(_openFullImageMessage);
-                                                   await booruWorker.LoadFullImage(boouru);
+                                                   try {
+                                                       await booruWorker.LoadFullImage(boouru);
+                                                   }
+                                                   catch (HttpRequestException e) {
+                                                       boouru.FullImage = null;
+                                                       Messenger.Publish(new CloseFullImageMessage(new object()));
+                                                       ToggleErrorOccured.Execute(new object());
+                                                       ErrorInfo = e.Message;
+                                                   }
+                                                   catch (Exception e) {
+                                                       ToggleErrorOccured.Execute(new object());
+                                                       ErrorInfo = e.Message;
+                                                   }
+
                                                }));
+
+        private RelayCommand _toggleErrorOccured;
+
+        public RelayCommand ToggleErrorOccured => _toggleErrorOccured ?? (_toggleErrorOccured = new RelayCommand(o => {
+            IsErrorOccured = !IsErrorOccured;
+            ErrorInfo = string.Empty;
+        }));
 
         private RelayCommand _loadStateCommand;
         public RelayCommand LoadStateCommand => _loadStateCommand ?? (_loadStateCommand = new RelayCommand(o => { }));
