@@ -1,9 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Threading;
 using Cardbooru.Models.Base;
 
 namespace Cardbooru.BrowseImages
@@ -47,8 +43,16 @@ namespace Cardbooru.BrowseImages
 
         }
 
-
-        private void Toggle_OnChecked(object sender, RoutedEventArgs e) { }
-
+        private void MainListBox_OnScrollChanged(object sender, ScrollChangedEventArgs e) {
+            if (e.VerticalChange > 0) {
+                
+                if (e.VerticalOffset + e.ViewportHeight == e.ExtentHeight)
+                {
+                    var contex = DataContext as BrowseImagesViewModel;
+                    contex.LoadCommand.Execute(new object());
+                }
+            }
+            
+        }
     }
 }

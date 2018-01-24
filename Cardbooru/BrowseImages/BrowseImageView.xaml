@@ -90,7 +90,8 @@
             <ListBox Grid.Column="1" ItemsSource="{Binding BooruImages}"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      Name="mainListBox" Padding="0" Margin="0"
-                     Background="#424242" BorderThickness="0">
+                     Background="#424242" BorderThickness="0"
+                     ScrollViewer.ScrollChanged="MainListBox_OnScrollChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
