@@ -28,36 +28,49 @@
                         <DataTrigger Binding="{Binding Path=BooruImageModel.IsFullImageLoaded}" Value="True">
                             <Setter Property="Source" Value="{Binding Path=BooruImageModel.FullImageSource}"/>
                             <Setter Property="Stretch" Value="Uniform"></Setter>
+                            <Setter Property="Opacity" Value="0"></Setter>
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="1.0" Duration="0:0:0.3"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Image.Style>
-            <Image.Triggers>
+            <!--<Image.Triggers>
                 <EventTrigger RoutedEvent="Image.Loaded">
                     <BeginStoryboard>
                         <Storyboard>
                         <DoubleAnimation
                                 Storyboard.TargetName="FullImage"
                             Storyboard.TargetProperty="Opacity"
-                            From="0.0" To="1.0" Duration="0:0:0.2"/>
+                            From="0.0" To="1.0" Duration="0:0:1"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
-            </Image.Triggers>
+            </Image.Triggers>-->
             </Image>
-        <Image Grid.ColumnSpan="4"> <!--Change to material design progress bar?-->
-            <Image.Style>
-                <Style TargetType="Image">
-                    <Setter Property="gif:AnimationBehavior.SourceUri" Value="/res/loader.gif" />
-                    <Setter Property="Stretch" Value="None" />
+
+        <Viewbox Grid.ColumnSpan="4" Height="50">
+            <Viewbox.Style>
+                <Style TargetType="Viewbox">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=BooruImageModel.IsFullImageLoaded}" Value="True">
-                            <Setter Property="gif:AnimationBehavior.SourceUri" Value="{x:Null}" />
+                            <Setter Property="Visibility"  Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </Image.Style>
-        </Image>
+            </Viewbox.Style>
+            <ProgressBar
+                IsIndeterminate="True"
+                Style="{StaticResource MaterialDesignCircularProgressBar}"/>
+        </Viewbox>
+        
         <Grid Name="TagsPanel" Visibility="Hidden">
             <Grid.Background>
                 <SolidColorBrush Color="Black" Opacity="0.5"/>

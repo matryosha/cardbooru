@@ -27,7 +27,6 @@ namespace Cardbooru.FullImageBrowsing
 
         private void CloseWithAnimation() {
             DoubleAnimation myDoubleAnimation = new DoubleAnimation();
-            myDoubleAnimation.From = 1.0;
             myDoubleAnimation.To = 0.0;
             myDoubleAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(300));
 

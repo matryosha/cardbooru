@@ -3,10 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Cardbooru"
         xmlns:browseImages="clr-namespace:Cardbooru.BrowseImages"
         xmlns:fullImageBrowsing="clr-namespace:Cardbooru.FullImageBrowsing"
         mc:Ignorable="d"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         Title="Cardbooru" Height="600" Width="1250">
 
     <Window.Resources>
@@ -17,7 +21,7 @@
             <fullImageBrowsing:FullImageBrowsingView/>
         </DataTemplate>
     </Window.Resources>
-    <Grid Background="#212121">
+    <Grid>
 
         <ContentControl Content="{Binding CurrentView}"></ContentControl>
 
