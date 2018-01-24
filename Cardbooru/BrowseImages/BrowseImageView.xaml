@@ -85,8 +85,45 @@
                             </i:InvokeCommandAction>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-            </Canvas>
-            <!--ScrollViewer.VerticalScrollBarVisibility="Disabled"-->
+                </Canvas>
+
+            <Grid Background="#212121"><!--ZIndex="1001" Opacity="1"-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                        <i:InvokeCommandAction Command="{Binding ToggleErrorOccured}"></i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <Grid.Resources>
+                    <Style TargetType="Grid">
+                        <Setter Property="Opacity" Value="0"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsErrorOccured}" Value="true">
+                                <Setter Property="ZIndex" Value="1001"></Setter>
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             To="0.9" Duration="0:0:0.5"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Resources>
+                <Viewbox VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1">
+                    <TextBlock Margin="20 0 20 0" >
+                        Error occured :(</TextBlock>
+                    </Viewbox>
+                <Viewbox VerticalAlignment="Bottom" HorizontalAlignment="Center" Grid.Row="2" Height="50">
+                    <TextBlock Text="{Binding ErrorInfo}" Margin="20 0 20 0" Opacity="0.5"/>
+                </Viewbox>
+            </Grid>
             <ListBox Grid.Column="1" ItemsSource="{Binding BooruImages}"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      Name="mainListBox" Padding="0" Margin="0"
