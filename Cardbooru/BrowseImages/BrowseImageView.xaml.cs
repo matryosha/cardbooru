@@ -35,7 +35,8 @@ namespace Cardbooru.BrowseImages
             if (widthOfListBox / capacityOfMaxImageSize >= MaxImageWidth) ++capacityOfMaxImageSize;
 
             //double newImageSize = widthOfListBox / capacityOfMaxImageSize; //whitout margin
-            widthOfListBox = widthOfListBox - capacityOfMaxImageSize * 40; // 40 -- margin(x2 because both side)
+            widthOfListBox = widthOfListBox - capacityOfMaxImageSize * 40 - capacityOfMaxImageSize * 10; // 40 -- margin between listboxitem(x2 because both side)-
+                                                                                                         // and 10 - margin of each image
             double newImageSize = widthOfListBox / capacityOfMaxImageSize;
 
             Resources["ImageItemHeight"] = Resources["ImageItemWidth"] = newImageSize;
