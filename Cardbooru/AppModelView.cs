@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using Cardbooru.BrowseImages;
 using Cardbooru.FullImageBrowsing;
 using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
+using Cardbooru.Settings;
 
 namespace Cardbooru
 {
@@ -50,6 +52,13 @@ namespace Cardbooru
 
             CurrentView = ViewModels.FirstOrDefault(vm => vm == viewModel);
         }
+
+        private RelayCommand _openSettingsCommand;
+
+        public RelayCommand OpenSettingsCommand => _openSettingsCommand ?? (
+            _openSettingsCommand = new RelayCommand(o => {
+                CurrentView = new SettingsViewModel();
+            }));
 
         public event PropertyChangedEventHandler PropertyChanged;
 
