@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:browseImages="clr-namespace:Cardbooru.BrowseImages"
         xmlns:fullImageBrowsing="clr-namespace:Cardbooru.FullImageBrowsing"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -21,9 +22,20 @@
             <fullImageBrowsing:FullImageBrowsingView/>
         </DataTemplate>
     </Window.Resources>
-    <Grid>
+    <materialDesign:DrawerHost>
 
-        <ContentControl Content="{Binding CurrentView}"></ContentControl>
+        <!--Menu drawer-->
+        <materialDesign:DrawerHost.LeftDrawerContent>
+            <StackPanel Background="#212121" Width="150">
+                <!--<Button Command="{Binding LoadCommand}"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        ToolTip="{StaticResource MaterialDesignFlatButton}">Load</Button>-->
+            </StackPanel>
+        </materialDesign:DrawerHost.LeftDrawerContent>
+        <Grid>
 
-    </Grid>
+            <ContentControl Content="{Binding CurrentView}"></ContentControl>
+
+        </Grid>
+    </materialDesign:DrawerHost>
 </Window>
