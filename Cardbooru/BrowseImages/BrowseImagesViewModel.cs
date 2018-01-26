@@ -47,7 +47,7 @@ namespace Cardbooru.BrowseImages
 
         private OpenFullImageMessage _openFullImageMessage;
 
-        public object CurrentOpenedItemState { get; private set; }
+        public object CurrentScroll { get; set; }
 
         private BooruWorker booruWorker; // TODO Make Interface and make static?
 
@@ -95,7 +95,6 @@ namespace Cardbooru.BrowseImages
 
         public RelayCommand OpenFullCommand => _openFullImageCommand ??
                                                (_openFullImageCommand = new RelayCommand(async o => {
-                                                   CurrentOpenedItemState = o;
                                                    var boouru = o as BooruImageModelBase;
                                                    _openFullImageMessage = new OpenFullImageMessage(this, o as BooruImageModelBase);
                                                    Messenger.Publish(_openFullImageMessage);

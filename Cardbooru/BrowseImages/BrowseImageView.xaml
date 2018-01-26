@@ -7,6 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:Cardbooru"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:virtualizingWrapPanel="clr-namespace:CodePlex.VirtualizingWrapPanel"
         mc:Ignorable="d" d:DesignWidth="859" d:DesignHeight="611.5" 
         Loaded="BrowseImageView_OnLoaded">
     <UserControl.Resources>
@@ -115,7 +116,9 @@
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  Name="mainListBox" Padding="20 0 0 0" Margin="0"
                  BorderThickness="0"
-                 ScrollViewer.ScrollChanged="MainListBox_OnScrollChanged">
+                 ScrollViewer.ScrollChanged="MainListBox_OnScrollChanged"
+                 ScrollViewer.Loaded="MainListBox_OnLoaded"
+                 ScrollViewer.Unloaded="MainListBox_OnUnLoaded">
             <ListBox.Resources>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Template">
@@ -183,7 +186,7 @@
             </ListBox.ItemTemplate>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" IsItemsHost="True"/>
+                    <virtualizingWrapPanel:VirtualizingWrapPanel Orientation="Horizontal" IsItemsHost="True"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemContainerStyle>
@@ -225,7 +228,7 @@
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                             From="0" To="1" Duration="0:0:0.5"/>
+                                                             From="0" To="1" Duration="0:0:0.1"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger.Actions>
