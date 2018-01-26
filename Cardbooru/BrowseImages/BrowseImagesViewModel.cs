@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
 using Cardbooru.Models.Base;
@@ -14,6 +13,8 @@ namespace Cardbooru.BrowseImages
     public class BrowseImagesViewModel : 
         INotifyPropertyChanged, IUserControlViewModel {
 
+
+        private IDisposable _settingsToken;
         private int _currentPage;
         private bool _isLoading;
         /// <summary>
@@ -26,9 +27,7 @@ namespace Cardbooru.BrowseImages
             }
         }
 
-
         private bool _isErrorOccured;
-        
         public bool IsErrorOccured {
             get => _isErrorOccured;
             set {
@@ -38,7 +37,6 @@ namespace Cardbooru.BrowseImages
         }
 
         private string _errorInfo;
-        
         public string ErrorInfo {
             get => _errorInfo;
             set {
@@ -53,6 +51,8 @@ namespace Cardbooru.BrowseImages
 
         private BooruWorker booruWorker; // TODO Make Interface and make static?
 
+        public BooruType CurrentSite { get; private set; }
+
         public IMvxMessenger Messenger { get; }
         public ObservableCollection<BooruImageModelBase> BooruImages { get; set; } = 
             new ObservableCollection<BooruImageModelBase>();
@@ -62,6 +62,7 @@ namespace Cardbooru.BrowseImages
             Messenger = IdkInjection.MessengerHub;
             _currentPage = 1;
             booruWorker = new BooruWorker();
+            _settingsToken = Messenger.Subscribe<SettingsMessage>(SiteChanged);
         }
 
 
@@ -74,7 +75,7 @@ namespace Cardbooru.BrowseImages
                 if(_currentPage==1) BooruImages.Clear();
                 IsLoading = true;
                 try {
-                    await booruWorker.FillBooruImages(_currentPage, BooruImages, BooruType.SafeBooru);
+                    await booruWorker.FillBooruImages(_currentPage, BooruImages, CurrentSite);
                 }
                 catch (HttpRequestException e) {
                     ToggleErrorOccured.Execute(new object());
@@ -125,6 +126,11 @@ namespace Cardbooru.BrowseImages
         public RelayCommand LoadStateCommand => _loadStateCommand ?? (_loadStateCommand = new RelayCommand(o => { }));
         #endregion
 
+        private void SiteChanged(SettingsMessage message) {
+            if(message.CurrentSiteSettings == CurrentSite) return;
+            BooruImages = new ObservableCollection<BooruImageModelBase>();
+            CurrentSite = message.CurrentSiteSettings;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -112,10 +112,10 @@
         </Grid>
         <!--List box with images-->
         <ListBox Grid.Column="1" ItemsSource="{Binding BooruImages}"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     Name="mainListBox" Padding="0" Margin="0"
-                     Background="#424242" BorderThickness="0"
-                     ScrollViewer.ScrollChanged="MainListBox_OnScrollChanged">
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 Name="mainListBox" Padding="20 0 0 0" Margin="0"
+                 BorderThickness="0"
+                 ScrollViewer.ScrollChanged="MainListBox_OnScrollChanged">
             <ListBox.Resources>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Template">

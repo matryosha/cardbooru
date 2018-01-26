@@ -35,6 +35,7 @@ namespace Cardbooru
             _tokenFromFullImageBrowse = messenger.Subscribe<CloseFullImageMessage>(ChangeViewToBrowseImage);
             CurrentView = new BrowseImagesViewModel();
             ViewModels.Add(CurrentView);
+            ViewModels.Add(new SettingsViewModel());
         }
 
         private void ShowFullImage(OpenFullImageMessage fullImage) {
@@ -57,8 +58,16 @@ namespace Cardbooru
 
         public RelayCommand OpenSettingsCommand => _openSettingsCommand ?? (
             _openSettingsCommand = new RelayCommand(o => {
-                CurrentView = new SettingsViewModel();
+                CurrentView = ViewModels[1];
             }));
+
+        private RelayCommand _openBrowsingWindowCommand;
+
+        public RelayCommand OpenBrowsingWindowCommand => _openBrowsingWindowCommand ?? (
+                                                             _openBrowsingWindowCommand = new RelayCommand(o => {
+                                                                 ChangeViewToBrowseImage(
+                                                                     new CloseFullImageMessage(new object()));
+                                                             }));
 
         public event PropertyChangedEventHandler PropertyChanged;
 

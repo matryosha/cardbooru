@@ -12,5 +12,10 @@ namespace Cardbooru
             app.DataContext = contex;
             app.Show();
         }
+
+        protected override void OnExit(ExitEventArgs e) {
+            base.OnExit(e);
+            Cardbooru.Properties.Settings.Default.Save();
+        }
     }
 }

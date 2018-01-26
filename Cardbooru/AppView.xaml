@@ -34,6 +34,9 @@
                 <Button Command="{Binding OpenSettingsCommand}"
                         Style="{StaticResource MaterialDesignFlatButton}"
                         >Settings</Button>
+                <Button Command="{Binding OpenBrowsingWindowCommand}"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                >Browse</Button>
             </StackPanel>
         </materialDesign:DrawerHost.LeftDrawerContent>
         <Grid>

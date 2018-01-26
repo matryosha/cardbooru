@@ -8,7 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="300" Name="MainUserControl">
     <Grid Name="MainGrid">
         <Grid.Background>
-            <SolidColorBrush Color="#212121"></SolidColorBrush>
+            <SolidColorBrush Color="#212121" ></SolidColorBrush>
         </Grid.Background>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>

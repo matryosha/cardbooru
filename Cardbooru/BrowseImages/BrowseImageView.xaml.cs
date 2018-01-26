@@ -23,11 +23,11 @@ namespace Cardbooru.BrowseImages
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo) {
             base.OnRenderSizeChanged(sizeInfo);
-            if (double.IsNaN(ListBoxColumn.ActualWidth)) return;
-            if (Resources["ImageItemHeight"] == null) return;
+            //if (double.IsNaN(ListBoxColumn.ActualWidth)) return;
+            //if (Resources["ImageItemHeight"] == null) return;
 
 
-            var widthOfListBox = ListBoxColumn.ActualWidth - 2 - 17; // 17 -- width of scrollbar 
+            var widthOfListBox = ListBoxColumn.ActualWidth - 2 - 17 - 20; // 17 -- width of scrollbar 
             // 2 -- internal listbox margin that no possible to turn off (sure, manystringscode method exist)
             //https://stackoverflow.com/questions/38289768/how-to-remove-margin-on-listbox-itemscontainer-in-wpf
 
