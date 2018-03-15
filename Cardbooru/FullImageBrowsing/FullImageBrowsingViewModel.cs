@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
@@ -25,7 +26,6 @@ namespace Cardbooru.FullImageBrowsing
         }
 
         private BooruImageModelBase _booruImageModel;
-
         public BooruImageModelBase BooruImageModel {
             get => _booruImageModel;
             set {
@@ -34,9 +34,18 @@ namespace Cardbooru.FullImageBrowsing
             } 
         }
 
+        private ObservableCollection<BooruImageModelBase> _booruImagesCollection;
+
         public FullImageBrowsingViewModel(BooruImageModelBase booruImageModel) {
             Messenger = IdkInjection.MessengerHub;
             BooruImageModel = booruImageModel;
+            TagsList = booruImageModel.TagsList;
+        }
+
+        public FullImageBrowsingViewModel(BooruImageModelBase booruImageModel, ObservableCollection<BooruImageModelBase> collection = null) {
+            Messenger = IdkInjection.MessengerHub;
+            BooruImageModel = booruImageModel;
+            _booruImagesCollection = collection;
             TagsList = booruImageModel.TagsList;
         }
 
