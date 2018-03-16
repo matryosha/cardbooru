@@ -73,23 +73,447 @@
                 </ListBox.BorderBrush>
             </ListBox>
         </Grid>
-
-        <Grid Grid.Column="0" Background="Black">
+        
+        
+        <!--Grid with prev button-->
+        <Grid Grid.Column="0">
+            <Grid.Background>
+                <SolidColorBrush Color="#FAFAFA" Opacity="0.0"/>
+            </Grid.Background>
+            
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseLeftButtonDown">
                     <i:InvokeCommandAction Command="{Binding PrevImage}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
+
+            <Grid.Triggers>
+                <EventTrigger RoutedEvent="Grid.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation 
+                                Storyboard.TargetName="PrevButton"
+                                Storyboard.TargetProperty="Opacity"
+                                Duration="0:0:0.3" To="0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Grid.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation 
+                                Storyboard.TargetName="PrevButton"
+                                Storyboard.TargetProperty="Opacity"
+                                Duration="0:0:0.3" To="0"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Grid.MouseLeftButtonDown">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation 
+                                Storyboard.TargetName="PrevButtonBackground"
+                                Storyboard.TargetProperty="(Brush.Opacity)"
+                                Duration="0:0:0.7" To="0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation 
+                                Storyboard.TargetName="NextButton"
+                                Storyboard.TargetProperty="Opacity"
+                                Duration="0:0:0.3" To="0.9"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Grid.MouseLeftButtonUp">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation 
+                                Storyboard.TargetName="PrevButtonBackground"
+                                Storyboard.TargetProperty="(Brush.Opacity)"
+                                Duration="0:0:0.5" To="0"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation 
+                                Storyboard.TargetName="NextButton"
+                                Storyboard.TargetProperty="Opacity"
+                                Duration="0:0:0.3" To="0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Grid.Triggers>
+
+            <Viewbox Width="72" Height="72" HorizontalAlignment="Left" Margin="0 0 5 0" x:Name="PrevButton" Opacity="0" >
+
+                <Border CornerRadius="30" BorderThickness="0">
+                    <Border.Background>
+                        <SolidColorBrush Color="White" Opacity="0" x:Name="PrevButtonBackground">
+                            <SolidColorBrush.Transform>
+                                <ScaleTransform ScaleX=".5" ScaleY=".5"></ScaleTransform>
+
+                            </SolidColorBrush.Transform>
+                        </SolidColorBrush>
+
+
+
+                    </Border.Background>
+                    <Canvas Width="24" Height="24">
+                        <Path Data="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" Fill="Black" />
+                    </Canvas>
+                </Border>
+
+
+            </Viewbox>
         </Grid>
-        <Grid Grid.Column="3" Background="Black" >
+
+        <!--Grid with next button-->
+        <Grid Grid.Column="3">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseLeftButtonDown">
                     <i:InvokeCommandAction Command="{Binding NextImage}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
+            <Grid.Background>
+                <SolidColorBrush Color="#FAFAFA" Opacity="0.0"/>
+            </Grid.Background>
+            
+            <Grid.Triggers>
+                <EventTrigger RoutedEvent="Grid.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation 
+                                Storyboard.TargetName="NextButton"
+                                Storyboard.TargetProperty="Opacity"
+                                Duration="0:0:0.3" To="0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Grid.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation 
+                                Storyboard.TargetName="NextButton"
+                                Storyboard.TargetProperty="Opacity"
+                                Duration="0:0:0.3" To="0"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Grid.MouseLeftButtonDown">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation 
+                                Storyboard.TargetName="NextButtonBackground"
+                                Storyboard.TargetProperty="(Brush.Opacity)"
+                                Duration="0:0:0.7" To="0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation 
+                                Storyboard.TargetName="NextButton"
+                                Storyboard.TargetProperty="Opacity"
+                                Duration="0:0:0.3" To="0.9"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Grid.MouseLeftButtonUp">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation 
+                                Storyboard.TargetName="NextButtonBackground"
+                                Storyboard.TargetProperty="(Brush.Opacity)"
+                                Duration="0:0:0.5" To="0"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation 
+                                Storyboard.TargetName="NextButton"
+                                Storyboard.TargetProperty="Opacity"
+                                Duration="0:0:0.3" To="0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Grid.Triggers>
+            
+            <!--<Grid.Style>
+                <Style TargetType="Grid">
+~1~                    <Setter Property="Opacity" Value="0"></Setter>@1@
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="NextButton"
+                                            Storyboard.TargetProperty="Opacity"
+                                                         Duration="0:0:0.3" To="0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                         Duration="0:0:0.3" To="0"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>-->
+
+            <Viewbox Width="72" Height="72" HorizontalAlignment="Right" Margin="0 0 5 0" x:Name="NextButton" Opacity="0" >
+
+                <Border CornerRadius="30" BorderThickness="0">
+                <Border.Background>
+                    <SolidColorBrush Color="White" Opacity="0" x:Name="NextButtonBackground">
+                        <SolidColorBrush.Transform>
+                            <ScaleTransform ScaleX=".5" ScaleY=".5"></ScaleTransform>
+                            
+                        </SolidColorBrush.Transform>
+                    </SolidColorBrush>
+                    
+                        
+                    
+                </Border.Background>
+                    <Canvas Width="24" Height="24">
+                        <Path Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" Fill="Black" />
+                    </Canvas>
+                </Border>
+                    
+                
+            </Viewbox>
         </Grid>
     </Grid>
 </UserControl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
