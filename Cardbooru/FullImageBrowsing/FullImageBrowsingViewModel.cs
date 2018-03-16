@@ -17,7 +17,17 @@ namespace Cardbooru.FullImageBrowsing
 
         public event PropertyChangedEventHandler PropertyChanged;
         public IMvxMessenger Messenger { get; }
-        public List<string> TagsList { get; set; }
+
+
+        private List<string> _tagsList;
+
+        public List<string> TagsList {
+            get => _tagsList;
+            set {
+                _tagsList = value;
+                OnPropertyChanged("TagsList");
+            }
+        }
 
         private ImageSource _fullImage;
         public ImageSource FullImage {
@@ -62,7 +72,8 @@ namespace Cardbooru.FullImageBrowsing
                 await BooruWorker.LoadFullImage(nextImage);
                 BooruImageModel.FullImage = null;
                 BooruImageModel = nextImage;
-            }));
+                TagsList = BooruImageModel.TagsList;
+                }));
         }
 
         private RelayCommand _prevImage;
@@ -80,6 +91,7 @@ namespace Cardbooru.FullImageBrowsing
                 await BooruWorker.LoadFullImage(prevImage);
                 BooruImageModel.FullImage = null;
                 BooruImageModel = prevImage;
+                TagsList = BooruImageModel.TagsList;
             }));
         }
 
