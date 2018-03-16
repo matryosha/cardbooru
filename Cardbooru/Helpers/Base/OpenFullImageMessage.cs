@@ -11,10 +11,13 @@ namespace Cardbooru.Helpers.Base
             BooruImageModel = booruImageModel;
         }
 
-        public OpenFullImageMessage(object sender, BooruImageModelBase booruImageModel, ObservableCollection<BooruImageModelBase> booruImageCollection) : base(sender) {
+        public OpenFullImageMessage(object sender, BooruImageModelBase booruImageModel, ObservableCollection<BooruImageModelBase> booruImageCollection, int page) : base(sender) {
             BooruImageModel = booruImageModel;
             BooruImageCollection = booruImageCollection;
+            CurrentPage = page;
         }
+
+        public int CurrentPage { get; }
 
         public BooruImageModelBase BooruImageModel { get; private set; }
 

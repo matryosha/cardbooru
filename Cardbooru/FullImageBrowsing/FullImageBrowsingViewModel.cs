@@ -66,7 +66,7 @@ namespace Cardbooru.FullImageBrowsing
 
         private ObservableCollection<BooruImageModelBase> _booruImagesCollection;
         private int _currentImageIndex = -1;
-
+        private int _currentPage;
 
         public FullImageBrowsingViewModel(BooruImageModelBase booruImageModel) {
             Messenger = IdkInjection.MessengerHub;
@@ -74,11 +74,12 @@ namespace Cardbooru.FullImageBrowsing
             TagsList = booruImageModel.TagsList;
         }
 
-        public FullImageBrowsingViewModel(BooruImageModelBase booruImageModel, ObservableCollection<BooruImageModelBase> collection) {
+        public FullImageBrowsingViewModel(BooruImageModelBase booruImageModel, ObservableCollection<BooruImageModelBase> collection, int page) {
             Messenger = IdkInjection.MessengerHub;
             BooruImageModel = booruImageModel;
             _booruImagesCollection = collection;
             TagsList = booruImageModel.TagsList;
+            _currentPage = page;
         }
 
         private void FindCurrentImageIndex() {

@@ -39,7 +39,7 @@ namespace Cardbooru
         }
 
         private void ShowFullImage(OpenFullImageMessage fullImage) {
-            var fullImageView = new FullImageBrowsingViewModel(fullImage.BooruImageModel, fullImage.BooruImageCollection);
+            var fullImageView = new FullImageBrowsingViewModel(fullImage.BooruImageModel, fullImage.BooruImageCollection, fullImage.CurrentPage);
             CurrentView = fullImageView;
         }
 
