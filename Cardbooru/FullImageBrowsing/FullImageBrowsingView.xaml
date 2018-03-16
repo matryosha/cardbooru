@@ -28,13 +28,12 @@
                         <DataTrigger Binding="{Binding Path=BooruImageModel.IsFullImageLoaded}" Value="True">
                             <Setter Property="Source" Value="{Binding Path=BooruImageModel.FullImageSource}"/>
                             <Setter Property="Stretch" Value="Uniform"></Setter>
-                            <Setter Property="Opacity" Value="0"></Setter>
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <DoubleAnimation
                                             Storyboard.TargetProperty="Opacity"
-                                            To="1.0" Duration="0:0:0.3"/>
+                                            From="0"  To="1.0" Duration="0:0:0.3"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </DataTrigger.EnterActions>
@@ -42,19 +41,7 @@
                     </Style.Triggers>
                 </Style>
             </Image.Style>
-            <!--<Image.Triggers>
-                <EventTrigger RoutedEvent="Image.Loaded">
-                    <BeginStoryboard>
-                        <Storyboard>
-                        <DoubleAnimation
-                                Storyboard.TargetName="FullImage"
-                            Storyboard.TargetProperty="Opacity"
-                            From="0.0" To="1.0" Duration="0:0:1"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Image.Triggers>-->
-            </Image>
+        </Image>
 
         <Viewbox Grid.ColumnSpan="4" Height="50">
             <Viewbox.Style>
@@ -89,20 +76,36 @@
 
         <Grid Grid.Column="0" Background="Black">
             <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseLeftButtonUp">
+                <i:EventTrigger EventName="MouseLeftButtonDown">
                     <i:InvokeCommandAction Command="{Binding PrevImage}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Grid>
-        <Grid Grid.Column="3" Background="Black">
+        <Grid Grid.Column="3" Background="Black" >
             <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseLeftButtonUp">
+                <i:EventTrigger EventName="MouseLeftButtonDown">
                     <i:InvokeCommandAction Command="{Binding NextImage}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Grid>
     </Grid>
 </UserControl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -49,18 +49,38 @@ namespace Cardbooru.FullImageBrowsing
         private RelayCommand _nextImage;
         public  RelayCommand NextImage {
             get => _nextImage ?? (_nextImage = new RelayCommand( async o => {
+                //TODO anti fast click
                 BooruImageModel.IsFullImageLoaded = false;
                 if(_currentImageIndex == -1)
                     await Task.Run(() => FindCurrentImageIndex());
-                if(_currentImageIndex >= _booruImagesCollection.Count) throw new Exception("Not Implement yet");
-                
-                BooruImageModel = _booruImagesCollection[++_currentImageIndex];
+                if (_currentImageIndex+1 == _booruImagesCollection.Count)
+                    await BooruWorker.FillBooruImages(++_currentPage, _booruImagesCollection,
+                        (BooruType) Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite));
+
+                var nextImage = _booruImagesCollection[++_currentImageIndex];
+
+                await BooruWorker.LoadFullImage(nextImage);
+                BooruImageModel.FullImage = null;
+                BooruImageModel = nextImage;
             }));
         }
 
         private RelayCommand _prevImage;
         public RelayCommand PrevImage {
-            get => _prevImage ?? (_prevImage = new RelayCommand(o => { }));
+            get => _prevImage ?? (_prevImage = new RelayCommand(async o => {
+                //TODO anti fast click
+                BooruImageModel.IsFullImageLoaded = false;
+                if (_currentImageIndex == -1)
+                    await Task.Run(() => FindCurrentImageIndex());
+                if (_currentImageIndex == 0)
+                    _currentImageIndex = _booruImagesCollection.Count;
+
+                var prevImage = _booruImagesCollection[--_currentImageIndex];
+
+                await BooruWorker.LoadFullImage(prevImage);
+                BooruImageModel.FullImage = null;
+                BooruImageModel = prevImage;
+            }));
         }
 
 
