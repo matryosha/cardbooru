@@ -25,15 +25,15 @@ namespace Cardbooru.Helpers
     }
 
 
-    public class BooruWorker {
+    public static class BooruWorker {
         private const int DefaultLimitForRequest = 100;
         private const string Danbooru = "https://danbooru.donmai.us";
         private const string SafeBooru = "http://safebooru.org";
-        private string _currentSite;
-        private HttpClient _client;
-        private BitmapFrame _defaultImage;
+        private static string _currentSite;
+        private static HttpClient _client;
+        private static BitmapFrame _defaultImage;
 
-        public async Task FillBooruImages(int pageNum, ObservableCollection<BooruImageModelBase> realBooruImages, BooruType booruType)
+        public static async Task FillBooruImages(int pageNum, ObservableCollection<BooruImageModelBase> realBooruImages, BooruType booruType)
         {
 
             //Get json file with posts
@@ -83,7 +83,7 @@ namespace Cardbooru.Helpers
         }
 
 
-        public async Task LoadFullImage(BooruImageModelBase booruImageModel) {
+        public static async Task LoadFullImage(BooruImageModelBase booruImageModel) {
             if(booruImageModel == null)
                 throw new Exception("no boouru image");
             if(booruImageModel.FullImage!=null)
@@ -104,7 +104,7 @@ namespace Cardbooru.Helpers
             booruImageModel.IsFullImageLoaded = true;
         }
 
-        public async Task LoadPreviewImages(ObservableCollection<BooruImageModelBase> booruImagesMetaData, ObservableCollection<BooruImageModelBase> realBooruImages)
+        public static async Task LoadPreviewImages(ObservableCollection<BooruImageModelBase> booruImagesMetaData, ObservableCollection<BooruImageModelBase> realBooruImages)
         {
             foreach (BooruImageModelBase booruImage in booruImagesMetaData)
             {
@@ -126,7 +126,7 @@ namespace Cardbooru.Helpers
 
         }
 
-        private Task<ImageSource> GetPreviewImage(BooruImageModelBase imageModelClass) {
+        private static Task<ImageSource> GetPreviewImage(BooruImageModelBase imageModelClass) {
             //Check if image has been cached
             if (IsHaveCache(imageModelClass.Hash, ImageSizeType.Preview))
                 return GetImageFromCache(imageModelClass.Hash, ImageSizeType.Preview);
@@ -134,13 +134,13 @@ namespace Cardbooru.Helpers
             return CacheAndReturnImage(imageModelClass.PreviewImageUrl, imageModelClass.Hash, ImageSizeType.Preview);
         }
 
-        private bool IsHaveCache(string path, ImageSizeType type) {
+        private static bool IsHaveCache(string path, ImageSizeType type) {
             if(type == ImageSizeType.Preview)
                 return File.Exists(GetImageCacheDir() + path + "_preview");
             return File.Exists(GetImageCacheDir() + path + "_full");
         }
 
-        private async Task<ImageSource> CacheAndReturnImage(string url, string inputPath, ImageSizeType type) {
+        private static async Task<ImageSource> CacheAndReturnImage(string url, string inputPath, ImageSizeType type) {
             var properPath = GetProperPath(inputPath, type);
             var bytesImage = await GetImageBytes(url);
             BitmapSource bitmap =  await Task.Run(() => CreateBitmapFrame(bytesImage));
@@ -153,7 +153,7 @@ namespace Cardbooru.Helpers
             return bitmap;
         }
 
-        private async Task<ImageSource> GetImageFromCache(string inputPath, ImageSizeType type) {
+        private static async Task<ImageSource> GetImageFromCache(string inputPath, ImageSizeType type) {
             if (inputPath == null) return null;
 
             byte[] buff;
@@ -171,7 +171,7 @@ namespace Cardbooru.Helpers
             return bitmap;
         }
 
-        private string GetImageCacheDir() {
+        private static string GetImageCacheDir() {
             var path = "cache/image/";
             if (Directory.Exists(path))
                 return path;
@@ -179,19 +179,19 @@ namespace Cardbooru.Helpers
             return path;
         }
 
-        private string GetProperPath(string input, ImageSizeType type) {
+        private static string GetProperPath(string input, ImageSizeType type) {
             if (type == ImageSizeType.Preview)
                 return input + "_preview";
             return input + "_full";
         }
 
         /// <param name="url">Without danbooru prefix</param>
-        private async Task<byte[]> GetImageBytes(string url) {
+        private static async Task<byte[]> GetImageBytes(string url) {
             var bytes = await GetClient().GetByteArrayAsync(_currentSite + url);
             return bytes;
         }
 
-        private BitmapFrame LoadDefImage() {
+        private static BitmapFrame LoadDefImage() {
             if (_defaultImage == null) {
                 using (var fStream = File.OpenRead("res/default.jpg"))// ??????????????????????????????
                 {
@@ -201,12 +201,12 @@ namespace Cardbooru.Helpers
             return _defaultImage;
         }
 
-        private HttpClient GetClient()
+        private static HttpClient GetClient()
         {
             return _client ?? (_client = new HttpClient());
         }
 
-        private BitmapSource CreateBitmapFrame(byte[] data)
+        private static BitmapSource CreateBitmapFrame(byte[] data)
         {
             BitmapImage image;
             try

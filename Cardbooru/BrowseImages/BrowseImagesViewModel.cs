@@ -49,8 +49,6 @@ namespace Cardbooru.BrowseImages
 
         public object CurrentScroll { get; set; }
 
-        private BooruWorker booruWorker; // TODO Make Interface and make static?
-
         public BooruType CurrentSite { get; private set; }
 
         public IMvxMessenger Messenger { get; }
@@ -61,7 +59,6 @@ namespace Cardbooru.BrowseImages
         public BrowseImagesViewModel() {
             Messenger = IdkInjection.MessengerHub;
             _currentPage = 1;
-            booruWorker = new BooruWorker();
             _settingsToken = Messenger.Subscribe<SettingsMessage>(SiteChanged);
         }
 
@@ -75,7 +72,7 @@ namespace Cardbooru.BrowseImages
                 if(_currentPage==1) BooruImages.Clear();
                 IsLoading = true;
                 try {
-                    await booruWorker.FillBooruImages(_currentPage, BooruImages, CurrentSite);
+                    await BooruWorker.FillBooruImages(_currentPage, BooruImages, CurrentSite);
                 }
                 catch (HttpRequestException e) {
                     ToggleErrorOccured.Execute(new object());
@@ -99,7 +96,7 @@ namespace Cardbooru.BrowseImages
                                                    _openFullImageMessage = new OpenFullImageMessage(this, o as BooruImageModelBase, BooruImages);
                                                    Messenger.Publish(_openFullImageMessage);
                                                    try {
-                                                       await booruWorker.LoadFullImage(boouru);
+                                                       await BooruWorker.LoadFullImage(boouru);
                                                    }
                                                    catch (HttpRequestException e) {
                                                        boouru.FullImage = null;
