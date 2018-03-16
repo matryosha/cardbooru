@@ -3,9 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:local="clr-namespace:Cardbooru"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Name="MainUserControl">
+             d:DesignHeight="300" d:DesignWidth="500" Name="MainUserControl">
     <Grid Name="MainGrid">
         <Grid.Background>
             <SolidColorBrush Color="#212121" ></SolidColorBrush>
@@ -85,8 +86,31 @@
                 </ListBox.BorderBrush>
             </ListBox>
         </Grid>
+
+        <Grid Grid.Column="0" Background="Black">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseLeftButtonUp">
+                    <i:InvokeCommandAction Command="{Binding PrevImage}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Grid>
+        <Grid Grid.Column="3" Background="Black">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseLeftButtonUp">
+                    <i:InvokeCommandAction Command="{Binding NextImage}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Grid>
     </Grid>
 </UserControl>
+
+
+
+
+
+
+
+
 
 
 
