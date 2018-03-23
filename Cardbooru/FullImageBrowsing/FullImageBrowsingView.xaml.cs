@@ -36,6 +36,8 @@ namespace Cardbooru.FullImageBrowsing
             Storyboard.SetTargetProperty(myDoubleAnimation, new PropertyPath(OpacityProperty));
             myStoryboard.Completed += MyStoryboard_Completed;
             myStoryboard.Begin(FullImage);
+            PrevButGrid.IsEnabled = false;
+            NextButGrid.IsEnabled = false;
         }
 
         private void MyStoryboard_Completed(object sender, EventArgs e)
