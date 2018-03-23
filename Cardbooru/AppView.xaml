@@ -30,18 +30,18 @@
 
         <!--Menu drawer-->
         <materialDesign:DrawerHost.LeftDrawerContent>
-            <StackPanel Background="#212121" Width="150">
+            <StackPanel Background="#212121" Width="200">
                 <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}"
                               IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}"
                               Height="35" Width="35" HorizontalAlignment="Right" Margin="0 10 10 10"
                               />
                 <Button Command="{Binding OpenSettingsCommand}"
                         Style="{StaticResource MaterialDesignFlatButton}"
-                        PreviewMouseLeftButtonUp="CloseDrawerAfterClick"
+                        PreviewMouseLeftButtonUp="CloseDrawerAfterClick" FontSize="16" Height="50"
                         >Settings</Button>
                 <Button Command="{Binding OpenBrowsingWindowCommand}"
                         Style="{StaticResource MaterialDesignFlatButton}"
-                        PreviewMouseLeftButtonUp="CloseDrawerAfterClick"
+                        PreviewMouseLeftButtonUp="CloseDrawerAfterClick" FontSize="16" Height="50"
                 >Browse</Button>
             </StackPanel>
         </materialDesign:DrawerHost.LeftDrawerContent>
