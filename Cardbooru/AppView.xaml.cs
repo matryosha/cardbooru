@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 
 namespace Cardbooru
 {
@@ -8,6 +9,11 @@ namespace Cardbooru
         public AppView()
         {
             InitializeComponent(); 
+        }
+
+        private void CloseDrawerAfterClick(object sender, MouseButtonEventArgs e)
+        {
+            MenuToggleButton.IsChecked = false;
         }
     }
 }

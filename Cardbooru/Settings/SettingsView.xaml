@@ -25,54 +25,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <!--Hamburger button-->
-        <Canvas>
-            <Viewbox Width="25" Height="20" Canvas.Left="10" Canvas.Top="10">
-                <i:Interaction.Triggers>
-                    <!--In the begining I use just event in ItemContainerStyle but it caused ui freezing-->
-                    <i:EventTrigger EventName="MouseLeftButtonUp">
-                        <i:InvokeCommandAction Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}">
-                        </i:InvokeCommandAction>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <Canvas Width="25" Height="20">
-                    <Canvas.Style>
-                        <Style TargetType="Canvas">
-                            <Setter Property="Opacity" Value="0.3"></Setter>
-                            <Style.Triggers>
-                                <EventTrigger RoutedEvent="MouseEnter">
-                                    <EventTrigger.Actions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation 
-                                                                 Storyboard.TargetProperty="Opacity"
-                                                                 To="0.7" Duration="0:0:0.5"
-                                                                 FillBehavior="HoldEnd"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger.Actions>
-                                </EventTrigger>
-                                <EventTrigger RoutedEvent="MouseLeave">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation 
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0.3" Duration="0:0:0.5"
-                                                             FillBehavior="HoldEnd"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Canvas.Style>
-                    <Canvas.Background>
-                        <SolidColorBrush Opacity="0"></SolidColorBrush>
-                    </Canvas.Background>
-                    <Path  Data="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" Fill="#9E9E9E"  Width="25" Height="20" Stretch="Uniform"  />
-                </Canvas>
-            </Viewbox>
-        </Canvas>
-        
+
         <StackPanel Grid.Column="0" Margin="20 50">
             <Viewbox Height="30" HorizontalAlignment="Left">
                 <TextBlock FontSize="20">Current site</TextBlock>

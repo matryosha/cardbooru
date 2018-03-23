@@ -19,55 +19,6 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Name="ListBoxColumn" Width="*" />
         </Grid.ColumnDefinitions>
-        <!--Canvas with hamburger button-->
-        <Canvas ZIndex="1000">
-            <!--Hamburger button-->
-            <materialDesign:PackIcon Kind="Menu" Width="35" Height="35" Opacity="0.3" 
-                                              Name="OpenDrawerButton" Canvas.Left="10" Canvas.Top="10">
-                <!--Open left drawer command binding-->
-                <materialDesign:PackIcon.InputBindings>
-                    <MouseBinding Gesture="LeftClick" Command="{x:Static materialDesign:DrawerHost.OpenDrawerCommand}"
-                                          CommandParameter="{x:Static Dock.Left}"/>
-                </materialDesign:PackIcon.InputBindings>
-                <!--If dont set background then hit zone for button will be only on icon-->
-                <materialDesign:PackIcon.Background>
-                    <SolidColorBrush Color="#FAFAFA" Opacity="0.0"></SolidColorBrush>
-                </materialDesign:PackIcon.Background>
-                <!--Hamburger button animation-->
-                <materialDesign:PackIcon.Triggers>
-
-                    <EventTrigger RoutedEvent="materialDesign:PackIcon.MouseEnter">
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <!--<DoubleAnimation Storyboard.TargetName="OpenDrawerButton"
-                                                     Storyboard.TargetProperty="Background.Opacity"
-                                                     To="0.3" Duration="0:0:0.5"
-                                                     FillBehavior="HoldEnd"/>-->
-                                <DoubleAnimation Storyboard.TargetName="OpenDrawerButton"
-                                                         Storyboard.TargetProperty="Opacity"
-                                                         To="0.7" Duration="0:0:0.5"
-                                                         FillBehavior="HoldEnd"/>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                    <EventTrigger RoutedEvent="materialDesign:PackIcon.MouseLeave">
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <!--<DoubleAnimation Storyboard.TargetName="OpenDrawerButton"
-                                                     Storyboard.TargetProperty="Background.Opacity"
-                                                     To="0.0" Duration="0:0:0.5"
-                                                     FillBehavior="HoldEnd"/>-->
-                                <DoubleAnimation Storyboard.TargetName="OpenDrawerButton"
-                                                         Storyboard.TargetProperty="Opacity"
-                                                         To="0.3" Duration="0:0:0.5"
-                                                         FillBehavior="HoldEnd"/>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                </materialDesign:PackIcon.Triggers>
-
-            </materialDesign:PackIcon>
-        </Canvas>
         <!--Grid that contain error messages viewboxes-->
         <Grid Background="#212121">
             <!--ZIndex="1001" Opacity="1"-->

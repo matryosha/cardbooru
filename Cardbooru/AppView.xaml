@@ -26,22 +26,53 @@
             <settings:SettingsView></settings:SettingsView>
         </DataTemplate>
     </Window.Resources>
-    <materialDesign:DrawerHost>
+    <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
 
         <!--Menu drawer-->
         <materialDesign:DrawerHost.LeftDrawerContent>
             <StackPanel Background="#212121" Width="150">
+                <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}"
+                              IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}"
+                              Height="35" Width="35" HorizontalAlignment="Right" Margin="0 10 10 10"
+                              />
                 <Button Command="{Binding OpenSettingsCommand}"
                         Style="{StaticResource MaterialDesignFlatButton}"
+                        PreviewMouseLeftButtonUp="CloseDrawerAfterClick"
                         >Settings</Button>
                 <Button Command="{Binding OpenBrowsingWindowCommand}"
                         Style="{StaticResource MaterialDesignFlatButton}"
+                        PreviewMouseLeftButtonUp="CloseDrawerAfterClick"
                 >Browse</Button>
             </StackPanel>
         </materialDesign:DrawerHost.LeftDrawerContent>
         <Grid>
-
-            <ContentControl Content="{Binding CurrentView}"></ContentControl>
+            <Canvas ZIndex="1000">
+                <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}"
+                          IsChecked="False"
+                          x:Name="MenuToggleButton" 
+                          Height="35" Width="35"
+                          Opacity="0.5" Canvas.Left="10" Canvas.Top="10">
+                    <ToggleButton.Triggers>
+                        <EventTrigger RoutedEvent="ToggleButton.MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0.9" Duration="0:0:0.5"></DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="ToggleButton.MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="0.5" Duration="0:0:0.3"></DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </ToggleButton.Triggers>
+                </ToggleButton>
+            </Canvas>
+            <ContentControl Content="{Binding CurrentView}"/>
 
         </Grid>
     </materialDesign:DrawerHost>
