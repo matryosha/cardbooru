@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -55,23 +56,44 @@ namespace Cardbooru.Helpers
             //Create metadata collection 
             var collection = DeserializePostsToCollection(booruType, posts);
 
-            FillTagsList(collection);
+            collection = FillTagsList(collection);
 
             //Download preview image and add with all metadata to realBooruImage collection
             await LoadPreviewImages(collection, realBooruImages);
         }
 
-        private static void FillTagsList(ObservableCollection<BooruImageModelBase> collection)
+        private static ObservableCollection<BooruImageModelBase> FillTagsList(ObservableCollection<BooruImageModelBase> collection)
         {
+            StringCollection filteredTags = Properties.Settings.Default.BlackListTags;
+            ObservableCollection<BooruImageModelBase> outCollection = new ObservableCollection<BooruImageModelBase>();
+
             foreach (var booruImageModelBase in collection)
             {
                 var tagsArr = booruImageModelBase.TagsString.Split(' ');
                 booruImageModelBase.TagsString = null;
+                bool filterTagSpotted = false;
+
                 foreach (string s in tagsArr)
                 {
+
+                    foreach (string blackTag in filteredTags)
+                    {
+                        if (s == blackTag)
+                        {
+                            filterTagSpotted = true;
+                            break;
+                        }
+                    }
+
+                    if(filterTagSpotted) break;
+
                     booruImageModelBase.TagsList.Add(s);
                 }
+                if(filterTagSpotted) continue;
+                outCollection.Add(booruImageModelBase);
             }
+
+            return outCollection;
         }
 
         public static async Task LoadFullImage(BooruImageModelBase booruImageModel) {
