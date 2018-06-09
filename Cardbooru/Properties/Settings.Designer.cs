@@ -155,5 +155,29 @@ namespace Cardbooru.Properties {
                 this["UndefinedCheck"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://gelbooru.com")]
+        public string GelbooruSiteUrl {
+            get {
+                return ((string)(this["GelbooruSiteUrl"]));
+            }
+            set {
+                this["GelbooruSiteUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("/index.php?page=dapi&s=post&q=index&limit=*&pid=*&json=1")]
+        public string GelbooruPostsUrl {
+            get {
+                return ((string)(this["GelbooruPostsUrl"]));
+            }
+            set {
+                this["GelbooruPostsUrl"] = value;
+            }
+        }
     }
 }

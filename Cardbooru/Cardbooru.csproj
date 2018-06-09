@@ -116,6 +116,7 @@
     <Compile Include="Helpers\Base\SettingsMessage.cs" />
     <Compile Include="Helpers\Base\VirtualizingWrapPanel.cs" />
     <Compile Include="Helpers\GetConverter.cs" />
+    <Compile Include="Models\GelbooruImageModel.cs" />
     <Compile Include="Settings\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>

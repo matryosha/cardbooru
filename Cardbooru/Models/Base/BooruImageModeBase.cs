@@ -13,9 +13,6 @@ namespace Cardbooru.Models.Base
         private string _hash;
         private Image _previewImage;
 
-        
-        public static string SiteUrl;
-        public static string PostsUrl;
         public abstract string GetPostsUrl();
         public abstract string GetSiteUrl();
         //public abstract string GetRating();

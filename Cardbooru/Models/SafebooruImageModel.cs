@@ -7,11 +7,10 @@ namespace Cardbooru.Models
 {
     class SafebooruImageModel : BooruImageModelBase
     {
-
-        public new static string SiteUrl = Properties.Settings.Default.SafeBooruUrl;
-        public new static string PostsUrl = Properties.Settings.Default.SafeBooruPostsUrl;
-        public override string GetPostsUrl() => PostsUrl;
-        public override string GetSiteUrl() => SiteUrl;
+        private static string _siteUrl = Properties.Settings.Default.SafeBooruUrl;
+        private static string _postsUrl = Properties.Settings.Default.SafeBooruPostsUrl;
+        public override string GetPostsUrl() => _postsUrl;
+        public override string GetSiteUrl() => _siteUrl;
 
         [JsonProperty("directory")]
         private string _directoryNum;
@@ -37,13 +36,13 @@ namespace Cardbooru.Models
         [JsonProperty("hash")]
         public override string Hash { get => base.Hash; set => base.Hash = value; }
 
-        public override string PreviewImageUrl { get => base.PreviewImageUrl ?? (base.PreviewImageUrl = $"{SiteUrl}/thumbnails/{_directoryNum}/thumbnail_{_imageName}");
-            set { base.PreviewImageUrl = $"{SiteUrl}/thumbnails/{_directoryNum}/thumbnail_{value}"; }
+        public override string PreviewImageUrl { get => base.PreviewImageUrl ?? (base.PreviewImageUrl = $"{_siteUrl}/thumbnails/{_directoryNum}/thumbnail_{_imageName}");
+            set { base.PreviewImageUrl = $"{_siteUrl}/thumbnails/{_directoryNum}/thumbnail_{value}"; }
         }
 
         public override string FullImageUrl {
-            get => base.FullImageUrl ?? (FullImageUrl = $"{SiteUrl}/images/{_directoryNum}/{_imageName}");
-            set { base.FullImageUrl = $"{SiteUrl}/images/{_directoryNum}/{value}"; }
+            get => base.FullImageUrl ?? (FullImageUrl = $"{_siteUrl}/images/{_directoryNum}/{_imageName}");
+            set { base.FullImageUrl = $"{_siteUrl}/images/{_directoryNum}/{value}"; }
         }
 
     }

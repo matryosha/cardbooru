@@ -24,7 +24,8 @@ namespace Cardbooru.Helpers
     public enum BooruType
     {
         Danbooru,
-        SafeBooru
+        SafeBooru,
+        Gelbooru
     }
 
 
@@ -47,6 +48,9 @@ namespace Cardbooru.Helpers
                     break;
                 case BooruType.SafeBooru:
                     _baseModel = new SafebooruImageModel();
+                    break;
+                case BooruType.Gelbooru:
+                    _baseModel = new GelbooruImageModel();
                     break;
             }
 
@@ -204,6 +208,8 @@ namespace Cardbooru.Helpers
                     return new ObservableCollection<BooruImageModelBase>(JsonConvert.DeserializeObject<ObservableCollection<DanbooruImageModel>>(posts));
                 case BooruType.SafeBooru:
                     return new ObservableCollection<BooruImageModelBase>(JsonConvert.DeserializeObject<ObservableCollection<SafebooruImageModel>>(posts));
+                case BooruType.Gelbooru:
+                    return new ObservableCollection<BooruImageModelBase>(JsonConvert.DeserializeObject<ObservableCollection<GelbooruImageModel>>(posts));
             }
 
             throw new Exception("Unknown booru type");
@@ -269,8 +275,11 @@ namespace Cardbooru.Helpers
 
         
         private static async Task<byte[]> GetImageBytes(string url) {
+            Console.WriteLine($"URL: {url}");
             var bytes = await GetClient().GetByteArrayAsync(url);
+            Console.Write("  OK\n");
             return bytes;
+            
         }
 
         private static BitmapFrame LoadDefImage() {

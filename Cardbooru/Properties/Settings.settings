@@ -36,5 +36,11 @@
     <Setting Name="UndefinedCheck" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="GelbooruSiteUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://gelbooru.com</Value>
+    </Setting>
+    <Setting Name="GelbooruPostsUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">/index.php?page=dapi&amp;s=post&amp;q=index&amp;limit=*&amp;pid=*&amp;json=1</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

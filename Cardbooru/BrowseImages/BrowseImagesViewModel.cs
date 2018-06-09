@@ -75,8 +75,7 @@ namespace Cardbooru.BrowseImages
                 IsLoading = true;
                 try
                 {
-                    while (await BooruWorker.FillBooruImages(_currentPage++, BooruImages, CurrentSite) < 10) ;
-
+                    while (await BooruWorker.FillBooruImages(_currentPage++, BooruImages, CurrentSite) < 10);
                 }
                 catch (HttpRequestException e) {
                     ToggleErrorOccured.Execute(new object());
