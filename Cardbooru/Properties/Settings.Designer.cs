@@ -107,5 +107,53 @@ namespace Cardbooru.Properties {
                 this["BlackListTags"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SafeCheck {
+            get {
+                return ((bool)(this["SafeCheck"]));
+            }
+            set {
+                this["SafeCheck"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool QuestionableCheck {
+            get {
+                return ((bool)(this["QuestionableCheck"]));
+            }
+            set {
+                this["QuestionableCheck"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ExplicitCheck {
+            get {
+                return ((bool)(this["ExplicitCheck"]));
+            }
+            set {
+                this["ExplicitCheck"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UndefinedCheck {
+            get {
+                return ((bool)(this["UndefinedCheck"]));
+            }
+            set {
+                this["UndefinedCheck"] = value;
+            }
+        }
     }
 }

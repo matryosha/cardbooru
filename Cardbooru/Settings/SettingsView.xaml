@@ -23,22 +23,44 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Margin="50 50 0 50">
-            <Viewbox Height="30" HorizontalAlignment="Left">
-                <TextBlock FontSize="20">Current site</TextBlock>
-            </Viewbox>
-            <Viewbox Height="30" HorizontalAlignment="Left" Margin="0 10 0 0">
-                <ComboBox Width="150"
-                          ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
-                          SelectedItem="{Binding Path = CurrentSite, Mode=TwoWay}">
+        <Grid Grid.Column="0" Margin="50 50 0 50">
+            <StackPanel HorizontalAlignment="Center">
+                <Viewbox Height="30" HorizontalAlignment="Left">
+                    <TextBlock FontSize="20">Current site</TextBlock>
+                </Viewbox>
+                <Viewbox Height="30" HorizontalAlignment="Left" Margin="0 10 0 0">
+                    <ComboBox Width="150"
+                              ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
+                              SelectedItem="{Binding Path = CurrentSite, Mode=TwoWay}">
 
-                </ComboBox>
-            </Viewbox>
+                    </ComboBox>
+                </Viewbox>
+            </StackPanel>
             
-        </StackPanel>
+            
+        </Grid>
+        <Grid Grid.Column="1" Margin="0 50 50 50">
+            <StackPanel HorizontalAlignment="Center">
+                <Viewbox Height="30" HorizontalAlignment="Left">
+                    <TextBlock>Safe search</TextBlock>
+                </Viewbox>
+                <Viewbox Height="130" HorizontalAlignment="Left" Margin="0 10 0 0">
+                    <StackPanel>
+                        <CheckBox Margin="0 2" IsChecked="{Binding SafeCheck, Mode=TwoWay}">Safe
+                        </CheckBox>
+                        <CheckBox Margin="0 2" IsChecked="{Binding QuestionableCheck, Mode=TwoWay}">Questionable
+                        </CheckBox>
+                        <CheckBox Margin="0 2" IsChecked="{Binding ExplicitCheck, Mode=TwoWay}">Explicit
+                        </CheckBox>
+                        <CheckBox Margin="0 2" IsChecked="{Binding UndefinedCheck, Mode=TwoWay}">Undefined
+                        </CheckBox>
+                    </StackPanel>
+                    
+                </Viewbox>
+            </StackPanel>
+        </Grid>
        
     </Grid>
 </UserControl>

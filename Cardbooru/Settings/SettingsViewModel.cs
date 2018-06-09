@@ -8,8 +8,55 @@ using MvvmCross.Plugins.Messenger;
 namespace Cardbooru.Settings
 {
     public class SettingsViewModel :
-        INotifyPropertyChanged, IUserControlViewModel {
+        INotifyPropertyChanged, IUserControlViewModel
+    {
 
+
+        private bool _safeCheck;
+        private bool _questionableCheck;
+        private bool _explicitCheck;
+        private bool _undefinedCheck;
+
+        public bool SafeCheck
+        {
+            get => _safeCheck;
+            set
+            {
+                _safeCheck = value;
+                Properties.Settings.Default.SafeCheck = value;
+                OnPropertyChanged("SafeCheck");
+            }
+        }
+        public bool QuestionableCheck
+        {
+            get => _questionableCheck;
+            set
+            {
+                _questionableCheck = value;
+                Properties.Settings.Default.QuestionableCheck = value;
+                OnPropertyChanged("QuestionableCheck");
+            }
+        }
+        public bool ExplicitCheck
+        {
+            get => _explicitCheck;
+            set
+            {
+                _explicitCheck = value;
+                Properties.Settings.Default.ExplicitCheck = value;
+                OnPropertyChanged("ExplicitCheck");
+            }
+        }
+        public bool UndefinedCheck
+        {
+            get => _undefinedCheck;
+            set
+            {
+                _undefinedCheck = value;
+                Properties.Settings.Default.UndefinedCheck = value;
+                OnPropertyChanged("UndefinedCheck");
+            }
+        }
 
         private BooruType _currentSite;
         public BooruType CurrentSite {
@@ -23,7 +70,12 @@ namespace Cardbooru.Settings
             }
         }
 
-        public SettingsViewModel() {
+        public SettingsViewModel()
+        {
+            SafeCheck = Properties.Settings.Default.SafeCheck;
+            QuestionableCheck = Properties.Settings.Default.QuestionableCheck;
+            ExplicitCheck = Properties.Settings.Default.ExplicitCheck;
+            UndefinedCheck = Properties.Settings.Default.UndefinedCheck;
             Messenger = IdkInjection.MessengerHub;
             if(String.IsNullOrEmpty(Properties.Settings.Default.CurrentSite)) return;
             CurrentSite = (BooruType)Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite);
