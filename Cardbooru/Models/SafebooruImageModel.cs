@@ -19,6 +19,19 @@ namespace Cardbooru.Models
         private string _imageName;
         [JsonProperty("tags")]
         public override string TagsString { get=>base.TagsString; set=> base.TagsString = value; }
+
+        [JsonProperty("rating")]
+        public override string Rating
+        {
+            get => base.Rating;
+            set
+            {
+                if (value == "safe")
+                    base.Rating = "s";
+                else base.Rating = value;
+            }
+        }
+
         [JsonProperty("id")]
         public override string Id { get => base.Id; set => base.Id = value; }
         [JsonProperty("hash")]

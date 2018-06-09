@@ -21,5 +21,7 @@ namespace Cardbooru.Models
         public override string Hash { get => base.Hash; set => base.Hash = value; }
         [JsonProperty("tag_string")]
         public override string TagsString { get; set; }
+        [JsonProperty("rating")]
+        public override string Rating { get => base.Rating; set => base.Rating = value; }
     }
 }

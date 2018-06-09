@@ -18,8 +18,10 @@ namespace Cardbooru.Models.Base
         public static string PostsUrl;
         public abstract string GetPostsUrl();
         public abstract string GetSiteUrl();
+        //public abstract string GetRating();
 
         public virtual string TagsString { get; set; }
+        public virtual string Rating { get; set; }
         public virtual string Id { get; set; }
         public virtual string PreviewImageUrl { get; set; }
         public virtual string FullImageUrl { get; set; }
