@@ -5,7 +5,13 @@ using Newtonsoft.Json;
 
 namespace Cardbooru.Models
 {
-    class SafebooruImageModel : BooruImageModelBase {
+    class SafebooruImageModel : BooruImageModelBase
+    {
+
+        public new static string SiteUrl = Properties.Settings.Default.SafeBooruUrl;
+        public new static string PostsUrl = Properties.Settings.Default.SafeBooruPostsUrl;
+        public override string GetPostsUrl() => PostsUrl;
+        public override string GetSiteUrl() => SiteUrl;
 
         [JsonProperty("directory")]
         private string _directoryNum;
@@ -18,13 +24,13 @@ namespace Cardbooru.Models
         [JsonProperty("hash")]
         public override string Hash { get => base.Hash; set => base.Hash = value; }
 
-        public override string PreviewImageUrl { get => base.PreviewImageUrl ?? (base.PreviewImageUrl = $"/thumbnails/{_directoryNum}/thumbnail_{_imageName}");
-            set { base.PreviewImageUrl = $"/thumbnails/{_directoryNum}/thumbnail_{value}"; }
+        public override string PreviewImageUrl { get => base.PreviewImageUrl ?? (base.PreviewImageUrl = $"{SiteUrl}/thumbnails/{_directoryNum}/thumbnail_{_imageName}");
+            set { base.PreviewImageUrl = $"{SiteUrl}/thumbnails/{_directoryNum}/thumbnail_{value}"; }
         }
 
         public override string FullImageUrl {
-            get => base.FullImageUrl ?? (FullImageUrl = $"/images/{_directoryNum}/{_imageName}");
-            set { base.FullImageUrl = $"/images/{_directoryNum}/{value}"; }
+            get => base.FullImageUrl ?? (FullImageUrl = $"{SiteUrl}/images/{_directoryNum}/{_imageName}");
+            set { base.FullImageUrl = $"{SiteUrl}/images/{_directoryNum}/{value}"; }
         }
 
     }

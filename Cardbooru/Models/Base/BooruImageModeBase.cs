@@ -13,7 +13,11 @@ namespace Cardbooru.Models.Base
         private string _hash;
         private Image _previewImage;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        
+        public static string SiteUrl;
+        public static string PostsUrl;
+        public abstract string GetPostsUrl();
+        public abstract string GetSiteUrl();
 
         public virtual string TagsString { get; set; }
         public virtual string Id { get; set; }
@@ -65,7 +69,9 @@ namespace Cardbooru.Models.Base
             }
         }
 
+       
 
+        public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

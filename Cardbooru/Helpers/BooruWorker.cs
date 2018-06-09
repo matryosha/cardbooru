@@ -26,62 +26,53 @@ namespace Cardbooru.Helpers
 
 
     public static class BooruWorker {
-        private const int DefaultLimitForRequest = 100;
-        private const string Danbooru = "https://danbooru.donmai.us";
-        private const string SafeBooru = "http://safebooru.org";
-        private static string _currentSite;
+        private static int NumberOfPicPerRequest = Properties.Settings.Default.NumberOfPicPerRequest;
+        private static BooruImageModelBase _baseModel;
         private static HttpClient _client;
         private static BitmapFrame _defaultImage;
 
         public static async Task FillBooruImages(int pageNum, ObservableCollection<BooruImageModelBase> realBooruImages, BooruType booruType)
         {
+            _baseModel = null;
+
+            switch (booruType)
+            {
+                case BooruType.Danbooru:
+                    _baseModel = new DanbooruImageModel();
+                    break;
+                case BooruType.SafeBooru:
+                    _baseModel = new SafebooruImageModel();
+                    break;
+            }
 
             //Get json file with posts
             string posts = String.Empty;
-            
-            switch (booruType) {
-                case BooruType.Danbooru:
-                    posts = await GetClient()
-                        .GetStringAsync(Danbooru + $"/posts.json?limit={DefaultLimitForRequest}&page={pageNum}");
-                    _currentSite = Danbooru;
-                    break;
-                case BooruType.SafeBooru:
-                    posts = await GetClient()
-                        .GetStringAsync(SafeBooru + $"/index.php?page=dapi&s=post&q=index&pid={pageNum}&limit={DefaultLimitForRequest}&json=1");
-                    _currentSite = SafeBooru;
-                    break;
-            }
+            posts = await GetClient()
+                .GetStringAsync(_baseModel.GetSiteUrl() +
+                                GetConverter.GetPosts(_baseModel.GetPostsUrl(), NumberOfPicPerRequest, pageNum));
 
 
+            //Create metadata collection 
+            var collection = DeserializePostsToCollection(booruType, posts);
 
-            //Convert to collection depends on type of booru
-            ObservableCollection<BooruImageModelBase> collection = new ObservableCollection<BooruImageModelBase>();
+            FillTagsList(collection);
 
-            switch (booruType) {
-                case BooruType.Danbooru:
-                    ObservableCollection<DanbooruImageModel> stricklyCollection1 = JsonConvert.DeserializeObject<ObservableCollection<DanbooruImageModel>>(posts);
-                    collection = new ObservableCollection<BooruImageModelBase>(stricklyCollection1);
-                    break;
-                case BooruType.SafeBooru:
-                    ObservableCollection<SafebooruImageModel> stricklyCollection2 = JsonConvert.DeserializeObject<ObservableCollection<SafebooruImageModel>>(posts);
-                    collection = new ObservableCollection<BooruImageModelBase>(stricklyCollection2);
-                    break;
-            }
-
-            //Make tags list
-            foreach (var booruImageModelBase in collection) {
-                var tagsArr = booruImageModelBase.TagsString.Split(' ');
-                booruImageModelBase.TagsString = null;
-                foreach (string s in tagsArr) {
-                    booruImageModelBase.TagsList.Add(s);
-                }
-            }
-
-           
-            //Load preview image in each boouruImageClass
+            //Download preview image and add with all metadata to realBooruImage collection
             await LoadPreviewImages(collection, realBooruImages);
         }
 
+        private static void FillTagsList(ObservableCollection<BooruImageModelBase> collection)
+        {
+            foreach (var booruImageModelBase in collection)
+            {
+                var tagsArr = booruImageModelBase.TagsString.Split(' ');
+                booruImageModelBase.TagsString = null;
+                foreach (string s in tagsArr)
+                {
+                    booruImageModelBase.TagsList.Add(s);
+                }
+            }
+        }
 
         public static async Task LoadFullImage(BooruImageModelBase booruImageModel) {
             if(booruImageModel == null)
@@ -91,7 +82,7 @@ namespace Cardbooru.Helpers
 
             ImageSource image;
             //Check if image has been cached
-            if (IsHaveCache(booruImageModel.Hash, ImageSizeType.Full)) {
+            if (IsHasCache(booruImageModel.Hash, ImageSizeType.Full)) {
                 image = await GetImageFromCache(booruImageModel.Hash, ImageSizeType.Full);
             }
             else {
@@ -104,7 +95,7 @@ namespace Cardbooru.Helpers
             booruImageModel.IsFullImageLoaded = true;
         }
 
-        public static async Task LoadPreviewImages(ObservableCollection<BooruImageModelBase> booruImagesMetaData, ObservableCollection<BooruImageModelBase> realBooruImages)
+        private static async Task LoadPreviewImages(ObservableCollection<BooruImageModelBase> booruImagesMetaData, ObservableCollection<BooruImageModelBase> realBooruImages)
         {
             foreach (BooruImageModelBase booruImage in booruImagesMetaData)
             {
@@ -112,7 +103,7 @@ namespace Cardbooru.Helpers
                 if (string.IsNullOrEmpty(booruImage.Hash)) continue;
 
                 booruImage.PreviewImage = new Image();
-                booruImage.PreviewImage.Source = await GetPreviewImage(booruImage);
+                booruImage.PreviewImage.Source = await DownloadPreviewImage(booruImage);
                 if (booruImage.PreviewImage.Source == null) {
                     await LoadFullImage(booruImage);
                     if (booruImage.FullImage == null) {
@@ -126,15 +117,27 @@ namespace Cardbooru.Helpers
 
         }
 
-        private static Task<ImageSource> GetPreviewImage(BooruImageModelBase imageModelClass) {
+        private static ObservableCollection<BooruImageModelBase> DeserializePostsToCollection(BooruType type, string posts)
+        {
+            switch (type)
+            {
+                case BooruType.Danbooru:
+                    return new ObservableCollection<BooruImageModelBase>(JsonConvert.DeserializeObject<ObservableCollection<DanbooruImageModel>>(posts));
+                case BooruType.SafeBooru:
+                    return new ObservableCollection<BooruImageModelBase>(JsonConvert.DeserializeObject<ObservableCollection<SafebooruImageModel>>(posts));
+            }
+
+            throw new Exception("Unknown booru type");
+        }
+        private static Task<ImageSource> DownloadPreviewImage(BooruImageModelBase imageModelClass) {
             //Check if image has been cached
-            if (IsHaveCache(imageModelClass.Hash, ImageSizeType.Preview))
+            if (IsHasCache(imageModelClass.Hash, ImageSizeType.Preview))
                 return GetImageFromCache(imageModelClass.Hash, ImageSizeType.Preview);
             //Caching image and save it
             return CacheAndReturnImage(imageModelClass.PreviewImageUrl, imageModelClass.Hash, ImageSizeType.Preview);
         }
 
-        private static bool IsHaveCache(string path, ImageSizeType type) {
+        private static bool IsHasCache(string path, ImageSizeType type) {
             if(type == ImageSizeType.Preview)
                 return File.Exists(GetImageCacheDir() + path + "_preview");
             return File.Exists(GetImageCacheDir() + path + "_full");
@@ -185,9 +188,9 @@ namespace Cardbooru.Helpers
             return input + "_full";
         }
 
-        /// <param name="url">Without danbooru prefix</param>
+        
         private static async Task<byte[]> GetImageBytes(string url) {
-            var bytes = await GetClient().GetByteArrayAsync(_currentSite + url);
+            var bytes = await GetClient().GetByteArrayAsync(url);
             return bytes;
         }
 

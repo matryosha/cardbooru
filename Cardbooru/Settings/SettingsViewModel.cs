@@ -19,6 +19,7 @@ namespace Cardbooru.Settings
                 Properties.Settings.Default.CurrentSite = value.ToString();
                 Messenger.Publish(new SettingsMessage(this, value));
                 OnPropertyChanged("CurrentSite");
+                
             }
         }
 

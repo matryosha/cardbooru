@@ -3,7 +3,13 @@ using Newtonsoft.Json;
 
 namespace Cardbooru.Models
 {
-    public class DanbooruImageModel : BooruImageModelBase {
+    public class DanbooruImageModel : BooruImageModelBase
+    {
+
+        public new static string SiteUrl = Properties.Settings.Default.DanbooruUrl;
+        public new static string PostsUrl = Properties.Settings.Default.DanbooruPostsUrl;
+        public override string GetPostsUrl() => PostsUrl;
+        public override string GetSiteUrl() => SiteUrl;
 
         [JsonProperty("id")]
         public override string Id { get => base.Id; set => base.Id = value; }

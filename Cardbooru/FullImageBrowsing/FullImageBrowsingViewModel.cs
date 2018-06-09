@@ -15,12 +15,14 @@ namespace Cardbooru.FullImageBrowsing
     class FullImageBrowsingViewModel : 
         INotifyPropertyChanged, IUserControlViewModel {
 
+        private ObservableCollection<BooruImageModelBase> _booruImagesCollection;
+        private int _currentImageIndex = -1;
+        private int _currentPage;
+
         public event PropertyChangedEventHandler PropertyChanged;
         public IMvxMessenger Messenger { get; }
 
-
         private List<string> _tagsList;
-
         public List<string> TagsList {
             get => _tagsList;
             set {
@@ -94,11 +96,6 @@ namespace Cardbooru.FullImageBrowsing
                 TagsList = BooruImageModel.TagsList;
             }));
         }
-
-
-        private ObservableCollection<BooruImageModelBase> _booruImagesCollection;
-        private int _currentImageIndex = -1;
-        private int _currentPage;
 
         public FullImageBrowsingViewModel(BooruImageModelBase booruImageModel) {
             Messenger = IdkInjection.MessengerHub;

@@ -12,7 +12,7 @@ namespace Cardbooru.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -32,6 +32,66 @@ namespace Cardbooru.Properties {
             }
             set {
                 this["CurrentSite"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://danbooru.donmai.us")]
+        public string DanbooruUrl {
+            get {
+                return ((string)(this["DanbooruUrl"]));
+            }
+            set {
+                this["DanbooruUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://safebooru.org")]
+        public string SafeBooruUrl {
+            get {
+                return ((string)(this["SafeBooruUrl"]));
+            }
+            set {
+                this["SafeBooruUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("/posts.json?limit=*&page=*/")]
+        public string DanbooruPostsUrl {
+            get {
+                return ((string)(this["DanbooruPostsUrl"]));
+            }
+            set {
+                this["DanbooruPostsUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("/index.php?page=dapi&s=post&q=index&limit=*&pid=*&json=1")]
+        public string SafeBooruPostsUrl {
+            get {
+                return ((string)(this["SafeBooruPostsUrl"]));
+            }
+            set {
+                this["SafeBooruPostsUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int NumberOfPicPerRequest {
+            get {
+                return ((int)(this["NumberOfPicPerRequest"]));
+            }
+            set {
+                this["NumberOfPicPerRequest"] = value;
             }
         }
     }
