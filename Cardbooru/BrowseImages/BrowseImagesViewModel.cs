@@ -134,7 +134,7 @@ namespace Cardbooru.BrowseImages
 
         private void DropImages(ResetBooruImagesMessage message)
         {
-            BooruImages.Clear();
+            BooruImages = new ObservableCollection<BooruImageModelBase>();
             _currentPage = 1;
         }
 

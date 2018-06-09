@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -231,6 +232,7 @@ namespace Cardbooru.Helpers
         private static async Task<ImageSource> CacheAndReturnImage(string url, string inputPath, ImageSizeType type) {
             var properPath = GetProperPath(inputPath, type);
             var bytesImage = await GetImageBytes(url);
+            if (bytesImage == null) return null;
             BitmapSource bitmap =  await Task.Run(() => CreateBitmapFrame(bytesImage));
             
             using (FileStream stream = File.Open($"{GetImageCacheDir()}{properPath}", FileMode.OpenOrCreate)) {
@@ -275,9 +277,16 @@ namespace Cardbooru.Helpers
 
         
         private static async Task<byte[]> GetImageBytes(string url) {
-            Console.WriteLine($"URL: {url}");
-            var bytes = await GetClient().GetByteArrayAsync(url);
-            Console.Write("  OK\n");
+            byte[] bytes;
+            try
+            {
+                 bytes = await GetClient().GetByteArrayAsync(url);
+            }
+            catch(Exception e)
+            {
+                DownloadImageUrlCheck(url, e);
+                return null;
+            }
             return bytes;
             
         }
@@ -321,6 +330,11 @@ namespace Cardbooru.Helpers
                 image = null;
             }
             return image;
+        }
+        [Conditional("DEBUG")]
+        private static void DownloadImageUrlCheck(string url, Exception e)
+        {
+            Console.WriteLine($"Image with URL failed to download. {url}");
         }
     }
 }

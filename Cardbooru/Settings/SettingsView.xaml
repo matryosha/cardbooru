@@ -54,7 +54,7 @@
                         </CheckBox>
                         <CheckBox Margin="0 2" IsChecked="{Binding ExplicitCheck, Mode=TwoWay}">Explicit
                         </CheckBox>
-                        <CheckBox Margin="0 2" IsChecked="{Binding UndefinedCheck, Mode=TwoWay}">Undefined
+                        <CheckBox Margin="0 2" IsChecked="{Binding UndefinedCheck, Mode=TwoWay}" IsEnabled="False">Undefined
                         </CheckBox>
                     </StackPanel>
                     
