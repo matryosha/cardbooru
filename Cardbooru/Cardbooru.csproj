@@ -112,6 +112,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helpers\Base\ResetBooruImagesMessage.cs" />
     <Compile Include="Helpers\Base\SettingsMessage.cs" />
     <Compile Include="Helpers\Base\VirtualizingWrapPanel.cs" />
     <Compile Include="Helpers\GetConverter.cs" />

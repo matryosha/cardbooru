@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -31,10 +33,12 @@ namespace Cardbooru.Helpers
         private static BooruImageModelBase _baseModel;
         private static HttpClient _client;
         private static BitmapFrame _defaultImage;
+        private static int _countOfAddedPicsPerRequest;
 
-        public static async Task FillBooruImages(int pageNum, ObservableCollection<BooruImageModelBase> realBooruImages, BooruType booruType)
+        public static async Task<int> FillBooruImages(int pageNum, ObservableCollection<BooruImageModelBase> realBooruImages, BooruType booruType)
         {
             _baseModel = null;
+            _countOfAddedPicsPerRequest = 0;
 
             switch (booruType)
             {
@@ -57,15 +61,56 @@ namespace Cardbooru.Helpers
             var collection = DeserializePostsToCollection(booruType, posts);
 
             collection = FillTagsList(collection);
+            collection = SafeSearch(collection);
 
+            _countOfAddedPicsPerRequest = collection.Count;
             //Download preview image and add with all metadata to realBooruImage collection
             await LoadPreviewImages(collection, realBooruImages);
+
+            return _countOfAddedPicsPerRequest;
         }
 
+        private static ObservableCollection<BooruImageModelBase> SafeSearch(ObservableCollection<BooruImageModelBase> collection)
+        {
+            var outCollection = new ObservableCollection<BooruImageModelBase>();
+            List<String> pattern = new List<string>
+            {
+                "s",
+                "e",
+                "q",
+                "u"
+            };
+            if (Properties.Settings.Default.SafeCheck)
+                pattern.Remove("s");
+            if (Properties.Settings.Default.ExplicitCheck)
+                pattern.Remove("e");
+            if (Properties.Settings.Default.QuestionableCheck)
+                pattern.Remove("q");
+            if (Properties.Settings.Default.UndefinedCheck)
+                pattern.Remove("u");
+
+            foreach (BooruImageModelBase modelBase in collection)
+            {
+                var patternFailed = false;
+                foreach (string s in pattern)
+                {
+                    if (modelBase.Rating == s)
+                    {
+                        patternFailed = true;
+                        break;
+                    }
+                }
+                if (patternFailed) continue;
+                outCollection.Add(modelBase);
+                }
+
+            return outCollection;
+        }
         private static ObservableCollection<BooruImageModelBase> FillTagsList(ObservableCollection<BooruImageModelBase> collection)
         {
             StringCollection filteredTags = Properties.Settings.Default.BlackListTags;
             ObservableCollection<BooruImageModelBase> outCollection = new ObservableCollection<BooruImageModelBase>();
+            string[] desiredTags = {};
 
             foreach (var booruImageModelBase in collection)
             {
@@ -73,11 +118,21 @@ namespace Cardbooru.Helpers
                 booruImageModelBase.TagsString = null;
                 bool filterTagSpotted = false;
 
+
+                int counterOfDesiredTags = 0;
+
+                foreach (var tag in desiredTags)
+                {
+                    if (tagsArr.Contains(tag))
+                        counterOfDesiredTags++;
+                }
+                if(counterOfDesiredTags != desiredTags.Length) continue;
                 foreach (string s in tagsArr)
                 {
-
+                    //images will be removed if blacklisted tag spotted
                     foreach (string blackTag in filteredTags)
                     {
+                        if (filteredTags.Count == 0) break;
                         if (s == blackTag)
                         {
                             filterTagSpotted = true;
@@ -85,13 +140,15 @@ namespace Cardbooru.Helpers
                         }
                     }
 
+
+
                     if(filterTagSpotted) break;
 
                     booruImageModelBase.TagsList.Add(s);
                 }
                 if(filterTagSpotted) continue;
                 outCollection.Add(booruImageModelBase);
-            }
+                }
 
             return outCollection;
         }

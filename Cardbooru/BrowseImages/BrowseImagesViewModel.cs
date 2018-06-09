@@ -15,6 +15,7 @@ namespace Cardbooru.BrowseImages
 
 
         private IDisposable _settingsToken;
+        private IDisposable _resetToken;
         private int _currentPage;
         private bool _isLoading;
         /// <summary>
@@ -60,6 +61,7 @@ namespace Cardbooru.BrowseImages
             Messenger = IdkInjection.MessengerHub;
             _currentPage = 1;
             _settingsToken = Messenger.Subscribe<SettingsMessage>(SiteChanged);
+            _resetToken = Messenger.Subscribe<ResetBooruImagesMessage>(DropImages);
         }
 
 
@@ -71,8 +73,10 @@ namespace Cardbooru.BrowseImages
                 if(IsLoading) return;
                 if(_currentPage==1) BooruImages.Clear();
                 IsLoading = true;
-                try {
-                    await BooruWorker.FillBooruImages(_currentPage, BooruImages, CurrentSite);
+                try
+                {
+                    while (await BooruWorker.FillBooruImages(_currentPage++, BooruImages, CurrentSite) < 10) ;
+
                 }
                 catch (HttpRequestException e) {
                     ToggleErrorOccured.Execute(new object());
@@ -85,7 +89,7 @@ namespace Cardbooru.BrowseImages
                 finally {
                     IsLoading = false;
                 }
-                _currentPage++;
+                //_currentPage++;
             }));
 
         private RelayCommand _openFullImageCommand;
@@ -126,6 +130,13 @@ namespace Cardbooru.BrowseImages
             if(message.CurrentSiteSettings == CurrentSite) return;
             BooruImages = new ObservableCollection<BooruImageModelBase>();
             CurrentSite = message.CurrentSiteSettings;
+            _currentPage = 1;
+        }
+
+        private void DropImages(ResetBooruImagesMessage message)
+        {
+            BooruImages.Clear();
+            _currentPage = 1;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

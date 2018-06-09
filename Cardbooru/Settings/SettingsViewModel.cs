@@ -24,6 +24,7 @@ namespace Cardbooru.Settings
             {
                 _safeCheck = value;
                 Properties.Settings.Default.SafeCheck = value;
+                IdkInjection.MessengerHub.Publish(new ResetBooruImagesMessage(this));
                 OnPropertyChanged("SafeCheck");
             }
         }
@@ -34,6 +35,7 @@ namespace Cardbooru.Settings
             {
                 _questionableCheck = value;
                 Properties.Settings.Default.QuestionableCheck = value;
+                IdkInjection.MessengerHub.Publish(new ResetBooruImagesMessage(this));
                 OnPropertyChanged("QuestionableCheck");
             }
         }
@@ -44,6 +46,7 @@ namespace Cardbooru.Settings
             {
                 _explicitCheck = value;
                 Properties.Settings.Default.ExplicitCheck = value;
+                IdkInjection.MessengerHub.Publish(new ResetBooruImagesMessage(this));
                 OnPropertyChanged("ExplicitCheck");
             }
         }
@@ -54,6 +57,7 @@ namespace Cardbooru.Settings
             {
                 _undefinedCheck = value;
                 Properties.Settings.Default.UndefinedCheck = value;
+                IdkInjection.MessengerHub.Publish(new ResetBooruImagesMessage(this));
                 OnPropertyChanged("UndefinedCheck");
             }
         }
@@ -86,7 +90,7 @@ namespace Cardbooru.Settings
         public IMvxMessenger Messenger { get; }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
+        { 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
