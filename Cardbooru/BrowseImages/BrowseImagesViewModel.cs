@@ -16,7 +16,7 @@ namespace Cardbooru.BrowseImages
 
         private IDisposable _settingsToken;
         private IDisposable _resetToken;
-        private int _currentPage;
+        private int _currentQueryPage;
         private bool _isLoading;
         /// <summary>
         /// Indicate whether pictures loading to list or not
@@ -29,6 +29,7 @@ namespace Cardbooru.BrowseImages
         }
 
         private bool _isErrorOccured;
+
         public bool IsErrorOccured {
             get => _isErrorOccured;
             set {
@@ -59,7 +60,7 @@ namespace Cardbooru.BrowseImages
 
         public BrowseImagesViewModel() {
             Messenger = IdkInjection.MessengerHub;
-            _currentPage = 1;
+            _currentQueryPage = 1;
             _settingsToken = Messenger.Subscribe<SettingsMessage>(SiteChanged);
             _resetToken = Messenger.Subscribe<ResetBooruImagesMessage>(DropImages);
         }
@@ -71,11 +72,11 @@ namespace Cardbooru.BrowseImages
         public RelayCommand LoadCommand => _loadPreviewImages ?? 
             (_loadPreviewImages = new RelayCommand(async o => {
                 if(IsLoading) return;
-                if(_currentPage==1) BooruImages.Clear();
+                if(_currentQueryPage==1) BooruImages.Clear();
                 IsLoading = true;
                 try
                 {
-                    while (await BooruWorker.FillBooruImages(_currentPage++, BooruImages, CurrentSite) < 10);
+                    while (await BooruWorker.FillBooruImages(_currentQueryPage++, BooruImages, CurrentSite) < 10);
                 }
                 catch (HttpRequestException e) {
                     ToggleErrorOccured.Execute(new object());
@@ -88,7 +89,7 @@ namespace Cardbooru.BrowseImages
                 finally {
                     IsLoading = false;
                 }
-                //_currentPage++;
+                //_currentQueryPage++;
             }));
 
         private RelayCommand _openFullImageCommand;
@@ -96,7 +97,7 @@ namespace Cardbooru.BrowseImages
         public RelayCommand OpenFullCommand => _openFullImageCommand ??
                                                (_openFullImageCommand = new RelayCommand(async o => {
                                                    var boouru = o as BooruImageModelBase;
-                                                   _openFullImageMessage = new OpenFullImageMessage(this, o as BooruImageModelBase, BooruImages, _currentPage);
+                                                   _openFullImageMessage = new OpenFullImageMessage(this, o as BooruImageModelBase, BooruImages, _currentQueryPage);
                                                    Messenger.Publish(_openFullImageMessage);
                                                    try {
                                                        await BooruWorker.LoadFullImage(boouru);
@@ -109,9 +110,9 @@ namespace Cardbooru.BrowseImages
                                                    }
                                                    catch (Exception e) {
                                                        ToggleErrorOccured.Execute(new object());
+                                                       Messenger.Publish(new CloseFullImageMessage(new object()));
                                                        ErrorInfo = e.Message;
                                                    }
-
                                                }));
 
         private RelayCommand _toggleErrorOccured;
@@ -129,13 +130,13 @@ namespace Cardbooru.BrowseImages
             if(message.CurrentSiteSettings == CurrentSite) return;
             BooruImages = new ObservableCollection<BooruImageModelBase>();
             CurrentSite = message.CurrentSiteSettings;
-            _currentPage = 1;
+            _currentQueryPage = 1;
         }
 
         private void DropImages(ResetBooruImagesMessage message)
         {
             BooruImages = new ObservableCollection<BooruImageModelBase>();
-            _currentPage = 1;
+            _currentQueryPage = 1;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

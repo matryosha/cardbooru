@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Ookii.Dialogs.Wpf;
 
 namespace Cardbooru.Settings
@@ -20,6 +21,12 @@ namespace Cardbooru.Settings
             if(string.IsNullOrEmpty(path)) return;
             SettingsViewModel context  = DataContext as SettingsViewModel;
             context.ChangeCacheDir(path);
+        }
+
+        private void UpdateSizeOfCache(object sender, MouseButtonEventArgs e)
+        {
+            SettingsViewModel context = DataContext as SettingsViewModel;
+            context.UpdateSizeOfCache();
         }
     }
 }

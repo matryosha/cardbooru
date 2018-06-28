@@ -15,7 +15,7 @@ namespace Cardbooru.Helpers
             string result = String.Empty;
             var postsStringParts = booruPostsString.Split('*');
 
-            string ratingTagsString = "$tags=";
+            string ratingTagsString = "&tags=";
             if (_countOfEnabledRatingTags > 0)
             {
                 ratingTagsString = GetRatingTagsQuery();
@@ -33,24 +33,24 @@ namespace Cardbooru.Helpers
                 case 1:
                 {
                     if (_isSafeEnable)
-                        return "&tags=rating%3As";
+                        return "&tags=rating%3Asafe";
                     if (_isExplicitEnable)
                     {
                         if(Properties.Settings.Default.CurrentSite == "SafeBooru") 
-                            return "$tags=";
+                            return "&tags=";
                         return "&tags=rating%3Ae";
                     }
-                        return "&tags=rating%3Aq";
+                        return "&tags=rating%3Aquestionable";
                 }
                 case 2:
                 {
                     if (!_isSafeEnable)
-                        return "&tags=-rating%3As";
+                        return "&tags=-rating%3Asafe";
                     if (!_isExplicitEnable)
                         return "&tags=-rating%3Ae";
-                    return "&tags=-rating%3Aq";
+                    return "&tags=-rating%3Aquestionable";
                 }
-                default: return "$tags=";
+                default: return "&tags=";
             }
         }
 

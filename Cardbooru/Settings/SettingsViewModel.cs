@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
 using MvvmCross.Plugins.Messenger;
@@ -17,6 +19,17 @@ namespace Cardbooru.Settings
         private bool _explicitCheck;
         private bool _undefinedCheck;
 
+
+        private string _cacheSize = "Update";
+        public string CacheSize
+        {
+            get => _cacheSize;
+            set
+            {
+                _cacheSize = value;
+                OnPropertyChanged("CacheSize");
+            }
+        }
         private string _cachePath = String.Empty;
         public string CachePath
         {
@@ -101,13 +114,35 @@ namespace Cardbooru.Settings
             CurrentSite = (BooruType)Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite);
         }
 
+        public async void UpdateSizeOfCache()
+        {
+            var size = await Task.Run(() => GetDirectorySize(CachePath)) / 1024 / 1024;
+            CacheSize = $"~ {size} MB";
+        }
 
         public void ChangeCacheDir(string path)
         {
             CachePath = path + "\\";
             Properties.Settings.Default.PathToCacheFolder = CachePath;
+            UpdateSizeOfCache();
         }
 
+        private RelayCommand _clearDir;
+
+        public RelayCommand ClearCacheDirectory => _clearDir ?? (_clearDir = new RelayCommand(o =>
+        {
+            var files = Directory.GetFiles(CachePath, "*_preview");
+            foreach (var file in files)
+            {
+                File.Delete(file);
+            }
+            files = Directory.GetFiles(CachePath, "*_full");
+            foreach (var file in files)
+            {
+                File.Delete(file);
+            }
+            UpdateSizeOfCache();
+        }));
 
         public event PropertyChangedEventHandler PropertyChanged;
         public IMvxMessenger Messenger { get; }
@@ -118,7 +153,26 @@ namespace Cardbooru.Settings
         }
 
 
+        static long GetDirectorySize(string p)
+        {
+            // 1.
+            // Get array of all file names.
+            string[] a = Directory.GetFiles(p, "*");
 
+            // 2.
+            // Calculate total bytes of all files in a loop.
+            long b = 0;
+            foreach (string name in a)
+            {
+                // 3.
+                // Use FileInfo to get length of each file.
+                FileInfo info = new FileInfo(name);
+                b += info.Length;
+            }
+            // 4.
+            // Return total size
+            return b;
+        }
 
 
     }
