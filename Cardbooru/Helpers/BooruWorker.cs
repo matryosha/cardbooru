@@ -66,7 +66,7 @@ namespace Cardbooru.Helpers
             var collection = DeserializePostsToCollection(booruType, posts);
 
             collection = FillTagsList(collection);
-            collection = SafeSearch(collection);
+            //collection = SafeSearch(collection);
 
             _countOfAddedPicsPerRequest = collection.Count;
             //Download preview image and add with all metadata to realBooruImage collection

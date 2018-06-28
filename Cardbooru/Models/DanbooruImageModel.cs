@@ -6,8 +6,8 @@ namespace Cardbooru.Models
     public class DanbooruImageModel : BooruImageModelBase
     {
 
-        public new static string SiteUrl = Properties.Settings.Default.DanbooruUrl;
-        public new static string PostsUrl = Properties.Settings.Default.DanbooruPostsUrl;
+        public static string SiteUrl = Properties.Settings.Default.DanbooruUrl;
+        public static string PostsUrl = Properties.Settings.Default.DanbooruPostsUrl;
         public override string GetPostsUrl() => PostsUrl;
         public override string GetSiteUrl() => SiteUrl;
 

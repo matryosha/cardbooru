@@ -25,6 +25,7 @@ namespace Cardbooru.Settings
                 _safeCheck = value;
                 Properties.Settings.Default.SafeCheck = value;
                 IdkInjection.MessengerHub.Publish(new ResetBooruImagesMessage(this));
+                GetConverter.UpdateRatingTags();
                 OnPropertyChanged("SafeCheck");
             }
         }
@@ -36,6 +37,7 @@ namespace Cardbooru.Settings
                 _questionableCheck = value;
                 Properties.Settings.Default.QuestionableCheck = value;
                 IdkInjection.MessengerHub.Publish(new ResetBooruImagesMessage(this));
+                GetConverter.UpdateRatingTags();
                 OnPropertyChanged("QuestionableCheck");
             }
         }
@@ -47,6 +49,7 @@ namespace Cardbooru.Settings
                 _explicitCheck = value;
                 Properties.Settings.Default.ExplicitCheck = value;
                 IdkInjection.MessengerHub.Publish(new ResetBooruImagesMessage(this));
+                GetConverter.UpdateRatingTags();
                 OnPropertyChanged("ExplicitCheck");
             }
         }
@@ -58,6 +61,7 @@ namespace Cardbooru.Settings
                 _undefinedCheck = value;
                 Properties.Settings.Default.UndefinedCheck = value;
                 IdkInjection.MessengerHub.Publish(new ResetBooruImagesMessage(this));
+                GetConverter.UpdateRatingTags();
                 OnPropertyChanged("UndefinedCheck");
             }
         }
