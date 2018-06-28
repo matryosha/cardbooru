@@ -262,7 +262,7 @@ namespace Cardbooru.Helpers
         }
 
         private static string GetImageCacheDir() {
-            var path = "cache/image/";
+            var path = Properties.Settings.Default.PathToCacheFolder;
             if (Directory.Exists(path))
                 return path;
             Directory.CreateDirectory(path);

@@ -17,6 +17,17 @@ namespace Cardbooru.Settings
         private bool _explicitCheck;
         private bool _undefinedCheck;
 
+        private string _cachePath = String.Empty;
+        public string CachePath
+        {
+            get => _cachePath;
+            set
+            {
+                _cachePath = value;
+                OnPropertyChanged("CachePath");
+            }
+        }
+
         public bool SafeCheck
         {
             get => _safeCheck;
@@ -85,8 +96,16 @@ namespace Cardbooru.Settings
             ExplicitCheck = Properties.Settings.Default.ExplicitCheck;
             UndefinedCheck = Properties.Settings.Default.UndefinedCheck;
             Messenger = IdkInjection.MessengerHub;
+            CachePath = Properties.Settings.Default.PathToCacheFolder;
             if(String.IsNullOrEmpty(Properties.Settings.Default.CurrentSite)) return;
             CurrentSite = (BooruType)Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite);
+        }
+
+
+        public void ChangeCacheDir(string path)
+        {
+            CachePath = path + "\\";
+            Properties.Settings.Default.PathToCacheFolder = CachePath;
         }
 
 

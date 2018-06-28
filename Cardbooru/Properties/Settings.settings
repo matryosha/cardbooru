@@ -42,5 +42,8 @@
     <Setting Name="GelbooruPostsUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)">/index.php?page=dapi&amp;s=post&amp;q=index&amp;limit=*&amp;pid=*&amp;json=1</Value>
     </Setting>
+    <Setting Name="PathToCacheFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">cache/image/</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
