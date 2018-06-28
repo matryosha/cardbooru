@@ -54,6 +54,16 @@
             </Grid.Resources>
             <!--Adaptive text info-->
             <Viewbox VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1">
+                <Viewbox.Resources>
+                    <Style TargetType="Viewbox">
+                        <Setter Property="Opacity" Value="1"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsErrorOccured}" Value="false">
+                                <Setter Property="Opacity" Value="0"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Viewbox.Resources>
                 <TextBlock Margin="20 0 20 0" >
                         Error occured :(</TextBlock>
             </Viewbox>
@@ -92,7 +102,7 @@
 
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <materialDesign:Card>
+                    <materialDesign:Card Cursor="Hand">
                         <materialDesign:Card.Triggers>
                             <EventTrigger RoutedEvent="materialDesign:Card.MouseEnter">
                                 <BeginStoryboard>
