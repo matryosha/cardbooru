@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Cardbooru.Models.Base
 {
@@ -11,7 +11,7 @@ namespace Cardbooru.Models.Base
         INotifyPropertyChanged
     {
         private string _hash;
-        private Image _previewImage;
+        private BitmapImage _previewImage;
 
         public abstract string GetPostsUrl();
         public abstract string GetSiteUrl();
@@ -24,14 +24,7 @@ namespace Cardbooru.Models.Base
         public virtual string FullImageUrl { get; set; }
         public virtual List<string> TagsList { get; set; } = new List<string>();
         
-        public virtual Image FullImage { get; set; }
-        public ImageSource FullImageSource {
-            get => FullImage.Source;
-            set {
-                FullImageSource = value;
-                OnPropertyChanged("FullImageSource");
-            }
-        }
+        public virtual BitmapImage FullImage { get; set; }
         private bool _isImageLoaded;
 
         public bool IsFullImageLoaded {
@@ -50,7 +43,7 @@ namespace Cardbooru.Models.Base
             }
         }
 
-        public virtual Image PreviewImage {
+        public virtual BitmapImage PreviewImage {
             get => _previewImage;
             set {
                 _previewImage = value;
@@ -58,16 +51,6 @@ namespace Cardbooru.Models.Base
                 OnPropertyChanged("PreviewImageSource");
             }
         }
-
-        public ImageSource PreviewImageSource {
-            get => PreviewImage.Source;
-            set {
-                PreviewImageSource = value ?? throw new ArgumentNullException("Preview Image source is null");
-                OnPropertyChanged("PreviewImageSource");
-            }
-        }
-
-       
 
         public event PropertyChangedEventHandler PropertyChanged;
 

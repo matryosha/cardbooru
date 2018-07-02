@@ -35,7 +35,7 @@ namespace Cardbooru.FullImageBrowsing
 
         private ImageSource _fullImage;
         public ImageSource FullImage {
-            get => BooruImageModel.FullImage.Source;
+            get => BooruImageModel.FullImage;
             set {
                 _fullImage = value;
                 OnPropertyChanged("FullImage");

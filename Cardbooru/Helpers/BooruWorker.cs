@@ -8,7 +8,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Cardbooru.Helpers.Base;
@@ -187,7 +186,7 @@ namespace Cardbooru.Helpers
                 image = await CacheAndReturnImage(booruImageModel.FullImageUrl, booruImageModel.Hash, ImageSizeType.Full, cancellationToken);
             }
 
-            booruImageModel.FullImage = new Image {Source = image};
+            booruImageModel.FullImage = (BitmapImage) image;
             booruImageModel.IsFullImageLoaded = true;
         }
 
@@ -205,15 +204,15 @@ namespace Cardbooru.Helpers
                 //check for empty booru
                 if (string.IsNullOrEmpty(booruImage.Hash)) continue;
 
-                booruImage.PreviewImage =
-                    new Image {Source = await DownloadPreviewImage(booruImage, cancellationToken)};
-                if (booruImage.PreviewImage.Source == null) {
+                booruImage.PreviewImage = await DownloadPreviewImage(booruImage, cancellationToken) as BitmapImage;
+
+            if (booruImage.PreviewImage == null) {
                     await LoadFullImage(booruImage, cancellationToken);
                     if (booruImage.FullImage == null) {
-                        booruImage.FullImage = new Image();
-                        booruImage.PreviewImage.Source = booruImage.FullImage.Source = LoadDefImage();
+                        //booruImage.FullImage = new Image();
+                        //booruImage.PreviewImage = booruImage.FullImage = LoadDefImage();
                     }
-                    booruImage.PreviewImage.Source = booruImage.FullImage.Source;
+                    booruImage.PreviewImage = booruImage.FullImage;
                 }
                 realBooruImages.Add(booruImage);
             }

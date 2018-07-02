@@ -26,7 +26,7 @@
                 <Style TargetType="Image">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=BooruImageModel.IsFullImageLoaded}" Value="True">
-                            <Setter Property="Source" Value="{Binding Path=BooruImageModel.FullImageSource}"/>
+                            <Setter Property="Source" Value="{Binding Path=BooruImageModel.FullImage}"/>
                             <Setter Property="Stretch" Value="Uniform"></Setter>
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard>

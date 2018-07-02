@@ -140,7 +140,7 @@
                                 </i:InvokeCommandAction>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                        <Image Margin="5" Source="{Binding Path=PreviewImageSource}"
+                        <Image Margin="5" Source="{Binding Path=PreviewImage}"
                                    Height="{DynamicResource ImageItemHeight}" Width="{DynamicResource ImageItemWidth}" />
                     </materialDesign:Card>
                 </DataTemplate>

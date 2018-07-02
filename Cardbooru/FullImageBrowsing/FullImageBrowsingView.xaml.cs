@@ -43,7 +43,7 @@ namespace Cardbooru.FullImageBrowsing
         private void MyStoryboard_Completed(object sender, EventArgs e)
         {
             var contex = DataContext as FullImageBrowsingViewModel;
-            contex.CloseImageCommand.Execute(sender);
+            contex?.CloseImageCommand.Execute(sender);
         }
     }
 }
