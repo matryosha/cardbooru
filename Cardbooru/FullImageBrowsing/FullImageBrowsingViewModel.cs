@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Cardbooru.Helpers;
@@ -16,6 +17,7 @@ namespace Cardbooru.FullImageBrowsing
         INotifyPropertyChanged, IUserControlViewModel {
 
         private ObservableCollection<BooruImageModelBase> _booruImagesCollection;
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private int _currentImageIndex = -1;
         private int _currentPage;
 
@@ -67,11 +69,11 @@ namespace Cardbooru.FullImageBrowsing
                     await Task.Run(() => FindCurrentImageIndex());
                 if (_currentImageIndex+1 == _booruImagesCollection.Count)
                     await BooruWorker.FillBooruImages(++_currentPage, _booruImagesCollection,
-                        (BooruType) Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite));
+                        (BooruType) Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite), cancellationTokenSource.Token);
 
                 var nextImage = _booruImagesCollection[++_currentImageIndex];
 
-                await BooruWorker.LoadFullImage(nextImage);
+                await BooruWorker.LoadFullImage(nextImage, cancellationTokenSource.Token);
                 BooruImageModel.FullImage = null;
                 BooruImageModel = nextImage;
                 TagsList = BooruImageModel.TagsList;
@@ -90,7 +92,7 @@ namespace Cardbooru.FullImageBrowsing
 
                 var prevImage = _booruImagesCollection[--_currentImageIndex];
 
-                await BooruWorker.LoadFullImage(prevImage);
+                await BooruWorker.LoadFullImage(prevImage, cancellationTokenSource.Token);
                 BooruImageModel.FullImage = null;
                 BooruImageModel = prevImage;
                 TagsList = BooruImageModel.TagsList;

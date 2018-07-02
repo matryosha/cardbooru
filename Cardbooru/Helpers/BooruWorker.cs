@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -37,8 +38,15 @@ namespace Cardbooru.Helpers
         private static BitmapFrame _defaultImage;
         private static int _countOfAddedPicsPerRequest;
 
-        public static async Task<int> FillBooruImages(int pageNum, ObservableCollection<BooruImageModelBase> realBooruImages, BooruType booruType)
+        public static async Task<int> FillBooruImages(int queryPageNum, ObservableCollection<BooruImageModelBase> realBooruImages, BooruType booruType, CancellationToken cancellationToken)
         {
+            QueryPageCheck(queryPageNum, booruType);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                GetClient().CancelPendingRequests();
+            }
+
             _baseModel = null;
             _countOfAddedPicsPerRequest = 0;
 
@@ -59,18 +67,17 @@ namespace Cardbooru.Helpers
             string posts = String.Empty;
             posts = await GetClient()
                 .GetStringAsync(_baseModel.GetSiteUrl() +
-                                GetConverter.GetPosts(_baseModel.GetPostsUrl(), NumberOfPicPerRequest, pageNum));
-
+                                GetConverter.GetPosts(_baseModel.GetPostsUrl(), NumberOfPicPerRequest, queryPageNum));
 
             //Create metadata collection 
             var collection = DeserializePostsToCollection(booruType, posts);
 
-            collection = FillTagsList(collection);
+            collection = FillTagsList(collection, cancellationToken);
             //collection = SafeSearch(collection);
 
             _countOfAddedPicsPerRequest = collection.Count;
             //Download preview image and add with all metadata to realBooruImage collection
-            await LoadPreviewImages(collection, realBooruImages);
+            await LoadPreviewImages(collection, realBooruImages, cancellationToken);
 
             return _countOfAddedPicsPerRequest;
         }
@@ -111,7 +118,7 @@ namespace Cardbooru.Helpers
 
             return outCollection;
         }
-        private static ObservableCollection<BooruImageModelBase> FillTagsList(ObservableCollection<BooruImageModelBase> collection)
+        private static ObservableCollection<BooruImageModelBase> FillTagsList(ObservableCollection<BooruImageModelBase> collection, CancellationToken cancellationToken)
         {
             StringCollection filteredTags = Properties.Settings.Default.BlackListTags;
             ObservableCollection<BooruImageModelBase> outCollection = new ObservableCollection<BooruImageModelBase>();
@@ -119,6 +126,12 @@ namespace Cardbooru.Helpers
 
             foreach (var booruImageModelBase in collection)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    GetClient().CancelPendingRequests();
+                }
+
                 var tagsArr = booruImageModelBase.TagsString.Split(' ');
                 booruImageModelBase.TagsString = null;
                 bool filterTagSpotted = false;
@@ -158,20 +171,20 @@ namespace Cardbooru.Helpers
             return outCollection;
         }
 
-        public static async Task LoadFullImage(BooruImageModelBase booruImageModel) {
+        public static async Task LoadFullImage(BooruImageModelBase booruImageModel, CancellationToken cancellationToken) {
             if(booruImageModel == null)
-                throw new Exception("no boouru image");
+                throw new Exception("no boouru image when trying to load full image");
             if(booruImageModel.FullImage!=null)
                 return;
 
             ImageSource image;
             //Check if image has been cached
             if (IsHasCache(booruImageModel.Hash, ImageSizeType.Full)) {
-                image = await GetImageFromCache(booruImageModel.Hash, ImageSizeType.Full);
+                image = await GetImageFromCache(booruImageModel.Hash, ImageSizeType.Full, cancellationToken);
             }
             else {
                 //Caching image and save it
-                image = await CacheAndReturnImage(booruImageModel.FullImageUrl, booruImageModel.Hash, ImageSizeType.Full);
+                image = await CacheAndReturnImage(booruImageModel.FullImageUrl, booruImageModel.Hash, ImageSizeType.Full, cancellationToken);
             }
 
             booruImageModel.FullImage = new Image();
@@ -179,17 +192,24 @@ namespace Cardbooru.Helpers
             booruImageModel.IsFullImageLoaded = true;
         }
 
-        private static async Task LoadPreviewImages(ObservableCollection<BooruImageModelBase> booruImagesMetaData, ObservableCollection<BooruImageModelBase> realBooruImages)
+        private static async Task LoadPreviewImages(ObservableCollection<BooruImageModelBase> booruImagesMetaData,
+            ObservableCollection<BooruImageModelBase> realBooruImages, CancellationToken cancellationToken)
         {
             foreach (BooruImageModelBase booruImage in booruImagesMetaData)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    GetClient().CancelPendingRequests();
+                }
+
                 //check for empty booru
                 if (string.IsNullOrEmpty(booruImage.Hash)) continue;
 
                 booruImage.PreviewImage = new Image();
-                booruImage.PreviewImage.Source = await DownloadPreviewImage(booruImage);
+                booruImage.PreviewImage.Source = await DownloadPreviewImage(booruImage, cancellationToken);
                 if (booruImage.PreviewImage.Source == null) {
-                    await LoadFullImage(booruImage);
+                    await LoadFullImage(booruImage, cancellationToken);
                     if (booruImage.FullImage == null) {
                         booruImage.FullImage = new Image();
                         booruImage.PreviewImage.Source = booruImage.FullImage.Source = LoadDefImage();
@@ -213,14 +233,14 @@ namespace Cardbooru.Helpers
                     return new ObservableCollection<BooruImageModelBase>(JsonConvert.DeserializeObject<ObservableCollection<GelbooruImageModel>>(posts));
             }
 
-            throw new Exception("Unknown booru type");
+            throw new Exception("Unknown booru type for deserialize");
         }
-        private static Task<ImageSource> DownloadPreviewImage(BooruImageModelBase imageModelClass) {
+        private static Task<ImageSource> DownloadPreviewImage(BooruImageModelBase imageModelClass, CancellationToken cancellationToken) {
             //Check if image has been cached
             if (IsHasCache(imageModelClass.Hash, ImageSizeType.Preview))
-                return GetImageFromCache(imageModelClass.Hash, ImageSizeType.Preview);
+                return GetImageFromCache(imageModelClass.Hash, ImageSizeType.Preview, cancellationToken);
             //Caching image and save it
-            return CacheAndReturnImage(imageModelClass.PreviewImageUrl, imageModelClass.Hash, ImageSizeType.Preview);
+            return CacheAndReturnImage(imageModelClass.PreviewImageUrl, imageModelClass.Hash, ImageSizeType.Preview, cancellationToken);
         }
 
         private static bool IsHasCache(string path, ImageSizeType type) {
@@ -229,9 +249,13 @@ namespace Cardbooru.Helpers
             return File.Exists(GetImageCacheDir() + path + "_full");
         }
 
-        private static async Task<ImageSource> CacheAndReturnImage(string url, string inputPath, ImageSizeType type) {
+        private static async Task<ImageSource> CacheAndReturnImage(string url, string inputPath, ImageSizeType type, CancellationToken cancellationToken) {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
             var properPath = GetProperPath(inputPath, type);
-            var bytesImage = await GetImageBytes(url);
+            var bytesImage = await GetImageBytes(url, cancellationToken);
             if (bytesImage == null) return null;
             BitmapSource bitmap =  await Task.Run(() => CreateBitmapFrame(bytesImage));
             
@@ -243,12 +267,15 @@ namespace Cardbooru.Helpers
             return bitmap;
         }
 
-        private static async Task<ImageSource> GetImageFromCache(string inputPath, ImageSizeType type) {
+        private static async Task<ImageSource> GetImageFromCache(string inputPath, ImageSizeType type, CancellationToken cancellationToken) {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
             if (inputPath == null) return null;
 
             byte[] buff;
             var properPath = GetImageCacheDir() + GetProperPath(inputPath, type);
-
             using (var file = new FileStream(properPath, FileMode.Open, FileAccess.Read, FileShare.Read,
                 4096, true)) {
                 buff = new byte[file.Length];
@@ -276,13 +303,24 @@ namespace Cardbooru.Helpers
         }
 
         
-        private static async Task<byte[]> GetImageBytes(string url) {
+        private static async Task<byte[]> GetImageBytes(string url, CancellationToken cancellationToken) {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                GetClient().CancelPendingRequests();
+            }
+
             byte[] bytes;
             try
             {
                  bytes = await GetClient().GetByteArrayAsync(url);
             }
-            catch(Exception e)
+            catch(HttpRequestException e)
+            {
+                DownloadImageUrlCheck(url, e);
+                return null;
+            }
+            catch (ArgumentException e)
             {
                 DownloadImageUrlCheck(url, e);
                 return null;
@@ -335,6 +373,12 @@ namespace Cardbooru.Helpers
         private static void DownloadImageUrlCheck(string url, Exception e)
         {
             Console.WriteLine($"Image with URL failed to download. {url}");
+        }
+
+        [Conditional("DEBUG")]
+        private static void QueryPageCheck(int pageNum, BooruType booruType)
+        {
+            Console.WriteLine($"Quering {pageNum} page from {booruType}");
         }
     }
 }

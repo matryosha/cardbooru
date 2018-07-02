@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
 using Cardbooru.Models.Base;
@@ -16,6 +17,7 @@ namespace Cardbooru.BrowseImages
 
         private IDisposable _settingsToken;
         private IDisposable _resetToken;
+        private CancellationTokenSource _cancellationTokenSource;
         private int _currentQueryPage;
         private bool _isLoading;
         /// <summary>
@@ -71,16 +73,23 @@ namespace Cardbooru.BrowseImages
         private RelayCommand _loadPreviewImages;
         public RelayCommand LoadCommand => _loadPreviewImages ?? 
             (_loadPreviewImages = new RelayCommand(async o => {
-                if(IsLoading) return;
+                _cancellationTokenSource = new CancellationTokenSource();
+                if (IsLoading) return;
                 if(_currentQueryPage==1) BooruImages.Clear();
                 IsLoading = true;
                 try
                 {
-                    while (await BooruWorker.FillBooruImages(_currentQueryPage++, BooruImages, CurrentSite) < 10);
+                    while (await BooruWorker.FillBooruImages(_currentQueryPage++, BooruImages, CurrentSite,
+                               _cancellationTokenSource.Token) < 10 && _cancellationTokenSource.IsCancellationRequested == false) ;
                 }
-                catch (HttpRequestException e) {
+                catch (HttpRequestException e)
+                {
                     ToggleErrorOccured.Execute(new object());
                     ErrorInfo = e.Message;
+                }
+                catch (OperationCanceledException)
+                {
+
                 }
                 catch (Exception e) {
                     ToggleErrorOccured.Execute(new object());
@@ -96,11 +105,12 @@ namespace Cardbooru.BrowseImages
 
         public RelayCommand OpenFullCommand => _openFullImageCommand ??
                                                (_openFullImageCommand = new RelayCommand(async o => {
+                                                   _cancellationTokenSource = new CancellationTokenSource();
                                                    var boouru = o as BooruImageModelBase;
                                                    _openFullImageMessage = new OpenFullImageMessage(this, o as BooruImageModelBase, BooruImages, _currentQueryPage);
                                                    Messenger.Publish(_openFullImageMessage);
                                                    try {
-                                                       await BooruWorker.LoadFullImage(boouru);
+                                                       await BooruWorker.LoadFullImage(boouru, _cancellationTokenSource.Token);
                                                    }
                                                    catch (HttpRequestException e) {
                                                        boouru.FullImage = null;
@@ -128,6 +138,7 @@ namespace Cardbooru.BrowseImages
 
         private void SiteChanged(SettingsMessage message) {
             if(message.CurrentSiteSettings == CurrentSite) return;
+            _cancellationTokenSource?.Cancel();
             BooruImages = new ObservableCollection<BooruImageModelBase>();
             CurrentSite = message.CurrentSiteSettings;
             _currentQueryPage = 1;
@@ -135,6 +146,7 @@ namespace Cardbooru.BrowseImages
 
         private void DropImages(ResetBooruImagesMessage message)
         {
+            _cancellationTokenSource?.Cancel();
             BooruImages = new ObservableCollection<BooruImageModelBase>();
             _currentQueryPage = 1;
         }

@@ -62,8 +62,7 @@ namespace Cardbooru.Models.Base
         public ImageSource PreviewImageSource {
             get => PreviewImage.Source;
             set {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                PreviewImageSource = value;
+                PreviewImageSource = value ?? throw new ArgumentNullException("Preview Image source is null");
                 OnPropertyChanged("PreviewImageSource");
             }
         }
