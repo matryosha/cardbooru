@@ -187,8 +187,7 @@ namespace Cardbooru.Helpers
                 image = await CacheAndReturnImage(booruImageModel.FullImageUrl, booruImageModel.Hash, ImageSizeType.Full, cancellationToken);
             }
 
-            booruImageModel.FullImage = new Image();
-            booruImageModel.FullImage.Source = image;
+            booruImageModel.FullImage = new Image {Source = image};
             booruImageModel.IsFullImageLoaded = true;
         }
 
@@ -206,8 +205,8 @@ namespace Cardbooru.Helpers
                 //check for empty booru
                 if (string.IsNullOrEmpty(booruImage.Hash)) continue;
 
-                booruImage.PreviewImage = new Image();
-                booruImage.PreviewImage.Source = await DownloadPreviewImage(booruImage, cancellationToken);
+                booruImage.PreviewImage =
+                    new Image {Source = await DownloadPreviewImage(booruImage, cancellationToken)};
                 if (booruImage.PreviewImage.Source == null) {
                     await LoadFullImage(booruImage, cancellationToken);
                     if (booruImage.FullImage == null) {
@@ -257,11 +256,11 @@ namespace Cardbooru.Helpers
             var properPath = GetProperPath(inputPath, type);
             var bytesImage = await GetImageBytes(url, cancellationToken);
             if (bytesImage == null) return null;
-            BitmapSource bitmap =  await Task.Run(() => CreateBitmapFrame(bytesImage));
+            BitmapSource bitmap =  await Task.Run(() => CreateBitmapFrame(bytesImage), cancellationToken);
             
             using (FileStream stream = File.Open($"{GetImageCacheDir()}{properPath}", FileMode.OpenOrCreate)) {
                 //stream.Seek(0, SeekOrigin.End);
-                await stream.WriteAsync(bytesImage, 0, bytesImage.Length);
+                await stream.WriteAsync(bytesImage, 0, bytesImage.Length, cancellationToken);
             }
 
             return bitmap;
@@ -279,10 +278,10 @@ namespace Cardbooru.Helpers
             using (var file = new FileStream(properPath, FileMode.Open, FileAccess.Read, FileShare.Read,
                 4096, true)) {
                 buff = new byte[file.Length];
-                await file.ReadAsync(buff, 0, (int) file.Length);
+                await file.ReadAsync(buff, 0, (int) file.Length, cancellationToken);
             }
 
-            BitmapSource bitmap = await Task.Run((() => CreateBitmapFrame(buff)));
+            BitmapSource bitmap = await Task.Run((() => CreateBitmapFrame(buff)), cancellationToken);
             
 
             return bitmap;
