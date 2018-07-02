@@ -85,26 +85,13 @@ namespace Cardbooru.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
         public int NumberOfPicPerRequest {
             get {
                 return ((int)(this["NumberOfPicPerRequest"]));
             }
             set {
                 this["NumberOfPicPerRequest"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" />")]
-        public global::System.Collections.Specialized.StringCollection BlackListTags {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["BlackListTags"]));
-            }
-            set {
-                this["BlackListTags"] = value;
             }
         }
         
@@ -189,6 +176,19 @@ namespace Cardbooru.Properties {
             }
             set {
                 this["PathToCacheFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
+            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" />")]
+        public global::System.Collections.Specialized.StringCollection BlackListTags {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["BlackListTags"]));
+            }
+            set {
+                this["BlackListTags"] = value;
             }
         }
     }
