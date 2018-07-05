@@ -42,6 +42,15 @@ namespace Cardbooru.FullImageBrowsing
             }
         }
 
+        private ImageSource _previewImage;
+        public ImageSource PreviewImage {
+            get => _previewImage ?? (_previewImage = BooruImageModel.PreviewImage);
+            set {
+                _previewImage = value;
+                OnPropertyChanged("PreviewImage");
+            }
+        }
+
         private BooruImageModelBase _booruImageModel;
         public BooruImageModelBase BooruImageModel {
             get => _booruImageModel;
@@ -72,7 +81,7 @@ namespace Cardbooru.FullImageBrowsing
                         (BooruType) Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite), cancellationTokenSource.Token);
 
                 var nextImage = _booruImagesCollection[++_currentImageIndex];
-
+                PreviewImage = nextImage.PreviewImage;
                 await BooruWorker.LoadFullImage(nextImage, cancellationTokenSource.Token);
                 BooruImageModel.FullImage = null;
                 BooruImageModel = nextImage;
@@ -91,7 +100,7 @@ namespace Cardbooru.FullImageBrowsing
                     _currentImageIndex = _booruImagesCollection.Count;
 
                 var prevImage = _booruImagesCollection[--_currentImageIndex];
-
+                PreviewImage = prevImage.PreviewImage;
                 await BooruWorker.LoadFullImage(prevImage, cancellationTokenSource.Token);
                 BooruImageModel.FullImage = null;
                 BooruImageModel = prevImage;

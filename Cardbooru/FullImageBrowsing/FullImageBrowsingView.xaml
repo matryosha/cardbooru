@@ -24,26 +24,54 @@
             Grid.ColumnSpan="4">
             <Image.Style>
                 <Style TargetType="Image">
+                    <Setter Property="Source" Value="{Binding Path=PreviewImage}" />
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <BlurEffect Radius="15"/>
+                        </Setter.Value>
+                    </Setter>
+
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=BooruImageModel.IsFullImageLoaded}" Value="True">
-                            <Setter Property="Source" Value="{Binding Path=BooruImageModel.FullImage}"/>
-                            <Setter Property="Stretch" Value="Uniform"></Setter>
+                        <DataTrigger Binding="{Binding Path=BooruImageModel.IsFullImageLoaded}" Value="False">
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <DoubleAnimation
                                             Storyboard.TargetProperty="Opacity"
-                                            From="0"  To="1.0" Duration="0:0:0.3"/>
+                                            From="0" To="1" Duration="0:0:0.2"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </DataTrigger.EnterActions>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=BooruImageModel.IsFullImageLoaded}" Value="True">
+                            <Setter Property="Source" Value="{Binding Path=BooruImageModel.FullImage}" />
+                            <Setter Property="Stretch" Value="Uniform"/>
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="(Effect).(BlurEffect.Radius)"
+                                             To="0" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="(Effect).(BlurEffect.Radius)"
+                                            To="15" Duration="0:0:0.001"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Image.Style>
         </Image>
-
-        <Viewbox Grid.ColumnSpan="4" Height="50">
+        
+        <!--Progress bar-->
+        <Viewbox Grid.ColumnSpan="4" Height="50" Opacity="0.4">
             <Viewbox.Style>
                 <Style TargetType="Viewbox">
                     <Style.Triggers>
@@ -224,33 +252,6 @@
                 </EventTrigger>
             </Grid.Triggers>
             
-            <!--<Grid.Style>
-                <Style TargetType="Grid">
-~1~                    <Setter Property="Opacity" Value="0"></Setter>@1@
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="NextButton"
-                                            Storyboard.TargetProperty="Opacity"
-                                                         Duration="0:0:0.3" To="0.1"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                         Duration="0:0:0.3" To="0"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.ExitActions>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>-->
-
             <Viewbox Width="72" Height="72" HorizontalAlignment="Right" Margin="0 0 5 0" x:Name="NextButton" Opacity="0" >
 
                 <Border CornerRadius="30" BorderThickness="0">
@@ -261,16 +262,13 @@
                             
                         </SolidColorBrush.Transform>
                     </SolidColorBrush>
-                    
-                        
-                    
+                                     
                 </Border.Background>
                     <Canvas Width="24" Height="24">
                         <Path Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" Fill="Black" />
                     </Canvas>
                 </Border>
-                    
-                
+                        
             </Viewbox>
         </Grid>
     </Grid>
