@@ -92,5 +92,11 @@ namespace Cardbooru.BrowseImages
 
             return null;
         }
+
+        private void NextBtn_Onclick(object sender, RoutedEventArgs e)
+        {
+            var a = FindVisualChild<ScrollViewer>(mainListBox);
+            a.ScrollToTop();
+        }
     }
 }

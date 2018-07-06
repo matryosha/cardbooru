@@ -208,30 +208,57 @@
             VerticalAlignment="Bottom" 
             Height="30"
             Margin="5 0 0 5">
+            <Viewbox.Style>
+                <Style TargetType="Viewbox">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=Visibility, ElementName=loadBtnViewbox}" Value="Collapsed">
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Viewbox.Style>
             <StackPanel Orientation="Horizontal">
                 <Button
                     Margin="0 0 5 0"
                     Padding="8 0"
                     Command="{Binding PrevPageCommand}">
+                    <!--<Button.Style>
+                    TODO:Must based on material design otherwise material design will be lose
+                        <Style TargetType="Button">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=PageNumberKeeper.NumberOfDisplayedImages}" Value="1">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>-->
                     <materialDesign:PackIcon Kind="ArrowLeftBold" />
                 </Button>
                 <Button
                     Style="{StaticResource MaterialDesignFlatButton}" 
-                    Content="{Binding Path=PageNumberKeeper.NumberOfDisplayedPage}"/>
+                    Content="{Binding Path=PageNumberKeeper.DisplayedPage}"/>
                 <Button
                     Margin="5 0 0 0"
                     Command="{Binding NextPageCommand}"
+                    Click="NextBtn_Onclick"
                     Padding="8 0">
                     <materialDesign:PackIcon Kind="ArrowRightBold" />
                 </Button>
             </StackPanel>
         </Viewbox>
         <!--Viewbox that contain load button-->
-        <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center" Height="50">
+        <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" x:Name="loadBtnViewbox">
             <Viewbox.Style>
                 <Style TargetType="Viewbox">
                     <Setter Property="Visibility" Value="Collapsed"></Setter>
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed"></Setter>
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding BooruImages.Count }" Value="0">
                             <Setter Property="Visibility" Value="Visible"></Setter>
                         </DataTrigger>

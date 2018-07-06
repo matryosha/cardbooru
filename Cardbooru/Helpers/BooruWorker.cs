@@ -35,11 +35,14 @@ namespace Cardbooru.Helpers
         private static BooruImageModelBase _baseModel;
         private static HttpClient _client;
         private static BitmapFrame _defaultImage;
-        private static int _countOfAddedPicsPerRequest;
+        //private static int _countOfAddedPicsPerRequest;
 
-        public static async Task<int> FillBooruImages(PageNumberKeeper pageKeeper, ObservableCollection<BooruImageModelBase> realBooruImages, BooruType booruType, CancellationToken cancellationToken)
+        public static async Task FillBooruImages(PageNumberKeeper pageKeeper, 
+            ObservableCollection<BooruImageModelBase> realBooruImages, 
+            BooruType booruType, 
+            CancellationToken cancellationToken)
         {
-            QueryPageCheck(pageKeeper.CountOfQueriedPages, booruType);
+            QueryPageCheck(pageKeeper.LastQueriedPage, booruType);
             if (cancellationToken.IsCancellationRequested)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -47,7 +50,7 @@ namespace Cardbooru.Helpers
             }
 
             _baseModel = null;
-            _countOfAddedPicsPerRequest = 0;
+            //_countOfAddedPicsPerRequest = 0;
 
             switch (booruType)
             {
@@ -66,7 +69,7 @@ namespace Cardbooru.Helpers
             string posts = String.Empty;
             posts = await GetClient()
                 .GetStringAsync(_baseModel.GetSiteUrl() +
-                                GetConverter.GetPosts(_baseModel.GetPostsUrl(), NumberOfPicPerRequest, pageKeeper.CountOfQueriedPages));
+                                GetConverter.GetPosts(_baseModel.GetPostsUrl(), NumberOfPicPerRequest, pageKeeper.LastQueriedPage));
 
             //Create metadata collection 
             var collection = DeserializePostsToCollection(booruType, posts);
@@ -74,11 +77,12 @@ namespace Cardbooru.Helpers
             collection = FillTagsList(collection, cancellationToken);
             //collection = SafeSearch(collection);
 
-            _countOfAddedPicsPerRequest = collection.Count;
+            
             //Download preview image and add with all metadata to realBooruImage collection
-            await LoadPreviewImages(collection, realBooruImages, cancellationToken);
+            await LoadPreviewImages(collection, realBooruImages, cancellationToken,pageKeeper);
 
-            return _countOfAddedPicsPerRequest;
+            pageKeeper.QueriedPagesCount++;
+            pageKeeper.LastQueriedPage++;
         }
 
         private static ObservableCollection<BooruImageModelBase> SafeSearch(ObservableCollection<BooruImageModelBase> collection)
@@ -191,7 +195,7 @@ namespace Cardbooru.Helpers
         }
 
         private static async Task LoadPreviewImages(ObservableCollection<BooruImageModelBase> booruImagesMetaData,
-            ObservableCollection<BooruImageModelBase> realBooruImages, CancellationToken cancellationToken)
+            ObservableCollection<BooruImageModelBase> realBooruImages, CancellationToken cancellationToken, PageNumberKeeper pageKeeper)
         {
             foreach (BooruImageModelBase booruImage in booruImagesMetaData)
             {
@@ -214,8 +218,11 @@ namespace Cardbooru.Helpers
                     }
                     booruImage.PreviewImage = booruImage.FullImage;
                 }
+
                 realBooruImages.Add(booruImage);
             }
+
+            pageKeeper.AddedImagesCount = realBooruImages.Count;
 
         }
 
@@ -300,14 +307,15 @@ namespace Cardbooru.Helpers
             return input + "_full";
         }
 
-        
         private static async Task<byte[]> GetImageBytes(string url, CancellationToken cancellationToken) {
             if (cancellationToken.IsCancellationRequested)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 GetClient().CancelPendingRequests();
             }
-
+            ////////////////////////////////////////
+            await Task.Delay(1000);
+            ////////////////////////////////////////
             byte[] bytes;
             try
             {
