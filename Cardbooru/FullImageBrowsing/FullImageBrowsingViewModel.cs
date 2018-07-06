@@ -76,9 +76,13 @@ namespace Cardbooru.FullImageBrowsing
                 BooruImageModel.IsFullImageLoaded = false;
                 if(_currentImageIndex == -1)
                     await Task.Run(() => FindCurrentImageIndex());
-                if (_currentImageIndex+1 == _booruImagesCollection.Count)
-                    await BooruWorker.FillBooruImages(++_currentPage, _booruImagesCollection,
-                        (BooruType) Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite), cancellationTokenSource.Token);
+                if (_currentImageIndex + 1 == _booruImagesCollection.Count)
+                {
+                    throw new NotImplementedException();
+                    /*await BooruWorker.FillBooruImages(++_currentPage, _booruImagesCollection,
+                        (BooruType)Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite), cancellationTokenSource.Token);*/
+                }
+                   
 
                 var nextImage = _booruImagesCollection[++_currentImageIndex];
                 PreviewImage = nextImage.PreviewImage;

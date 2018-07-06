@@ -47,14 +47,14 @@ namespace Cardbooru.BrowseImages
 
         //Loading items when scroll at the bottom
         private void MainListBox_OnScrollChanged(object sender, ScrollChangedEventArgs e) {
-            if (e.VerticalChange > 0) {
+            /*if (e.VerticalChange > 0) {
                 
                 if (e.VerticalOffset + e.ViewportHeight == e.ExtentHeight)
                 {
                     var contex = DataContext as BrowseImagesViewModel;
                     contex.LoadCommand.Execute(new object());
                 }
-            }
+            }*/
             
         }
 

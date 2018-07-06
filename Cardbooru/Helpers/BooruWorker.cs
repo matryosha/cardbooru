@@ -37,9 +37,9 @@ namespace Cardbooru.Helpers
         private static BitmapFrame _defaultImage;
         private static int _countOfAddedPicsPerRequest;
 
-        public static async Task<int> FillBooruImages(int queryPageNum, ObservableCollection<BooruImageModelBase> realBooruImages, BooruType booruType, CancellationToken cancellationToken)
+        public static async Task<int> FillBooruImages(PageNumberKeeper pageKeeper, ObservableCollection<BooruImageModelBase> realBooruImages, BooruType booruType, CancellationToken cancellationToken)
         {
-            QueryPageCheck(queryPageNum, booruType);
+            QueryPageCheck(pageKeeper.CountOfQueriedPages, booruType);
             if (cancellationToken.IsCancellationRequested)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -66,7 +66,7 @@ namespace Cardbooru.Helpers
             string posts = String.Empty;
             posts = await GetClient()
                 .GetStringAsync(_baseModel.GetSiteUrl() +
-                                GetConverter.GetPosts(_baseModel.GetPostsUrl(), NumberOfPicPerRequest, queryPageNum));
+                                GetConverter.GetPosts(_baseModel.GetPostsUrl(), NumberOfPicPerRequest, pageKeeper.CountOfQueriedPages));
 
             //Create metadata collection 
             var collection = DeserializePostsToCollection(booruType, posts);

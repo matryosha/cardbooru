@@ -18,7 +18,7 @@
       <Value Profile="(Default)">/index.php?page=dapi&amp;s=post&amp;q=index&amp;limit=*&amp;pid=*&amp;json=1</Value>
     </Setting>
     <Setting Name="NumberOfPicPerRequest" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1000</Value>
+      <Value Profile="(Default)">500</Value>
     </Setting>
     <Setting Name="SafeCheck" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
