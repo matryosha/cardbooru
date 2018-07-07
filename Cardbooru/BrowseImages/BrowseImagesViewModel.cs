@@ -150,7 +150,20 @@ namespace Cardbooru.BrowseImages
                 {
                     if (PageNumberKeeper.DisplayedPage == 1) return;
                     _cancellationTokenSource.Cancel();
-                    PageNumberKeeper.NextQueriedPage = PageNumberKeeper.NextQueriedPage - PageNumberKeeper.QueriedPagesCount - 1;
+                    if (_pageNumberKeeper.QuriedPagesAccordance.ContainsKey(PageNumberKeeper.DisplayedPage - 1))
+                    {
+                        PageNumberKeeper.NextQueriedPage =
+                            PageNumberKeeper.QuriedPagesAccordance[PageNumberKeeper.DisplayedPage - 1];
+                        PageNumberKeeper.QuriedPagesAccordance.Remove(PageNumberKeeper.DisplayedPage - 1);
+                    }
+                    else if (PageNumberKeeper.DisplayedPage - 1 == 1)
+                    {
+                        PageNumberKeeper.NextQueriedPage = 1;
+                        PageNumberKeeper.QuriedPagesAccordance.Clear();
+                    } else
+                    {
+                        PageNumberKeeper.NextQueriedPage = PageNumberKeeper.NextQueriedPage - PageNumberKeeper.QueriedPagesCount - 1;
+                    }
                     PageNumberKeeper.DisplayedPage--;
                     BooruImages.Clear();
                     PageNumberKeeper.QueriedPagesCount = 0;
@@ -164,6 +177,11 @@ namespace Cardbooru.BrowseImages
             _nextPageCommand ?? (
                 _nextPageCommand = new RelayCommand( o => {
                     _cancellationTokenSource.Cancel();
+                    if (_pageNumberKeeper.QueriedPagesCount > 1)
+                    {
+                        _pageNumberKeeper.QuriedPagesAccordance.Add(_pageNumberKeeper.DisplayedPage + 1,
+                            _pageNumberKeeper.NextQueriedPage);
+                    }
                     if (IsLoading) _pageNumberKeeper.NextQueriedPage++;
                     _pageNumberKeeper.DisplayedPage++;
                     BooruImages.Clear();
