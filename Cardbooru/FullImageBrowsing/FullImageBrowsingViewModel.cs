@@ -78,9 +78,11 @@ namespace Cardbooru.FullImageBrowsing
                     await Task.Run(() => FindCurrentImageIndex());
                 if (_currentImageIndex + 1 == _booruImagesCollection.Count)
                 {
-                    throw new NotImplementedException();
-                    /*await BooruWorker.FillBooruImages(++_currentPage, _booruImagesCollection,
-                        (BooruType)Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite), cancellationTokenSource.Token);*/
+                    _booruImagesCollection = new ObservableCollection<BooruImageModelBase>();
+
+                    await BooruWorker.FillBooruImages(new PageNumberKeeper{NextQueriedPage = ++_currentPage}, _booruImagesCollection,
+                        (BooruType)Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite), cancellationTokenSource.Token);
+                    _currentImageIndex = -1;
                 }
                    
 
@@ -97,11 +99,19 @@ namespace Cardbooru.FullImageBrowsing
         public RelayCommand PrevImage {
             get => _prevImage ?? (_prevImage = new RelayCommand(async o => {
                 //TODO anti fast click
+                if (_currentPage == 1 && _currentImageIndex==0) return;
                 BooruImageModel.IsFullImageLoaded = false;
                 if (_currentImageIndex == -1)
                     await Task.Run(() => FindCurrentImageIndex());
                 if (_currentImageIndex == 0)
+                {
+                    _booruImagesCollection = new ObservableCollection<BooruImageModelBase>();
+
+                    await BooruWorker.FillBooruImages(new PageNumberKeeper { NextQueriedPage = --_currentPage }, _booruImagesCollection,
+                        (BooruType)Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite), cancellationTokenSource.Token);
                     _currentImageIndex = _booruImagesCollection.Count;
+                }
+                    
 
                 var prevImage = _booruImagesCollection[--_currentImageIndex];
                 PreviewImage = prevImage.PreviewImage;

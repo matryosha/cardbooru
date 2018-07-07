@@ -31,9 +31,19 @@ namespace Cardbooru.Helpers
             }
         }
 
-        public void ResetDisplayedPage()
+        public void ResetQueryInfo()
         {
-            DisplayedPage = 0;
+            QuriedPagesAccordance.Clear();
+            //AddedImagesCount = 0;
+            NextQueriedPage = 1;
+        }
+
+        public void ResetAll()
+        {
+            QuriedPagesAccordance.Clear();
+            AddedImagesCount = 0;
+            NextQueriedPage = 1;
+            DisplayedPage = 1;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

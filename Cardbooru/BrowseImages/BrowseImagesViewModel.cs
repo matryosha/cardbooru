@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
 using Cardbooru.Models.Base;
@@ -28,6 +27,15 @@ namespace Cardbooru.BrowseImages
             set {
                 _isLoading = value;
                 OnPropertyChanged("IsLoading");
+            }
+        }
+
+        private bool _isLoaded;
+        public bool IsLoaded {
+            get => _isLoaded;
+            set {
+                _isLoaded = value;
+                OnPropertyChanged("IsLoaded");
             }
         }
 
@@ -87,12 +95,13 @@ namespace Cardbooru.BrowseImages
         private RelayCommand _loadPreviewImages;
         public RelayCommand LoadCommand => _loadPreviewImages ?? 
             (_loadPreviewImages = new RelayCommand(async o =>
-            {
+            { 
                 if (_cancellationTokenSource.IsCancellationRequested) IsLoading = false;
                 if (IsLoading) return;
                 _cancellationTokenSource = new CancellationTokenSource();
                 //if(PageNumberKeeper.NextQueriedPage==1) BooruImages.Clear();
                 IsLoading = true;
+                IsLoaded = true;
                 try
                 {
                     while (PageNumberKeeper.AddedImagesCount < Properties.Settings.Default.NumberOfPicPerRequest
@@ -126,7 +135,7 @@ namespace Cardbooru.BrowseImages
                                                (_openFullImageCommand = new RelayCommand(async o => {
                                                    _cancellationTokenSource = new CancellationTokenSource();
                                                    var boouru = o as BooruImageModelBase;
-                                                   Messenger.Publish(new OpenFullImageMessage(this, o as BooruImageModelBase, BooruImages, PageNumberKeeper.NextQueriedPage));
+                                                   Messenger.Publish(new OpenFullImageMessage(this, o as BooruImageModelBase, BooruImages, PageNumberKeeper.NextQueriedPage - 1));
                                                    try {
                                                        await BooruWorker.LoadFullImage(boouru, _cancellationTokenSource.Token);
                                                    }
@@ -158,8 +167,7 @@ namespace Cardbooru.BrowseImages
                     }
                     else if (PageNumberKeeper.DisplayedPage - 1 == 1)
                     {
-                        PageNumberKeeper.NextQueriedPage = 1;
-                        PageNumberKeeper.QuriedPagesAccordance.Clear();
+                        PageNumberKeeper.ResetQueryInfo();
                     } else
                     {
                         PageNumberKeeper.NextQueriedPage = PageNumberKeeper.NextQueriedPage - PageNumberKeeper.QueriedPagesCount - 1;
@@ -169,7 +177,6 @@ namespace Cardbooru.BrowseImages
                     PageNumberKeeper.QueriedPagesCount = 0;
                     _pageNumberKeeper.AddedImagesCount = 0;
                     LoadCommand.Execute(null);
-
                 }));
 
         private RelayCommand _nextPageCommand;
@@ -207,14 +214,16 @@ namespace Cardbooru.BrowseImages
             _cancellationTokenSource?.Cancel();
             BooruImages = new ObservableCollection<BooruImageModelBase>();
             CurrentSite = message.CurrentSiteSettings;
-            PageNumberKeeper.NextQueriedPage = 1;
+            IsLoaded = false;
+            PageNumberKeeper.ResetAll();
         }
 
         private void DropImages(ResetBooruImagesMessage message)
         {
             _cancellationTokenSource?.Cancel();
             BooruImages = new ObservableCollection<BooruImageModelBase>();
-            PageNumberKeeper.NextQueriedPage = 1;
+            IsLoaded = false;
+            PageNumberKeeper.ResetAll();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -222,8 +231,6 @@ namespace Cardbooru.BrowseImages
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        
-        
+ 
     }
 }
