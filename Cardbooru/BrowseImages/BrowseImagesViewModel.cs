@@ -54,7 +54,7 @@ namespace Cardbooru.BrowseImages
         {
             get => _pageNumberKeeper ?? (_pageNumberKeeper = new PageNumberKeeper
             {
-                LastQueriedPage = 1,
+                NextQueriedPage = 1,
                 DisplayedPage = 1
             });
             set
@@ -91,7 +91,7 @@ namespace Cardbooru.BrowseImages
                 if (_cancellationTokenSource.IsCancellationRequested) IsLoading = false;
                 if (IsLoading) return;
                 _cancellationTokenSource = new CancellationTokenSource();
-                if(PageNumberKeeper.LastQueriedPage==1) BooruImages.Clear();
+                //if(PageNumberKeeper.NextQueriedPage==1) BooruImages.Clear();
                 IsLoading = true;
                 try
                 {
@@ -101,12 +101,13 @@ namespace Cardbooru.BrowseImages
                         await BooruWorker.FillBooruImages(PageNumberKeeper, BooruImages, CurrentSite,
                             _cancellationTokenSource.Token);
                     }
-                    /*while (await BooruWorker.FillBooruImages(_currentQueryPage++, BooruImages, CurrentSite,
-                               _cancellationTokenSource.Token) < 10 && _cancellationTokenSource.IsCancellationRequested == false) ;*/
+                    IsLoading = false;
+
                 } catch (HttpRequestException e)
                 {
                     ToggleErrorOccured.Execute(new object());
                     ErrorInfo = e.Message;
+                    IsLoading = false;
                 }
                 catch (OperationCanceledException)
                 {
@@ -115,8 +116,6 @@ namespace Cardbooru.BrowseImages
                 catch (Exception e) {
                     ToggleErrorOccured.Execute(new object());
                     ErrorInfo = e.Message;
-                }
-                finally {
                     IsLoading = false;
                 }
                 //_currentQueryPage++;
@@ -127,7 +126,7 @@ namespace Cardbooru.BrowseImages
                                                (_openFullImageCommand = new RelayCommand(async o => {
                                                    _cancellationTokenSource = new CancellationTokenSource();
                                                    var boouru = o as BooruImageModelBase;
-                                                   Messenger.Publish(new OpenFullImageMessage(this, o as BooruImageModelBase, BooruImages, PageNumberKeeper.LastQueriedPage));
+                                                   Messenger.Publish(new OpenFullImageMessage(this, o as BooruImageModelBase, BooruImages, PageNumberKeeper.NextQueriedPage));
                                                    try {
                                                        await BooruWorker.LoadFullImage(boouru, _cancellationTokenSource.Token);
                                                    }
@@ -151,9 +150,10 @@ namespace Cardbooru.BrowseImages
                 {
                     if (PageNumberKeeper.DisplayedPage == 1) return;
                     _cancellationTokenSource.Cancel();
-                    PageNumberKeeper.LastQueriedPage = PageNumberKeeper.LastQueriedPage - PageNumberKeeper.QueriedPagesCount;
+                    PageNumberKeeper.NextQueriedPage = PageNumberKeeper.NextQueriedPage - PageNumberKeeper.QueriedPagesCount - 1;
                     PageNumberKeeper.DisplayedPage--;
                     BooruImages.Clear();
+                    PageNumberKeeper.QueriedPagesCount = 0;
                     _pageNumberKeeper.AddedImagesCount = 0;
                     LoadCommand.Execute(null);
 
@@ -164,8 +164,10 @@ namespace Cardbooru.BrowseImages
             _nextPageCommand ?? (
                 _nextPageCommand = new RelayCommand( o => {
                     _cancellationTokenSource.Cancel();
+                    if (IsLoading) _pageNumberKeeper.NextQueriedPage++;
                     _pageNumberKeeper.DisplayedPage++;
                     BooruImages.Clear();
+                    _pageNumberKeeper.QueriedPagesCount = 0;
                     _pageNumberKeeper.AddedImagesCount = 0;
                     LoadCommand.Execute(null);
                 }));
@@ -187,14 +189,14 @@ namespace Cardbooru.BrowseImages
             _cancellationTokenSource?.Cancel();
             BooruImages = new ObservableCollection<BooruImageModelBase>();
             CurrentSite = message.CurrentSiteSettings;
-            PageNumberKeeper.LastQueriedPage = 1;
+            PageNumberKeeper.NextQueriedPage = 1;
         }
 
         private void DropImages(ResetBooruImagesMessage message)
         {
             _cancellationTokenSource?.Cancel();
             BooruImages = new ObservableCollection<BooruImageModelBase>();
-            PageNumberKeeper.LastQueriedPage = 1;
+            PageNumberKeeper.NextQueriedPage = 1;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

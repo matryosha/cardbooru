@@ -225,6 +225,7 @@
                 <Button
                     Margin="0 0 5 0"
                     Padding="8 0"
+                    Click="PageSelect_Buttons"
                     Command="{Binding PrevPageCommand}">
                     <!--<Button.Style>
                     TODO:Must based on material design otherwise material design will be lose
@@ -244,7 +245,7 @@
                 <Button
                     Margin="5 0 0 0"
                     Command="{Binding NextPageCommand}"
-                    Click="NextBtn_Onclick"
+                    Click="PageSelect_Buttons"
                     Padding="8 0">
                     <materialDesign:PackIcon Kind="ArrowRightBold" />
                 </Button>

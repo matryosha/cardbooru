@@ -42,7 +42,7 @@ namespace Cardbooru.Helpers
             BooruType booruType, 
             CancellationToken cancellationToken)
         {
-            QueryPageCheck(pageKeeper.LastQueriedPage, booruType);
+            QueryPageCheck(pageKeeper.NextQueriedPage, booruType);
             if (cancellationToken.IsCancellationRequested)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -69,7 +69,7 @@ namespace Cardbooru.Helpers
             string posts = String.Empty;
             posts = await GetClient()
                 .GetStringAsync(_baseModel.GetSiteUrl() +
-                                GetConverter.GetPosts(_baseModel.GetPostsUrl(), NumberOfPicPerRequest, pageKeeper.LastQueriedPage));
+                                GetConverter.GetPosts(_baseModel.GetPostsUrl(), NumberOfPicPerRequest, pageKeeper.NextQueriedPage));
 
             //Create metadata collection 
             var collection = DeserializePostsToCollection(booruType, posts);
@@ -82,7 +82,7 @@ namespace Cardbooru.Helpers
             await LoadPreviewImages(collection, realBooruImages, cancellationToken,pageKeeper);
 
             pageKeeper.QueriedPagesCount++;
-            pageKeeper.LastQueriedPage++;
+            pageKeeper.NextQueriedPage++;
         }
 
         private static ObservableCollection<BooruImageModelBase> SafeSearch(ObservableCollection<BooruImageModelBase> collection)
@@ -314,7 +314,7 @@ namespace Cardbooru.Helpers
                 GetClient().CancelPendingRequests();
             }
             ////////////////////////////////////////
-            await Task.Delay(1000);
+            //await Task.Delay(1000);
             ////////////////////////////////////////
             byte[] bytes;
             try

@@ -7,7 +7,7 @@ namespace Cardbooru.Helpers
     {
 
         public int AddedImagesCount { get; set; }
-        public int LastQueriedPage { get; set; }
+        public int NextQueriedPage { get; set; }  
         /// <summary>
         /// How many pages were queried to fill current displayed page
         /// </summary>
