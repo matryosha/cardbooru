@@ -9,15 +9,17 @@ using Cardbooru.FullImageBrowsing;
 using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
 using Cardbooru.Settings;
+using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru
 {
-    public class AppModelView : INotifyPropertyChanged {
+    public class MainWindowModelView : INotifyPropertyChanged {
 
         private IUserControlViewModel _currentView;
         private IDisposable _tokenFromBrowseImage;
         private IDisposable _tokenFromFullImageBrowse;
         private List<IUserControlViewModel> _viewModels;
+        private IMvxMessenger _messenger;
 
         public List<IUserControlViewModel> ViewModels => _viewModels ?? (_viewModels = new List<IUserControlViewModel>());
 
@@ -29,17 +31,17 @@ namespace Cardbooru
             }
         }
 
-        public AppModelView() {
-            var messenger = IdkInjection.MessengerHub;
-            _tokenFromBrowseImage = messenger.Subscribe<OpenFullImageMessage>(ShowFullImage);
-            _tokenFromFullImageBrowse = messenger.Subscribe<CloseFullImageMessage>(ChangeViewToBrowseImage);
-            CurrentView = new BrowseImagesViewModel();
+        public MainWindowModelView(IMvxMessenger messenger) {
+            _messenger = messenger;
+            _tokenFromBrowseImage = _messenger.Subscribe<OpenFullImageMessage>(ShowFullImage);
+            _tokenFromFullImageBrowse = _messenger.Subscribe<CloseFullImageMessage>(ChangeViewToBrowseImage);
+            CurrentView = new BrowseImagesViewModel(_messenger);
             ViewModels.Add(CurrentView);
-            ViewModels.Add(new SettingsViewModel());
+            ViewModels.Add(new SettingsViewModel(_messenger));
         }
 
         private void ShowFullImage(OpenFullImageMessage fullImage) {
-            var fullImageView = new FullImageBrowsingViewModel(fullImage.BooruImageModel, fullImage.BooruImageCollection, fullImage.CurrentPage);
+            var fullImageView = new FullImageBrowsingViewModel(fullImage.BooruImageModel, _messenger, fullImage.BooruImageCollection, fullImage.CurrentPage);
             CurrentView = fullImageView;
         }
 

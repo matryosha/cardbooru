@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using MvvmCross.Plugins.Messenger;
+using Ninject;
 
 namespace Cardbooru
 {
@@ -6,11 +8,13 @@ namespace Cardbooru
     {
         protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
+            IKernel kernel = new StandardKernel();
+            kernel.Bind<IMvxMessenger>().To<MvxMessengerHub>();
 
-            AppView app = new AppView();
-            AppModelView contex = new AppModelView();
-            app.DataContext = contex;
-            app.Show();
+            MainWindowView mainWindow = new MainWindowView();
+            MainWindowModelView context = kernel.Get<MainWindowModelView>();
+            mainWindow.DataContext = context;
+            mainWindow.Show();
         }
 
         protected override void OnExit(ExitEventArgs e) {

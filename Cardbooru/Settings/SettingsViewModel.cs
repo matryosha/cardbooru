@@ -18,6 +18,7 @@ namespace Cardbooru.Settings
         private bool _questionableCheck;
         private bool _explicitCheck;
         private bool _undefinedCheck;
+        private IMvxMessenger _messenger;
 
 
         private string _cacheSize = "Update";
@@ -88,19 +89,19 @@ namespace Cardbooru.Settings
             set {
                 _currentSite = value;
                 Properties.Settings.Default.CurrentSite = value.ToString();
-                Messenger.Publish(new SettingsMessage(this, value));
+                _messenger.Publish(new SettingsMessage(this, value));
                 OnPropertyChanged("CurrentSite");
                 
             }
         }
 
-        public SettingsViewModel()
+        public SettingsViewModel(IMvxMessenger messenger)
         {
             SafeCheck = Properties.Settings.Default.SafeCheck;
             QuestionableCheck = Properties.Settings.Default.QuestionableCheck;
             ExplicitCheck = Properties.Settings.Default.ExplicitCheck;
             UndefinedCheck = Properties.Settings.Default.UndefinedCheck;
-            Messenger = IdkInjection.MessengerHub;
+            _messenger = messenger;
             CachePath = Properties.Settings.Default.PathToCacheFolder;
             if(String.IsNullOrEmpty(Properties.Settings.Default.CurrentSite)) return;
             CurrentSite = (BooruType)Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite);
@@ -137,14 +138,14 @@ namespace Cardbooru.Settings
         }));
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public IMvxMessenger Messenger { get; }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
+            if(_messenger == null) return;
             if (propertyName == "UndefinedCheck" || propertyName == "SafeCheck" ||
                 propertyName == "QuestionableCheck" || propertyName == "ExplicitCheck")
             {
-                IdkInjection.MessengerHub.Publish(new ResetBooruImagesMessage(this));
+                _messenger.Publish(new ResetBooruImagesMessage(this));
                 GetConverter.UpdateRatingTags();
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

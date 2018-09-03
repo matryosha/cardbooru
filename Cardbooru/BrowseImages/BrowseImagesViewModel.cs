@@ -18,6 +18,7 @@ namespace Cardbooru.BrowseImages
         private IDisposable _settingsToken;
         private IDisposable _resetToken;
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private IMvxMessenger _messenger;
         //private int _currentQueryPage;
         private bool _isLoading;
         /// <summary>
@@ -76,15 +77,15 @@ namespace Cardbooru.BrowseImages
 
         public BooruType CurrentSite { get; private set; }
 
-        public IMvxMessenger Messenger { get; }
         public ObservableCollection<BooruImageModelBase> BooruImages { get; set; } = 
             new ObservableCollection<BooruImageModelBase>();
         
 
-        public BrowseImagesViewModel() {
-            Messenger = IdkInjection.MessengerHub;
-            _settingsToken = Messenger.Subscribe<SettingsMessage>(SiteChanged);
-            _resetToken = Messenger.Subscribe<ResetBooruImagesMessage>(DropImages);
+        public BrowseImagesViewModel(IMvxMessenger messenger)
+        {
+            _messenger = messenger;
+            _settingsToken = _messenger.Subscribe<SettingsMessage>(SiteChanged);
+            _resetToken = _messenger.Subscribe<ResetBooruImagesMessage>(DropImages);
         }
 
 
@@ -135,19 +136,19 @@ namespace Cardbooru.BrowseImages
                                                (_openFullImageCommand = new RelayCommand(async o => {
                                                    _cancellationTokenSource = new CancellationTokenSource();
                                                    var boouru = o as BooruImageModelBase;
-                                                   Messenger.Publish(new OpenFullImageMessage(this, o as BooruImageModelBase, BooruImages, PageNumberKeeper.NextQueriedPage - 1));
+                                                   _messenger.Publish(new OpenFullImageMessage(this, o as BooruImageModelBase, BooruImages, PageNumberKeeper.NextQueriedPage - 1));
                                                    try {
                                                        await BooruWorker.LoadFullImage(boouru, _cancellationTokenSource.Token);
                                                    }
                                                    catch (HttpRequestException e) {
                                                        boouru.FullImage = null;
-                                                       Messenger.Publish(new CloseFullImageMessage(new object()));
+                                                       _messenger.Publish(new CloseFullImageMessage(new object()));
                                                        ToggleErrorOccured.Execute(new object());
                                                        ErrorInfo = e.Message;
                                                    }
                                                    catch (Exception e) {
                                                        ToggleErrorOccured.Execute(new object());
-                                                       Messenger.Publish(new CloseFullImageMessage(new object()));
+                                                       _messenger.Publish(new CloseFullImageMessage(new object()));
                                                        ErrorInfo = e.Message;
                                                    }
                                                }));

@@ -20,9 +20,9 @@ namespace Cardbooru.FullImageBrowsing
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private int _currentImageIndex = -1;
         private int _currentPage;
+        private IMvxMessenger _messenger;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public IMvxMessenger Messenger { get; }
 
         private List<string> _tagsList;
         public List<string> TagsList {
@@ -65,7 +65,7 @@ namespace Cardbooru.FullImageBrowsing
             get => _closeImageCommand ?? (_closeImageCommand = new RelayCommand(o => {
                 BooruImageModel.FullImage = null;
                 BooruImageModel.IsFullImageLoaded = false;
-                Messenger.Publish(new CloseFullImageMessage(this));
+                _messenger.Publish(new CloseFullImageMessage(this));
                 }));
         }
 
@@ -122,14 +122,14 @@ namespace Cardbooru.FullImageBrowsing
             }));
         }
 
-        public FullImageBrowsingViewModel(BooruImageModelBase booruImageModel) {
-            Messenger = IdkInjection.MessengerHub;
+        public FullImageBrowsingViewModel(BooruImageModelBase booruImageModel, IMvxMessenger messenger) {
+            _messenger = messenger;
             BooruImageModel = booruImageModel;
             TagsList = booruImageModel.TagsList;
         }
 
-        public FullImageBrowsingViewModel(BooruImageModelBase booruImageModel, ObservableCollection<BooruImageModelBase> collection, int page) {
-            Messenger = IdkInjection.MessengerHub;
+        public FullImageBrowsingViewModel(BooruImageModelBase booruImageModel, IMvxMessenger messenger, ObservableCollection<BooruImageModelBase> collection, int page) {
+            _messenger = messenger;
             BooruImageModel = booruImageModel;
             _booruImagesCollection = collection;
             TagsList = booruImageModel.TagsList;

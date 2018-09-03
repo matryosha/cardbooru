@@ -4,9 +4,9 @@ using System.Windows.Input;
 namespace Cardbooru
 {
 
-    public partial class AppView : Window
+    public partial class MainWindowView : Window
     {
-        public AppView()
+        public MainWindowView()
         {
             InitializeComponent(); 
         }

@@ -3,6 +3,6 @@
 namespace Cardbooru.Helpers.Base
 {
     public interface IUserControlViewModel {
-        IMvxMessenger Messenger { get; }
+
     }
 }
