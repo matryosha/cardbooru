@@ -10,6 +10,7 @@ using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
 using Cardbooru.Settings;
 using MvvmCross.Plugins.Messenger;
+using Ninject;
 
 namespace Cardbooru
 {
@@ -31,13 +32,13 @@ namespace Cardbooru
             }
         }
 
-        public MainWindowViewModel(IMvxMessenger messenger) {
+        public MainWindowViewModel(IMvxMessenger messenger, IKernel iocKernel) {
             _messenger = messenger;
+            CurrentView = iocKernel.Get<BrowseImagesViewModel>();
+            ViewModels.Add(CurrentView);
+            ViewModels.Add(iocKernel.Get<SettingsViewModel>());
             _tokenFromBrowseImage = _messenger.Subscribe<OpenFullImageMessage>(ShowFullImage);
             _tokenFromFullImageBrowse = _messenger.Subscribe<CloseFullImageMessage>(ChangeViewToBrowseImage);
-            CurrentView = new BrowseImagesViewModel(_messenger);
-            ViewModels.Add(CurrentView);
-            ViewModels.Add(new SettingsViewModel(_messenger));
         }
 
         private void ShowFullImage(OpenFullImageMessage fullImage) {

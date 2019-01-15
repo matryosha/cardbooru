@@ -1,19 +1,40 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
+using Cardbooru.Application;
+using Cardbooru.Application.Configurations;
+using Cardbooru.Application.Helpers;
+using Cardbooru.Application.Interfaces;
+using Cardbooru.Application.Services;
 using MvvmCross.Plugins.Messenger;
+using Newtonsoft.Json;
 using Ninject;
 
 namespace Cardbooru
 {
-    public partial class App : Application
+    public partial class App : System.Windows.Application
     {
         private IKernel _iocContainer;
 
         protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
             _iocContainer = new StandardKernel();
+            LoadConfiguration();
+
             _iocContainer.Bind<IMvxMessenger>()
                 .To<MvxMessengerHub>()
                 .InSingletonScope();
+
+            _iocContainer.Bind<IBooruHttpClient>()
+                .To<SystemHttpClient>()
+                .InTransientScope();
+
+            _iocContainer.Bind<PostFetcherServiceHelper>()
+                .ToSelf()
+                .InSingletonScope();
+
+            _iocContainer.Bind<IPostFetcherService>()
+                .To<PostFetcherService>()
+                .InTransientScope();
 
             Current.MainWindow = _iocContainer.Get<MainWindowView>();
             Current.MainWindow.Show();
@@ -22,6 +43,16 @@ namespace Cardbooru
         protected override void OnExit(ExitEventArgs e) {
             base.OnExit(e);
             Cardbooru.Properties.Settings.Default.Save();
+        }
+
+        private void LoadConfiguration()
+        {
+            var configuration = JsonConvert
+                .DeserializeObject<RootConfiguration>(
+                    File.ReadAllText(Path.Combine(
+                        Directory.GetCurrentDirectory(), 
+                        "AppSettings.json")));
+            _iocContainer.Bind<RootConfiguration>().ToConstant(configuration);
         }
     }
 }
