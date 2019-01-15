@@ -6,15 +6,17 @@ namespace Cardbooru
 {
     public partial class App : Application
     {
+        private IKernel _iocContainer;
+
         protected override void OnStartup(StartupEventArgs e) {
             base.OnStartup(e);
-            IKernel kernel = new StandardKernel();
-            kernel.Bind<IMvxMessenger>().To<MvxMessengerHub>();
+            _iocContainer = new StandardKernel();
+            _iocContainer.Bind<IMvxMessenger>()
+                .To<MvxMessengerHub>()
+                .InSingletonScope();
 
-            MainWindowView mainWindow = new MainWindowView();
-            MainWindowModelView context = kernel.Get<MainWindowModelView>();
-            mainWindow.DataContext = context;
-            mainWindow.Show();
+            Current.MainWindow = _iocContainer.Get<MainWindowView>();
+            Current.MainWindow.Show();
         }
 
         protected override void OnExit(ExitEventArgs e) {

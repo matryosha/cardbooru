@@ -13,7 +13,7 @@ using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru
 {
-    public class MainWindowModelView : INotifyPropertyChanged {
+    public class MainWindowViewModel : INotifyPropertyChanged {
 
         private IUserControlViewModel _currentView;
         private IDisposable _tokenFromBrowseImage;
@@ -31,7 +31,7 @@ namespace Cardbooru
             }
         }
 
-        public MainWindowModelView(IMvxMessenger messenger) {
+        public MainWindowViewModel(IMvxMessenger messenger) {
             _messenger = messenger;
             _tokenFromBrowseImage = _messenger.Subscribe<OpenFullImageMessage>(ShowFullImage);
             _tokenFromFullImageBrowse = _messenger.Subscribe<CloseFullImageMessage>(ChangeViewToBrowseImage);

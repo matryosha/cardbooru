@@ -6,8 +6,9 @@ namespace Cardbooru
 
     public partial class MainWindowView : Window
     {
-        public MainWindowView()
+        public MainWindowView(MainWindowViewModel vm)
         {
+            DataContext = vm;
             InitializeComponent(); 
         }
 
