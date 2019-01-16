@@ -17,12 +17,12 @@ using Newtonsoft.Json;
 
 namespace Cardbooru.Helpers
 {
-    internal enum ImageSizeType {
+    public enum ImageSizeType {
         Preview,
         Full
     }
 
-    public enum BooruType
+    public enum BooruSiteType
     {
         Danbooru,
         SafeBooru,
@@ -39,10 +39,10 @@ namespace Cardbooru.Helpers
 
         public static async Task FillBooruImages(PageNumberKeeper pageKeeper, 
             ObservableCollection<BooruImageModelBase> realBooruImages, 
-            BooruType booruType, 
+            BooruSiteType booruSiteType, 
             CancellationToken cancellationToken)
         {
-            QueryPageCheck(pageKeeper.NextQueriedPage, booruType);
+            QueryPageCheck(pageKeeper.NextQueriedPage, booruSiteType);
             if (cancellationToken.IsCancellationRequested)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -52,15 +52,15 @@ namespace Cardbooru.Helpers
             _baseModel = null;
             //_countOfAddedPicsPerRequest = 0;
 
-            switch (booruType)
+            switch (booruSiteType)
             {
-                case BooruType.Danbooru:
+                case BooruSiteType.Danbooru:
                     _baseModel = new DanbooruImageModel();
                     break;
-                case BooruType.SafeBooru:
+                case BooruSiteType.SafeBooru:
                     _baseModel = new SafebooruImageModel();
                     break;
-                case BooruType.Gelbooru:
+                case BooruSiteType.Gelbooru:
                     _baseModel = new GelbooruImageModel();
                     break;
             }
@@ -72,7 +72,7 @@ namespace Cardbooru.Helpers
                                 GetConverter.GetPosts(_baseModel.GetPostsUrl(), NumberOfPicPerRequest, pageKeeper.NextQueriedPage));
 
             //Create metadata collection 
-            var collection = DeserializePostsToCollection(booruType, posts);
+            var collection = DeserializePostsToCollection(booruSiteType, posts);
 
             collection = FillTagsList(collection, cancellationToken);
             //collection = SafeSearch(collection);
@@ -226,15 +226,15 @@ namespace Cardbooru.Helpers
 
         }
 
-        private static ObservableCollection<BooruImageModelBase> DeserializePostsToCollection(BooruType type, string posts)
+        private static ObservableCollection<BooruImageModelBase> DeserializePostsToCollection(BooruSiteType type, string posts)
         {
             switch (type)
             {
-                case BooruType.Danbooru:
+                case BooruSiteType.Danbooru:
                     return new ObservableCollection<BooruImageModelBase>(JsonConvert.DeserializeObject<ObservableCollection<DanbooruImageModel>>(posts));
-                case BooruType.SafeBooru:
+                case BooruSiteType.SafeBooru:
                     return new ObservableCollection<BooruImageModelBase>(JsonConvert.DeserializeObject<ObservableCollection<SafebooruImageModel>>(posts));
-                case BooruType.Gelbooru:
+                case BooruSiteType.Gelbooru:
                     return new ObservableCollection<BooruImageModelBase>(JsonConvert.DeserializeObject<ObservableCollection<GelbooruImageModel>>(posts));
             }
 
@@ -382,9 +382,9 @@ namespace Cardbooru.Helpers
         }
 
         [Conditional("DEBUG")]
-        private static void QueryPageCheck(int pageNum, BooruType booruType)
+        private static void QueryPageCheck(int pageNum, BooruSiteType booruSiteType)
         {
-            Console.WriteLine($"Quering {pageNum} page from {booruType}");
+            Console.WriteLine($"Quering {pageNum} page from {booruSiteType}");
         }
     }
 }

@@ -7,5 +7,6 @@
             
         }
         public UrlConfiguration UrlConfiguration { get; set; }
+        public string CachePath { get; set; }
     }
 }

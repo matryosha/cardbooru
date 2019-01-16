@@ -42,6 +42,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -51,6 +52,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>Cardbooru.App</StartupObject>
@@ -131,19 +133,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Application\BooruCollectionManager.cs" />
     <Compile Include="Application\Configurations\DanbooruUrlConfiguration.cs" />
     <Compile Include="Application\Configurations\GlobbingConfiguration.cs" />
     <Compile Include="Application\Configurations\RootConfiguration.cs" />
     <Compile Include="Application\Configurations\SafebooruUrlConfiguration.cs" />
     <Compile Include="Application\Configurations\UrlConfiguration.cs" />
+    <Compile Include="Application\Entities\BooruImageWrapper.cs" />
     <Compile Include="Application\Exceptions\AssemblePostUrlException.cs" />
     <Compile Include="Application\Helpers\PostFetcherServiceHelper.cs" />
     <Compile Include="Application\Interfaces\IBooruHttpClient.cs" />
     <Compile Include="Application\Interfaces\IImageCachingService.cs" />
-    <Compile Include="Application\Interfaces\IImageCreatorService.cs" />
+    <Compile Include="Application\Interfaces\IBitmapImageCreatorService.cs" />
     <Compile Include="Application\Interfaces\IImageFetcherService.cs" />
     <Compile Include="Application\Interfaces\IPostCollectionManager.cs" />
     <Compile Include="Application\Interfaces\IPostFetcherService.cs" />
+    <Compile Include="Application\Services\ImageCachingService.cs" />
+    <Compile Include="Application\Services\BitmapSourceBitmapImageCreatorService.cs" />
     <Compile Include="Application\Services\ImageFetcherService.cs" />
     <Compile Include="Application\Services\PostFetcherService.cs" />
     <Compile Include="Application\SystemHttpClient.cs" />

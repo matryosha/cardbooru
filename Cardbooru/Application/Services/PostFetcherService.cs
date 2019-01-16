@@ -24,7 +24,7 @@ namespace Cardbooru.Application.Services
         }
 
         public Task<string> FetchPostsAsync(
-            BooruType type, 
+            BooruSiteType type, 
             int limit = 0, 
             int pageNumber = 1, 
             ICollection<string> tags = null)

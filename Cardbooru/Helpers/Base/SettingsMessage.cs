@@ -5,9 +5,9 @@ namespace Cardbooru.Helpers.Base
     public class SettingsMessage :
         MvxMessage {
 
-        public BooruType CurrentSiteSettings { get; }
+        public BooruSiteType CurrentSiteSettings { get; }
 
-        public SettingsMessage(object sender, BooruType type) : base(sender) {
+        public SettingsMessage(object sender, BooruSiteType type) : base(sender) {
             CurrentSiteSettings = type;
         }
     }

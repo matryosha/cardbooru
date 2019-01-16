@@ -83,8 +83,8 @@ namespace Cardbooru.Settings
             }
         }
 
-        private BooruType _currentSite;
-        public BooruType CurrentSite {
+        private BooruSiteType _currentSite;
+        public BooruSiteType CurrentSite {
             get => _currentSite;
             set {
                 _currentSite = value;
@@ -104,7 +104,7 @@ namespace Cardbooru.Settings
             _messenger = messenger;
             CachePath = Properties.Settings.Default.PathToCacheFolder;
             if(String.IsNullOrEmpty(Properties.Settings.Default.CurrentSite)) return;
-            CurrentSite = (BooruType)Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite);
+            CurrentSite = (BooruSiteType)Enum.Parse(typeof(BooruSiteType), Properties.Settings.Default.CurrentSite);
         }
 
         public async void UpdateSizeOfCache()

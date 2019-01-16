@@ -75,7 +75,7 @@ namespace Cardbooru.BrowseImages
 
         public object CurrentScroll { get; set; }
 
-        public BooruType CurrentSite { get; private set; }
+        public BooruSiteType CurrentSite { get; private set; }
 
         public ObservableCollection<BooruImageModelBase> BooruImages { get; set; } = 
             new ObservableCollection<BooruImageModelBase>();
@@ -132,26 +132,32 @@ namespace Cardbooru.BrowseImages
             }));
 
         private RelayCommand _openFullImageCommand;
-        public RelayCommand OpenFullCommand => _openFullImageCommand ??
-                                               (_openFullImageCommand = new RelayCommand(async o => {
-                                                   _cancellationTokenSource = new CancellationTokenSource();
-                                                   var boouru = o as BooruImageModelBase;
-                                                   _messenger.Publish(new OpenFullImageMessage(this, o as BooruImageModelBase, BooruImages, PageNumberKeeper.NextQueriedPage - 1));
-                                                   try {
-                                                       await BooruWorker.LoadFullImage(boouru, _cancellationTokenSource.Token);
-                                                   }
-                                                   catch (HttpRequestException e) {
-                                                       boouru.FullImage = null;
-                                                       _messenger.Publish(new CloseFullImageMessage(new object()));
-                                                       ToggleErrorOccured.Execute(new object());
-                                                       ErrorInfo = e.Message;
-                                                   }
-                                                   catch (Exception e) {
-                                                       ToggleErrorOccured.Execute(new object());
-                                                       _messenger.Publish(new CloseFullImageMessage(new object()));
-                                                       ErrorInfo = e.Message;
-                                                   }
-                                               }));
+        public RelayCommand OpenFullCommand =>
+            _openFullImageCommand ??
+            (_openFullImageCommand = new RelayCommand(async o =>
+            {
+                _cancellationTokenSource = new CancellationTokenSource();
+                var boouru = o as BooruImageModelBase;
+                _messenger.Publish(new OpenFullImageMessage(this, o as BooruImageModelBase, BooruImages,
+                    PageNumberKeeper.NextQueriedPage - 1));
+                try
+                {
+                    await BooruWorker.LoadFullImage(boouru, _cancellationTokenSource.Token);
+                }
+                catch (HttpRequestException e)
+                {
+                    boouru.FullImage = null;
+                    _messenger.Publish(new CloseFullImageMessage(new object()));
+                    ToggleErrorOccured.Execute(new object());
+                    ErrorInfo = e.Message;
+                }
+                catch (Exception e)
+                {
+                    ToggleErrorOccured.Execute(new object());
+                    _messenger.Publish(new CloseFullImageMessage(new object()));
+                    ErrorInfo = e.Message;
+                }
+            }));
 
         private RelayCommand _prevPageCommand;
         public RelayCommand PrevPageCommand => 

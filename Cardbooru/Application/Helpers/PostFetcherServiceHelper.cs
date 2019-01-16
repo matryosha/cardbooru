@@ -15,14 +15,14 @@ namespace Cardbooru.Application.Helpers
             _urlConfiguration = configuration.UrlConfiguration;
         }
 
-        public string GetPostsUrl(BooruType type, int limit, int pageNumber, ICollection<string> tags)
+        public string GetPostsUrl(BooruSiteType type, int limit, int pageNumber, ICollection<string> tags)
         {
             switch (type)
             {
-                case BooruType.Danbooru:
+                case BooruSiteType.Danbooru:
                     var danbooru = _urlConfiguration.DanbooruUrlConfiguration;
                     return danbooru.BaseUrl + AssemblePostsUrl(danbooru.PostsUrl, limit, pageNumber, tags);
-                case BooruType.SafeBooru:
+                case BooruSiteType.SafeBooru:
                     var safebooru = _urlConfiguration.SafebooruUrlConfiguration;
                     return safebooru.BaseUrl + AssemblePostsUrl(safebooru.PostsUrl, limit, pageNumber, tags);
                 default:

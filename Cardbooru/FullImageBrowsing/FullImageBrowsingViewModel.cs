@@ -81,7 +81,7 @@ namespace Cardbooru.FullImageBrowsing
                     _booruImagesCollection = new ObservableCollection<BooruImageModelBase>();
 
                     await BooruWorker.FillBooruImages(new PageNumberKeeper{NextQueriedPage = ++_currentPage}, _booruImagesCollection,
-                        (BooruType)Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite), cancellationTokenSource.Token);
+                        (BooruSiteType)Enum.Parse(typeof(BooruSiteType), Properties.Settings.Default.CurrentSite), cancellationTokenSource.Token);
                     _currentImageIndex = -1;
                 }
                    
@@ -108,7 +108,7 @@ namespace Cardbooru.FullImageBrowsing
                     _booruImagesCollection = new ObservableCollection<BooruImageModelBase>();
 
                     await BooruWorker.FillBooruImages(new PageNumberKeeper { NextQueriedPage = --_currentPage }, _booruImagesCollection,
-                        (BooruType)Enum.Parse(typeof(BooruType), Properties.Settings.Default.CurrentSite), cancellationTokenSource.Token);
+                        (BooruSiteType)Enum.Parse(typeof(BooruSiteType), Properties.Settings.Default.CurrentSite), cancellationTokenSource.Token);
                     _currentImageIndex = _booruImagesCollection.Count;
                 }
                     
