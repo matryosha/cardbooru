@@ -9,6 +9,6 @@ namespace Cardbooru.Application.Interfaces
         /// <summary>
         /// Return JSON string from fetched url
         /// </summary>
-        Task<string> FetchPostsAsync(BooruSiteType type, int limit, int pageNumber, ICollection<string> tags);
+        Task<string> FetchPostsAsync(BooruSiteType type, int limit = 100, int pageNumber = 1, ICollection<string> tags = default);
     }
 }

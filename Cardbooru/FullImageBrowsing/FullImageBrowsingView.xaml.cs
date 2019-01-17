@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -42,8 +43,14 @@ namespace Cardbooru.FullImageBrowsing
 
         private void MyStoryboard_Completed(object sender, EventArgs e)
         {
-            var contex = DataContext as FullImageBrowsingViewModel;
-            contex?.CloseImageCommand.Execute(sender);
+            var context = DataContext as FullImageBrowsingViewModel;
+            context?.CloseImageCommand.Execute(sender);
+        }
+
+        private async void FullImageBrowsingView_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            var context = DataContext as FullImageBrowsingViewModel;
+            await context?.ShowFullImage();
         }
     }
 }

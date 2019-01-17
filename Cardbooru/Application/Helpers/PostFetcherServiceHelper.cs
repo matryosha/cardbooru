@@ -37,7 +37,7 @@ namespace Cardbooru.Application.Helpers
             var builder = new StringBuilder(url);
             builder.Replace(globbing.Limit, limit.ToString());
             builder.Replace(globbing.PageNumber, pageNumber.ToString());
-            if (tags.Any())
+            if (tags != null && tags.Any())
             {
                 builder.Replace(globbing.Tags, "");
                 builder.Append("&tags");

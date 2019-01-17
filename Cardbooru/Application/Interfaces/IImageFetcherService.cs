@@ -12,6 +12,6 @@ namespace Cardbooru.Application.Interfaces
             BooruImageModelBase booruImage,
             ImageSizeType imageSizeType,
             bool caching = true,
-            CancellationToken token = default);
+            CancellationToken cancellationToken = default);
     }
 }

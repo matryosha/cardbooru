@@ -204,7 +204,14 @@ namespace Cardbooru.Helpers.Base {
 
         public override void SetLength(long value) {
             ThrowIfDisposed();
-            m_streamBase.SetLength(value);
+            try
+            {
+                m_streamBase.SetLength(value);
+            }
+            catch (NotSupportedException e)
+            {
+
+            }
         }
 
         /// <summary>

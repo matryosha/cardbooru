@@ -73,7 +73,7 @@
             </Viewbox>
         </Grid>
         <!--List box with images-->
-        <ListBox Grid.Column="1" ItemsSource="{Binding BooruImages}"
+        <ListBox Grid.Column="1" ItemsSource="{Binding NewBooruImages}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  Name="mainListBox" Padding="20 0 0 40" Margin="0"
                  BorderThickness="0"
@@ -140,7 +140,7 @@
                                 </i:InvokeCommandAction>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                        <Image Margin="5" Source="{Binding Path=PreviewImage}"
+                        <Image Margin="5" Source="{Binding Path=Image}"
                                    Height="{DynamicResource ImageItemHeight}" Width="{DynamicResource ImageItemWidth}" />
                     </materialDesign:Card>
                 </DataTemplate>
@@ -238,7 +238,7 @@
                 </Button>
                 <Button
                     Style="{StaticResource MaterialDesignFlatButton}" 
-                    Content="{Binding Path=PageNumberKeeper.DisplayedPage}"/>
+                    Content="{Binding QueryPage}"/>
                 <Button
                     Margin="5 0 0 0"
                     Command="{Binding NextPageCommand}"
@@ -254,12 +254,21 @@
                 <Style TargetType="Viewbox">
                     <Setter Property="Visibility" Value="Collapsed"></Setter>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding BooruImages.Count }" Value="0">
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding NewBooruImages.Count}" Value="0"/>
+                                <Condition Binding="{Binding IsProcessing}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Visibility" Value="Visible"></Setter>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <!--<DataTrigger Binding="{Binding NewBooruImages.Count }" Value="0">
                             <Setter Property="Visibility" Value="Visible"></Setter>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsLoaded}" Value="True">
                             <Setter Property="Visibility" Value="Collapsed"></Setter>
-                        </DataTrigger>
+                        </DataTrigger>-->
                     </Style.Triggers>
                 </Style>
             </Viewbox.Style>
@@ -268,15 +277,14 @@
                     Command="{Binding LoadCommand}">LOAD</Button>
         </Viewbox>
         <!--Page loading indicator-->
-        <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center" Height="50">
+        <!--<Viewbox HorizontalAlignment="Center" VerticalAlignment="Center" Height="50">
             <Viewbox.Style>
                 <Style TargetType="Viewbox">
                     <Setter Property="Visibility" Value="Collapsed"></Setter>
                     <Style.Triggers>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding BooruImages.Count}" Value="0"/>
-                                <Condition Binding="{Binding IsLoaded}" Value="True"/>
+                                <Condition Binding="{Binding IsProcessing}" Value="True"/>
                             </MultiDataTrigger.Conditions>
                             <MultiDataTrigger.Setters>
                                 <Setter Property="Visibility" Value="Visible"></Setter>
@@ -288,14 +296,14 @@
             <ProgressBar
                 IsIndeterminate="True"
                 Style="{StaticResource MaterialDesignCircularProgressBar}"/>
-        </Viewbox>
+        </Viewbox>-->
         <!--StackPanel that contain loading bar-->
         <StackPanel VerticalAlignment="Top">
             <StackPanel.Resources>
                 <Style TargetType="StackPanel">
                     <Setter Property="Visibility" Value="Collapsed"></Setter>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsLoading}" Value="true">
+                        <DataTrigger Binding="{Binding IsProcessing}" Value="true">
                             <Setter Property="Visibility" Value="Visible"></Setter>
                         </DataTrigger>
                     </Style.Triggers>

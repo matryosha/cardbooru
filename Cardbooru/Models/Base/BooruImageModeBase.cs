@@ -24,9 +24,11 @@ namespace Cardbooru.Models.Base
         public virtual string FullImageUrl { get; set; }
         public virtual List<string> TagsList { get; set; } = new List<string>();
         
+        [Obsolete]
         public virtual BitmapImage FullImage { get; set; }
+        [Obsolete]
         private bool _isImageLoaded;
-
+        [Obsolete]
         public bool IsFullImageLoaded {
             get => _isImageLoaded;
             set {
@@ -42,7 +44,7 @@ namespace Cardbooru.Models.Base
                 OnPropertyChanged("Hash");
             }
         }
-
+        [Obsolete]
         public virtual BitmapImage PreviewImage {
             get => _previewImage;
             set {

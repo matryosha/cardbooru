@@ -21,6 +21,7 @@ namespace Cardbooru
         private IDisposable _tokenFromFullImageBrowse;
         private List<IUserControlViewModel> _viewModels;
         private IMvxMessenger _messenger;
+        private readonly IKernel _iocKernel;
 
         public List<IUserControlViewModel> ViewModels => _viewModels ?? (_viewModels = new List<IUserControlViewModel>());
 
@@ -34,16 +35,23 @@ namespace Cardbooru
 
         public MainWindowViewModel(IMvxMessenger messenger, IKernel iocKernel) {
             _messenger = messenger;
-            CurrentView = iocKernel.Get<BrowseImagesViewModel>();
+            _iocKernel = iocKernel;
+            CurrentView = _iocKernel.Get<BrowseImagesViewModel>();
             ViewModels.Add(CurrentView);
-            ViewModels.Add(iocKernel.Get<SettingsViewModel>());
-            _tokenFromBrowseImage = _messenger.Subscribe<OpenFullImageMessage>(ShowFullImage);
+            ViewModels.Add(_iocKernel.Get<SettingsViewModel>());
+            _tokenFromBrowseImage = _messenger.Subscribe<OpenFullImageMessage>(OpenFullImage);
             _tokenFromFullImageBrowse = _messenger.Subscribe<CloseFullImageMessage>(ChangeViewToBrowseImage);
         }
 
-        private void ShowFullImage(OpenFullImageMessage fullImage) {
-            var fullImageView = new FullImageBrowsingViewModel(fullImage.BooruImageModel, _messenger, fullImage.BooruImageCollection, fullImage.CurrentPage);
-            CurrentView = fullImageView;
+        private void OpenFullImage(OpenFullImageMessage fullImage)
+        {
+            var imageViewer = _iocKernel.Get<FullImageBrowsingViewModel>();
+            imageViewer.Init(fullImage._booruImageWrapper, 
+                fullImage._booruPosts,
+                fullImage.BooruImageWrapperList,
+                fullImage.QueryPage);
+
+            CurrentView = imageViewer;
         }
 
         private void ChangeViewToBrowseImage(CloseFullImageMessage message) {

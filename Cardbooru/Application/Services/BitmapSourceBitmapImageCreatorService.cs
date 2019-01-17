@@ -11,33 +11,35 @@ namespace Cardbooru.Application.Services
     {
         public Task<BitmapImage> CreateImageAsync(byte[] bytes)
         {
-            return new Task<BitmapImage>(() =>
+            return Task.Run(() => CreateImage(bytes));
+        }
+
+        private static BitmapImage CreateImage(byte[] bytes)
+        {
+            BitmapImage image;
+            try
             {
-                BitmapImage image;
-                try
-                {
-                    // early I created BitmapFrame but it appers to consuming REALLY a lot of memory (about 1gig after loading 400 images)
-                    // So it sucks
-                    //   bitmap = BitmapFrame.Create(wpapper, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                // early I created BitmapFrame but it appers to consuming REALLY a lot of memory (about 1gig after loading 400 images)
+                // So it sucks
+                //   bitmap = BitmapFrame.Create(wpapper, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
 
-                    using (var wpapper = new WrappingStream(new MemoryStream(bytes)))
-                    {
-                        image = new BitmapImage();
-                        image.BeginInit();
-                        image.CacheOption = BitmapCacheOption.OnLoad;
-                        image.StreamSource = wpapper;
-                        image.EndInit();
-                        image.Freeze();
-                    }
-                }
-                catch (Exception e)
+                using (var wpapper = new WrappingStream(new MemoryStream(bytes)))
                 {
-                    //Todo add logging
-                    image = null;
+                    image = new BitmapImage();
+                    image.BeginInit();
+                    image.CacheOption = BitmapCacheOption.OnLoad;
+                    image.StreamSource = wpapper;
+                    image.EndInit();
+                    image.Freeze();
                 }
+            }
+            catch (Exception e)
+            {
+                //Todo add logging
+                image = null;
+            }
 
-                return image;
-            });
+            return image;
         }
     }
 }

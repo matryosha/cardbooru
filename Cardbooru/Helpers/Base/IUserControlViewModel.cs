@@ -1,8 +1,10 @@
-﻿using MvvmCross.Plugins.Messenger;
+﻿using System.ComponentModel;
+using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru.Helpers.Base
 {
-    public interface IUserControlViewModel {
+    public interface IUserControlViewModel : INotifyPropertyChanged
+    {
 
     }
 }

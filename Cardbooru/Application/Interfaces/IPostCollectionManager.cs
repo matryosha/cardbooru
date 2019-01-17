@@ -9,9 +9,9 @@ namespace Cardbooru.Application.Interfaces
 {
     public interface IPostCollectionManager
     {
-        ICollection<BooruImageModelBase> DeserializePosts(BooruSiteType type, string posts);
+        List<BooruImageModelBase> DeserializePosts(BooruSiteType type, string posts);
 
-        Task<ICollection<BooruImageWrapper>> GetImagesAsync(
+        Task<List<BooruImageWrapper>> GetImagesAsync(
             BooruSiteType booruSiteType,
             ImageSizeType imageType,
             ICollection<BooruImageModelBase> collection,

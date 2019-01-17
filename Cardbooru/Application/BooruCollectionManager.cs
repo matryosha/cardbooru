@@ -24,25 +24,25 @@ namespace Cardbooru.Application
         {
             _imageFetcherService = imageFetcherService;
         }
-        public ICollection<BooruImageModelBase> DeserializePosts(BooruSiteType type, string posts)
+        public List<BooruImageModelBase> DeserializePosts(BooruSiteType type, string posts)
         {
             switch (type)
             {
                 case BooruSiteType.Danbooru:
-                    return new ObservableCollection<BooruImageModelBase>(
-                        JsonConvert.DeserializeObject<ObservableCollection<DanbooruImageModel>>(posts));
+                    return new List<BooruImageModelBase>(
+                        JsonConvert.DeserializeObject<List<DanbooruImageModel>>(posts));
                 case BooruSiteType.SafeBooru:
-                    return new ObservableCollection<BooruImageModelBase>(
-                        JsonConvert.DeserializeObject<ObservableCollection<SafebooruImageModel>>(posts));
+                    return new List<BooruImageModelBase>(
+                        JsonConvert.DeserializeObject<List<SafebooruImageModel>>(posts));
                 case BooruSiteType.Gelbooru:
-                    return new ObservableCollection<BooruImageModelBase>(
-                        JsonConvert.DeserializeObject<ObservableCollection<GelbooruImageModel>>(posts));
+                    return new List<BooruImageModelBase>(
+                        JsonConvert.DeserializeObject<List<GelbooruImageModel>>(posts));
             }
 
             throw new Exception("Unknown booru type for deserialize");
         }
 
-        public async Task<ICollection<BooruImageWrapper>> GetImagesAsync(
+        public async Task<List<BooruImageWrapper>> GetImagesAsync(
             BooruSiteType booruSiteType,
             ImageSizeType imageType,
             ICollection<BooruImageModelBase> collection,
@@ -61,8 +61,9 @@ namespace Cardbooru.Application
                 if (string.IsNullOrEmpty(booruImage.Hash)) continue;
 
                 var imageFile = await _imageFetcherService.FetchImageAsync(
-                    booruImage, imageType, token: cancellationToken);
+                    booruImage, imageType, cancellationToken: cancellationToken);
 
+                if (imageFile == null) continue;
                 var booruImageWrapper  = new BooruImageWrapper();
                 booruImageWrapper.Hash = booruImage.Hash;
                 booruImageWrapper.Image = imageFile;

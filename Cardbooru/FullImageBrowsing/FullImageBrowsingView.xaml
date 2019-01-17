@@ -6,7 +6,8 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:local="clr-namespace:Cardbooru"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="500" Name="MainUserControl">
+             d:DesignHeight="300" d:DesignWidth="500" Name="MainUserControl"
+             Loaded="FullImageBrowsingView_OnLoaded">
     <Grid Name="MainGrid">
         <Grid.Background>
             <SolidColorBrush Color="#212121" ></SolidColorBrush>
@@ -24,7 +25,7 @@
             Grid.ColumnSpan="4">
             <Image.Style>
                 <Style TargetType="Image">
-                    <Setter Property="Source" Value="{Binding Path=PreviewImage}" />
+                    <Setter Property="Source" Value="{Binding Image}" />
                     <Setter Property="Effect">
                         <Setter.Value>
                             <BlurEffect Radius="15"/>
@@ -32,7 +33,7 @@
                     </Setter>
 
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=BooruImageModel.IsFullImageLoaded}" Value="False">
+                        <DataTrigger Binding="{Binding IsFullImageLoaded}" Value="False">
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
@@ -43,8 +44,8 @@
                                 </BeginStoryboard>
                             </DataTrigger.EnterActions>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=BooruImageModel.IsFullImageLoaded}" Value="True">
-                            <Setter Property="Source" Value="{Binding Path=BooruImageModel.FullImage}" />
+                        <DataTrigger Binding="{Binding IsFullImageLoaded}" Value="True">
+                            <Setter Property="Source" Value="{Binding Image}" />
                             <Setter Property="Stretch" Value="Uniform"/>
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard>
@@ -75,7 +76,7 @@
             <Viewbox.Style>
                 <Style TargetType="Viewbox">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=BooruImageModel.IsFullImageLoaded}" Value="True">
+                        <DataTrigger Binding="{Binding IsFullImageLoaded}" Value="True">
                             <Setter Property="Visibility"  Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>

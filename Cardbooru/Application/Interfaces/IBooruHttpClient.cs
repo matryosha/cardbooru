@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Cardbooru.Application.Interfaces
 {
@@ -6,6 +7,6 @@ namespace Cardbooru.Application.Interfaces
     {
         Task<string> GetStringAsync(string url);
 
-        Task<byte[]> GetByteArrayAsync(string url);
+        Task<byte[]> GetByteArrayAsync(string url, CancellationToken cancellationToken = default);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -27,12 +28,17 @@ namespace Cardbooru.Application.Services
             ImageSizeType sizeType,
             CancellationToken cancellationToken = default)
         {
-            using (FileStream stream = File.Open(GetImagePath(booruImage, imageType), FileMode.OpenOrCreate))
+            try
             {
-                await stream.WriteAsync(bytes, 0, bytes.Length, cancellationToken);
+                using (FileStream stream = File.Open(GetImagePath(booruImage, imageType), FileMode.OpenOrCreate))
+                {
+                    await stream.WriteAsync(bytes, 0, bytes.Length, cancellationToken);
+                }
             }
+            catch (IOException e)
+            {
 
-            return;
+            }
         }
 
         public async Task<BitmapImage> GetImageAsync(
@@ -63,12 +69,12 @@ namespace Cardbooru.Application.Services
         /// </summary>
         private string GetImagePath(BooruImageModelBase booruImage,ImageSizeType type)
         {
-            var workDir = Directory.GetCurrentDirectory();
+            var workDir = Path.Combine(Directory.GetCurrentDirectory(), _cachePath);
             return type == ImageSizeType.Preview
                 ? Path.Combine(
-                    workDir, booruImage.Hash, "_preview")
+                    workDir, booruImage.Hash + "_preview")
                 : Path.Combine(
-                    workDir, booruImage.Hash, "_full");
+                    workDir, booruImage.Hash + "_full");
         }
     }
 }
