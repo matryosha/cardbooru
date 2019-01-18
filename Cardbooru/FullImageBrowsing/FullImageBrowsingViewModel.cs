@@ -25,7 +25,7 @@ namespace Cardbooru.FullImageBrowsing
         private readonly IImageFetcherService _imageFetcherService;
         private readonly IPostCollectionManager _postCollectionManager;
         private readonly IPostFetcherService _postFetcherService;
-        private readonly RootConfiguration _configuration;
+        private readonly IBooruConfiguration _configuration;
         private CancellationTokenSource _cancellationTokenSource;  
         private List<BooruImageModelBase> _booruImageModelPosts;
         private BooruImageWrapper _booruImageWrapper;
@@ -42,7 +42,7 @@ namespace Cardbooru.FullImageBrowsing
             IImageFetcherService imageFetcherService,
             IPostCollectionManager postCollectionManager,
             IPostFetcherService postFetcherService,
-            RootConfiguration configuration)
+            IBooruConfiguration configuration)
         {
             _messenger = messenger;
             _imageFetcherService = imageFetcherService;

@@ -10,11 +10,11 @@ using Cardbooru.Models.Base;
 
 namespace Cardbooru.Application.Services
 {
-    class ImageCachingService : IImageCachingService
+    public class ImageCachingService : IImageCachingService
     {
         private string _cachePath;
         private readonly IBitmapImageCreatorService _imageCreatorService;
-        public ImageCachingService(RootConfiguration conf,
+        public ImageCachingService(IBooruConfiguration conf,
             IBitmapImageCreatorService imageCreatorService)
         {
             _cachePath = conf.CachePath;

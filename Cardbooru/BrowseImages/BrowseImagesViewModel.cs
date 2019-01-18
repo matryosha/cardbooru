@@ -23,7 +23,7 @@ namespace Cardbooru.BrowseImages
         private readonly IPostCollectionManager _postCollectionManager;
         private readonly IImageFetcherService _imageFetcherService;
         private readonly IPostFetcherService _postFetcherService;
-        private readonly RootConfiguration _configuration;
+        private readonly IBooruConfiguration _configuration;
         private CancellationTokenSource _cancellationTokenSource;
         private List<BooruImageModelBase> _currentPageBooruPosts;
 
@@ -44,7 +44,7 @@ namespace Cardbooru.BrowseImages
             IPostCollectionManager postCollectionManager,
             IImageFetcherService imageFetcherService,
             IPostFetcherService postFetcherService,
-            RootConfiguration configuration)
+            IBooruConfiguration configuration)
         {
             _messenger = messenger;
             _imageFetcherService = imageFetcherService;
@@ -72,7 +72,7 @@ namespace Cardbooru.BrowseImages
                 try
                 {
                     var postsString = await _postFetcherService.FetchPostsAsync(_configuration.ActiveSite,
-                        _configuration.UrlConfiguration.PostLimit, QueryPage);
+                        _configuration.FetchConfiguration.PostLimit, QueryPage);
 
                     _currentPageBooruPosts =  _postCollectionManager.DeserializePosts(
                         _configuration.ActiveSite, postsString) as List<BooruImageModelBase>;

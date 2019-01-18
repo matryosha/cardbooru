@@ -138,14 +138,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Application\BooruCollectionManager.cs" />
-    <Compile Include="Application\Configurations\DanbooruUrlConfiguration.cs" />
+    <Compile Include="Application\Configurations\BooruSiteUrlConfiguration.cs" />
     <Compile Include="Application\Configurations\GlobbingConfiguration.cs" />
-    <Compile Include="Application\Configurations\RootConfiguration.cs" />
+    <Compile Include="Application\Configurations\JsonBooruConfiguration.cs" />
     <Compile Include="Application\Configurations\SafebooruUrlConfiguration.cs" />
-    <Compile Include="Application\Configurations\UrlConfiguration.cs" />
+    <Compile Include="Application\Configurations\FetchConfiguration.cs" />
     <Compile Include="Application\Entities\BooruImageWrapper.cs" />
     <Compile Include="Application\Exceptions\AssemblePostUrlException.cs" />
+    <Compile Include="Application\Helpers\Extensions.cs" />
     <Compile Include="Application\Helpers\PostFetcherServiceHelper.cs" />
+    <Compile Include="Application\Interfaces\IBooruConfiguration.cs" />
     <Compile Include="Application\Interfaces\IBooruHttpClient.cs" />
     <Compile Include="Application\Interfaces\IImageCachingService.cs" />
     <Compile Include="Application\Interfaces\IBitmapImageCreatorService.cs" />

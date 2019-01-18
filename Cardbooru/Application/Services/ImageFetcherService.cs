@@ -13,13 +13,13 @@ namespace Cardbooru.Application.Services
         private readonly IBooruHttpClient _httpClient;
         private readonly IImageCachingService _imageCachingService;
         private readonly IBitmapImageCreatorService _bitmapImageCreatorService;
-        private readonly RootConfiguration _configuration;
+        private readonly IBooruConfiguration _configuration;
 
         public ImageFetcherService(
             IBooruHttpClient httpClient,
             IImageCachingService imageCachingService,
             IBitmapImageCreatorService bitmapImageCreatorService,
-            RootConfiguration configuration)
+            IBooruConfiguration configuration)
         {
             _httpClient = httpClient;
             _imageCachingService = imageCachingService;

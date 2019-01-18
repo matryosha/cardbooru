@@ -16,7 +16,7 @@ namespace Cardbooru.Application.Services
         public PostFetcherService(
             IBooruHttpClient httpClient,
             PostFetcherServiceHelper helper,
-            UrlConfiguration configuration)
+            FetchConfiguration configuration)
         {
             _httpClient = httpClient;
             _helper = helper;
