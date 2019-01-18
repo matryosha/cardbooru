@@ -163,14 +163,14 @@ namespace Cardbooru.BrowseImages
                 }
                 catch (HttpRequestException e)
                 {
-                    ToggleErrorOccured.Execute(new object());
+                    ToggleErrorOccured.Execute(null);
                     ErrorInfo = e.Message;
                     IsProcessing = false;
                 }
                 catch (OperationCanceledException) { }
                 catch (Exception e)
                 {
-                    ToggleErrorOccured.Execute(new object());
+                    ToggleErrorOccured.Execute(null);
                     ErrorInfo = e.Message;
                     IsProcessing = false;
                 }
@@ -185,30 +185,6 @@ namespace Cardbooru.BrowseImages
                 _messenger.Publish(new OpenFullImageMessage(
                     this, openedBooruImageWrapper, _currentPageBooruPosts,
                     NewBooruImages, QueryPage));
-
-                
-
-                //_cancellationTokenSource = new CancellationTokenSource();
-                //var boouru = o as BooruImageModelBase;
-                //_messenger.Publish(new OpenFullImageMessage(this, o as BooruImageModelBase, BooruImages,
-                //    PageNumberKeeper.NextQueriedPage - 1));
-                //try
-                //{
-                //    await BooruWorker.LoadFullImage(boouru, _cancellationTokenSource.Token);
-                //}
-                //catch (HttpRequestException e)
-                //{
-                //    boouru.FullImage = null;
-                //    _messenger.Publish(new CloseFullImageMessage(new object()));
-                //    ToggleErrorOccured.Execute(new object());
-                //    ErrorInfo = e.Message;
-                //}
-                //catch (Exception e)
-                //{
-                //    ToggleErrorOccured.Execute(new object());
-                //    _messenger.Publish(new CloseFullImageMessage(new object()));
-                //    ErrorInfo = e.Message;
-                //}
             }));
 
         private RelayCommand _prevPageCommand;
@@ -262,8 +238,6 @@ namespace Cardbooru.BrowseImages
                     //_pageNumberKeeper.AddedImagesCount = 0;
                     //LoadCommand.Execute(null);
                 }));
-
-
 
         private RelayCommand _toggleErrorOccured;
         public RelayCommand ToggleErrorOccured => _toggleErrorOccured ?? (_toggleErrorOccured = new RelayCommand(o => {

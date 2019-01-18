@@ -32,7 +32,7 @@ namespace Cardbooru.Application.Services
             {
                 using (FileStream stream = File.Open(GetImagePath(booruImage, imageType), FileMode.OpenOrCreate))
                 {
-                    await stream.WriteAsync(bytes, 0, bytes.Length, cancellationToken);
+                    await stream.WriteAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
                 }
             }
             catch (IOException e)
@@ -51,10 +51,10 @@ namespace Cardbooru.Application.Services
                 FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
             {
                 buff = new byte[file.Length];
-                await file.ReadAsync(buff, 0, (int)file.Length, cancellationToken);
+                await file.ReadAsync(buff, 0, (int)file.Length, cancellationToken).ConfigureAwait(false);
             }
 
-            return await _imageCreatorService.CreateImageAsync(buff);
+            return await _imageCreatorService.CreateImageAsync(buff).ConfigureAwait(false);
         }
 
         public bool IsHasCache(BooruImageModelBase booruImage, 

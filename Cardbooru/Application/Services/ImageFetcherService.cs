@@ -40,20 +40,25 @@ namespace Cardbooru.Application.Services
             {
                 if (_imageCachingService.IsHasCache(booruImage, imageSizeType))
                 {
-                    resultImage = await _imageCachingService.GetImageAsync(booruImage, imageSizeType, cancellationToken);
+                    resultImage = await _imageCachingService.GetImageAsync(
+                        booruImage, imageSizeType, cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    var imageBytes = await GetImageBytes(booruImage, imageSizeType, cancellationToken);
+                    var imageBytes = await GetImageBytes(
+                        booruImage, imageSizeType, cancellationToken).ConfigureAwait(false);
                     await _imageCachingService.CacheImageAsync(booruImage, imageSizeType, imageBytes,
-                        imageSizeType, cancellationToken);
-                    resultImage = await _bitmapImageCreatorService.CreateImageAsync(imageBytes);
+                        imageSizeType, cancellationToken).ConfigureAwait(false);
+                    resultImage = 
+                        await _bitmapImageCreatorService.CreateImageAsync(imageBytes).ConfigureAwait(false);
                 }
             }
             else
             {
-                resultImage = await  _bitmapImageCreatorService.CreateImageAsync(
-                    await GetImageBytes(booruImage, imageSizeType, cancellationToken));
+                resultImage = 
+                    await  _bitmapImageCreatorService.CreateImageAsync(await GetImageBytes(
+                        booruImage, imageSizeType, cancellationToken).ConfigureAwait(false))
+                    .ConfigureAwait(false);
             }
 
             
@@ -75,8 +80,8 @@ namespace Cardbooru.Application.Services
             CancellationToken cancellationToken)
         {
             return type == ImageSizeType.Full
-                ? await _httpClient.GetByteArrayAsync(modelBase.FullImageUrl, cancellationToken)
-                : await _httpClient.GetByteArrayAsync(modelBase.PreviewImageUrl, cancellationToken);
+                ? await _httpClient.GetByteArrayAsync(modelBase.FullImageUrl, cancellationToken).ConfigureAwait(false)
+                : await _httpClient.GetByteArrayAsync(modelBase.PreviewImageUrl, cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Cardbooru.Application
             byte[] result = { };
             try
             {
-                result = await _client.GetByteArrayAsync(url);
+                result = await _client.GetByteArrayAsync(url).ConfigureAwait(false);
             }
             catch (ArgumentNullException e)
             {
