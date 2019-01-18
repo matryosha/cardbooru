@@ -73,7 +73,7 @@
             </Viewbox>
         </Grid>
         <!--List box with images-->
-        <ListBox Grid.Column="1" ItemsSource="{Binding NewBooruImages}"
+        <ListBox Grid.Column="1" ItemsSource="{Binding BooruImages}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  Name="mainListBox" Padding="20 0 0 40" Margin="0"
                  BorderThickness="0"
@@ -224,16 +224,6 @@
                     Padding="8 0"
                     Click="PageSelect_Buttons"
                     Command="{Binding PrevPageCommand}">
-                    <!--<Button.Style>
-                    TODO:Must based on material design otherwise material design will be lose
-                        <Style TargetType="Button">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=PageNumberKeeper.NumberOfDisplayedImages}" Value="1">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>-->
                     <materialDesign:PackIcon Kind="ArrowLeftBold" />
                 </Button>
                 <Button
@@ -256,19 +246,13 @@
                     <Style.Triggers>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding NewBooruImages.Count}" Value="0"/>
+                                <Condition Binding="{Binding BooruImages.Count}" Value="0"/>
                                 <Condition Binding="{Binding IsProcessing}" Value="False"/>
                             </MultiDataTrigger.Conditions>
                             <MultiDataTrigger.Setters>
                                 <Setter Property="Visibility" Value="Visible"></Setter>
                             </MultiDataTrigger.Setters>
                         </MultiDataTrigger>
-                        <!--<DataTrigger Binding="{Binding NewBooruImages.Count }" Value="0">
-                            <Setter Property="Visibility" Value="Visible"></Setter>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsLoaded}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed"></Setter>
-                        </DataTrigger>-->
                     </Style.Triggers>
                 </Style>
             </Viewbox.Style>

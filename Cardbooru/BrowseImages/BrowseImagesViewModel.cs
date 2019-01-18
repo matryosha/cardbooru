@@ -2,105 +2,42 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using Cardbooru.Application.Configurations;
 using Cardbooru.Application.Entities;
 using Cardbooru.Application.Interfaces;
 using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
-using Cardbooru.Models;
 using Cardbooru.Models.Base;
 using MvvmCross.Plugins.Messenger;
 
 namespace Cardbooru.BrowseImages
 {
     public class BrowseImagesViewModel : 
-        INotifyPropertyChanged, IUserControlViewModel {
-
+        IUserControlViewModel {
 
         private IDisposable _settingsToken;
         private IDisposable _resetToken;
-        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-        private IMvxMessenger _messenger;
-        private IPostCollectionManager _postCollectionManager;
-        private IImageFetcherService _imageFetcherService;
-        private IPostFetcherService _postFetcherService;
-        private RootConfiguration _configuration;
+        private readonly IMvxMessenger _messenger;
+        private readonly IPostCollectionManager _postCollectionManager;
+        private readonly IImageFetcherService _imageFetcherService;
+        private readonly IPostFetcherService _postFetcherService;
+        private readonly RootConfiguration _configuration;
+        private CancellationTokenSource _cancellationTokenSource;
         private List<BooruImageModelBase> _currentPageBooruPosts;
 
-        /// <summary>
-        /// Uses by new load page command
-        /// </summary>
-        private int _queryPage = 1;
-        public int QueryPage
-        {
-            get => _queryPage;
-            set
-            {
-                _queryPage = value;
-                OnPropertyChanged("QueryPage");
-            }
-        }
-        private bool _isProcessing;
+        public event PropertyChangedEventHandler PropertyChanged;
+        public int QueryPage { get; set; } = 1;
         /// <summary>
         /// Indicate whether something something doing a thing
         /// </summary>
-        public bool IsProcessing { get => _isProcessing;
-            set {
-                _isProcessing = value;
-                OnPropertyChanged("IsProcessing");
-            }
-        }
-
-        private bool _isErrorOccured;
-        public bool IsErrorOccured {
-            get => _isErrorOccured;
-            set {
-                _isErrorOccured = value;
-                OnPropertyChanged("IsErrorOccured");
-            }
-        }
-
-        private string _errorInfo;
-        public string ErrorInfo {
-            get => _errorInfo;
-            set {
-                _errorInfo = value;
-                OnPropertyChanged("ErrorInfo");
-            }
-        }
-
-        [Obsolete]
-        private PageNumberKeeper _pageNumberKeeper;
-        [Obsolete]
-        public PageNumberKeeper PageNumberKeeper
-        {
-            get => _pageNumberKeeper ?? (_pageNumberKeeper = new PageNumberKeeper
-            {
-                NextQueriedPage = 1,
-                DisplayedPage = 1
-            });
-            set
-            {
-                _pageNumberKeeper = value;
-                OnPropertyChanged("PageNumberKeeper");
-            }
-        }
-
+        public bool IsProcessing { get; set; }
+        public bool IsErrorOccured { get; set; }
+        public string ErrorInfo { get; set; }
         public object CurrentScroll { get; set; }
-
         public BooruSiteType CurrentSite { get; private set; }
-
-        public ObservableCollection<BooruImageModelBase> BooruImages { get; set; } = 
-            new ObservableCollection<BooruImageModelBase>();
-        
-
-        public ObservableCollection<BooruImageWrapper> NewBooruImages { get; set; } =
+        public ObservableCollection<BooruImageWrapper> BooruImages { get; set; } =
             new ObservableCollection<BooruImageWrapper>();
 
         public BrowseImagesViewModel(IMvxMessenger messenger,
@@ -118,7 +55,6 @@ namespace Cardbooru.BrowseImages
             _resetToken = _messenger.Subscribe<ResetBooruImagesMessage>(DropImages);
         }
 
-
         #region Commands
         /// <summary>
         /// Query images from booru
@@ -129,7 +65,7 @@ namespace Cardbooru.BrowseImages
             {
                 //if (_cancellationTokenSource.IsCancellationRequested) IsProcessing = false;
                 //if (IsProcessing) return;
-                NewBooruImages.Clear();
+                BooruImages.Clear();
                 _cancellationTokenSource = new CancellationTokenSource();
                 var cancellationToken = _cancellationTokenSource.Token;
                 IsProcessing = true;
@@ -156,17 +92,17 @@ namespace Cardbooru.BrowseImages
                             Image = image
                         };
 
-                        NewBooruImages.Add(booruImageWrapper);
+                        BooruImages.Add(booruImageWrapper);
                     }
 
                     IsProcessing = false;
                 }
-                catch (HttpRequestException e)
-                {
-                    ToggleErrorOccured.Execute(null);
-                    ErrorInfo = e.Message;
-                    IsProcessing = false;
-                }
+                //catch (HttpRequestException e)
+                //{
+                //    ToggleErrorOccured.Execute(null);
+                //    ErrorInfo = e.Message;
+                //    IsProcessing = false;
+                //}
                 catch (OperationCanceledException) { }
                 catch (Exception e)
                 {
@@ -184,7 +120,7 @@ namespace Cardbooru.BrowseImages
                 var openedBooruImageWrapper = o as BooruImageWrapper;
                 _messenger.Publish(new OpenFullImageMessage(
                     this, openedBooruImageWrapper, _currentPageBooruPosts,
-                    NewBooruImages, QueryPage));
+                    BooruImages, QueryPage));
             }));
 
         private RelayCommand _prevPageCommand;
@@ -192,30 +128,10 @@ namespace Cardbooru.BrowseImages
             _prevPageCommand ?? (
                 _prevPageCommand = new RelayCommand(o =>
                 {
-                    if (_queryPage == 1) return;
+                    if (QueryPage == 1) return;
                     _cancellationTokenSource.Cancel();
                     QueryPage--;
                     LoadCommand.Execute(null);
-                    //if (PageNumberKeeper.DisplayedPage == 1) return;
-                    //_cancellationTokenSource.Cancel();
-                    //if (_pageNumberKeeper.QuriedPagesAccordance.ContainsKey(PageNumberKeeper.DisplayedPage - 1))
-                    //{
-                    //    PageNumberKeeper.NextQueriedPage =
-                    //        PageNumberKeeper.QuriedPagesAccordance[PageNumberKeeper.DisplayedPage - 1];
-                    //    PageNumberKeeper.QuriedPagesAccordance.Remove(PageNumberKeeper.DisplayedPage - 1);
-                    //}
-                    //else if (PageNumberKeeper.DisplayedPage - 1 == 1)
-                    //{
-                    //    PageNumberKeeper.ResetQueryInfo();
-                    //} else
-                    //{
-                    //    PageNumberKeeper.NextQueriedPage = PageNumberKeeper.NextQueriedPage - PageNumberKeeper.QueriedPagesCount - 1;
-                    //}
-                    //PageNumberKeeper.DisplayedPage--;
-                    //BooruImages.Clear();
-                    //PageNumberKeeper.QueriedPagesCount = 0;
-                    //_pageNumberKeeper.AddedImagesCount = 0;
-                    //LoadCommand.Execute(null);
                 }));
 
         private RelayCommand _nextPageCommand;
@@ -225,46 +141,34 @@ namespace Cardbooru.BrowseImages
                     _cancellationTokenSource.Cancel();
                     QueryPage++;
                     LoadCommand.Execute(null);
-                    //_cancellationTokenSource.Cancel();
-                    //if (_pageNumberKeeper.QueriedPagesCount > 1)
-                    //{
-                    //    _pageNumberKeeper.QuriedPagesAccordance.Add(_pageNumberKeeper.DisplayedPage + 1,
-                    //        _pageNumberKeeper.NextQueriedPage);
-                    //}
-                    //if (IsProcessing) _pageNumberKeeper.NextQueriedPage++;
-                    //_pageNumberKeeper.DisplayedPage++;
-                    //BooruImages.Clear();
-                    //_pageNumberKeeper.QueriedPagesCount = 0;
-                    //_pageNumberKeeper.AddedImagesCount = 0;
-                    //LoadCommand.Execute(null);
                 }));
 
         private RelayCommand _toggleErrorOccured;
-        public RelayCommand ToggleErrorOccured => _toggleErrorOccured ?? (_toggleErrorOccured = new RelayCommand(o => {
+        public RelayCommand ToggleErrorOccured => 
+            _toggleErrorOccured ?? (
+                _toggleErrorOccured = new RelayCommand(o => {
             IsErrorOccured = !IsErrorOccured;
             ErrorInfo = string.Empty;
         }));
 
         private RelayCommand _loadStateCommand;
-        public RelayCommand LoadStateCommand => _loadStateCommand ?? (_loadStateCommand = new RelayCommand(o => { }));
+        public RelayCommand LoadStateCommand => 
+            _loadStateCommand ?? (
+                _loadStateCommand = new RelayCommand(o => { }));
         #endregion
 
         private void SiteChanged(SettingsMessage message) {
             if(message.CurrentSiteSettings == CurrentSite) return;
             _cancellationTokenSource?.Cancel();
-            BooruImages = new ObservableCollection<BooruImageModelBase>();
+            BooruImages.Clear();
             CurrentSite = message.CurrentSiteSettings;
-            PageNumberKeeper.ResetAll();
         }
 
         private void DropImages(ResetBooruImagesMessage message)
         {
             _cancellationTokenSource?.Cancel();
-            BooruImages = new ObservableCollection<BooruImageModelBase>();
-            PageNumberKeeper.ResetAll();
+            BooruImages.Clear();
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
