@@ -17,7 +17,7 @@ namespace Cardbooru.BrowseImages
     public class BrowseImagesViewModel : 
         IUserControlViewModel {
 
-        private IDisposable _settingsToken;
+        private IDisposable _settingsUpdatedToken;
         private IDisposable _resetToken;
         private readonly IMvxMessenger _messenger;
         private readonly IPostCollectionManager _postCollectionManager;
@@ -51,7 +51,7 @@ namespace Cardbooru.BrowseImages
             _postCollectionManager = postCollectionManager;
             _postFetcherService = postFetcherService;
             _configuration = configuration;
-            _settingsToken = _messenger.Subscribe<SettingsMessage>(SiteChanged);
+            _settingsUpdatedToken = _messenger.Subscribe<SettingsUpdatedMessage>(SettingsUpdated);
             _resetToken = _messenger.Subscribe<ResetBooruImagesMessage>(DropImages);
         }
 
@@ -157,11 +157,9 @@ namespace Cardbooru.BrowseImages
                 _loadStateCommand = new RelayCommand(o => { }));
         #endregion
 
-        private void SiteChanged(SettingsMessage message) {
-            if(message.CurrentSiteSettings == CurrentSite) return;
+        private void SettingsUpdated(SettingsUpdatedMessage message) {
             _cancellationTokenSource?.Cancel();
             BooruImages.Clear();
-            CurrentSite = message.CurrentSiteSettings;
         }
 
         private void DropImages(ResetBooruImagesMessage message)

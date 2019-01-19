@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Ookii.Dialogs.Wpf;
@@ -27,6 +28,12 @@ namespace Cardbooru.Settings
         {
             SettingsViewModel context = DataContext as SettingsViewModel;
             context.UpdateSizeOfCache();
+        }
+
+        private void SettingsView_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            SettingsViewModel context = DataContext as SettingsViewModel;
+            context.UpdateValues();
         }
     }
 }

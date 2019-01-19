@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Cardbooru.Application.Interfaces;
 using Cardbooru.Helpers;
 using Cardbooru.Helpers.Base;
 using MvvmCross.Plugins.Messenger;
@@ -10,101 +11,35 @@ using MvvmCross.Plugins.Messenger;
 namespace Cardbooru.Settings
 {
     public class SettingsViewModel :
-        INotifyPropertyChanged, IUserControlViewModel
+        IUserControlViewModel
     {
+        private readonly IMvxMessenger _messenger;
+        private readonly IBooruConfiguration _configuration;
 
+        public string CacheSize { get; set; } = "Update";
+        public string CachePath { get; set; } = String.Empty;
+        public bool SafeCheck { get; set; }
+        public bool QuestionableCheck { get; set; }
+        public bool ExplicitCheck { get; set; }
+        public bool UndefinedCheck { get; set; }
+        public BooruSiteType CurrentSite { get; set; }
 
-        private bool _safeCheck;
-        private bool _questionableCheck;
-        private bool _explicitCheck;
-        private bool _undefinedCheck;
-        private IMvxMessenger _messenger;
-
-
-        private string _cacheSize = "Update";
-        public string CacheSize
+        public SettingsViewModel(IMvxMessenger messenger,
+            IBooruConfiguration configuration)
         {
-            get => _cacheSize;
-            set
-            {
-                _cacheSize = value;
-                OnPropertyChanged("CacheSize");
-            }
-        }
-        private string _cachePath = String.Empty;
-        public string CachePath
-        {
-            get => _cachePath;
-            set
-            {
-                _cachePath = value;
-                OnPropertyChanged("CachePath");
-            }
-        }
-
-        public bool SafeCheck
-        {
-            get => _safeCheck;
-            set
-            {
-                _safeCheck = value;
-                Properties.Settings.Default.SafeCheck = value;
-                OnPropertyChanged("SafeCheck");
-            }
-        }
-        public bool QuestionableCheck
-        {
-            get => _questionableCheck;
-            set
-            {
-                _questionableCheck = value;
-                Properties.Settings.Default.QuestionableCheck = value;
-                OnPropertyChanged("QuestionableCheck");
-            }
-        }
-        public bool ExplicitCheck
-        {
-            get => _explicitCheck;
-            set
-            {
-                _explicitCheck = value;
-                Properties.Settings.Default.ExplicitCheck = value;
-                OnPropertyChanged("ExplicitCheck");
-            }
-        }
-        public bool UndefinedCheck
-        {
-            get => _undefinedCheck;
-            set
-            {
-                _undefinedCheck = value;
-                Properties.Settings.Default.UndefinedCheck = value;
-                OnPropertyChanged("UndefinedCheck");
-            }
-        }
-
-        private BooruSiteType _currentSite;
-        public BooruSiteType CurrentSite {
-            get => _currentSite;
-            set {
-                _currentSite = value;
-                Properties.Settings.Default.CurrentSite = value.ToString();
-                _messenger.Publish(new SettingsMessage(this, value));
-                OnPropertyChanged("CurrentSite");
-                
-            }
-        }
-
-        public SettingsViewModel(IMvxMessenger messenger)
-        {
-            SafeCheck = Properties.Settings.Default.SafeCheck;
-            QuestionableCheck = Properties.Settings.Default.QuestionableCheck;
-            ExplicitCheck = Properties.Settings.Default.ExplicitCheck;
-            UndefinedCheck = Properties.Settings.Default.UndefinedCheck;
             _messenger = messenger;
-            CachePath = Properties.Settings.Default.PathToCacheFolder;
-            if(String.IsNullOrEmpty(Properties.Settings.Default.CurrentSite)) return;
-            CurrentSite = (BooruSiteType)Enum.Parse(typeof(BooruSiteType), Properties.Settings.Default.CurrentSite);
+            _configuration = configuration;
+        }
+
+        public void UpdateValues()
+        {
+            var ratingConfiguration = _configuration.FetchConfiguration.RatingConfiguration;
+            SafeCheck = ratingConfiguration.Safe;
+            QuestionableCheck = ratingConfiguration.Questionable;
+            ExplicitCheck = ratingConfiguration.Explicit;
+
+            CachePath = _configuration.CachePath;
+            CurrentSite = _configuration.ActiveSite;
         }
 
         public async void UpdateSizeOfCache()
@@ -121,21 +56,29 @@ namespace Cardbooru.Settings
         }
 
         private RelayCommand _clearDir;
+        public RelayCommand ClearCacheDirectory =>
+            _clearDir ?? (_clearDir = new RelayCommand(o =>
+            {
+                var files = Directory.GetFiles(CachePath, "*_preview");
+                foreach (var file in files) File.Delete(file);
+                files = Directory.GetFiles(CachePath, "*_full");
+                foreach (var file in files) File.Delete(file);
+                UpdateSizeOfCache();
+            }));
 
-        public RelayCommand ClearCacheDirectory => _clearDir ?? (_clearDir = new RelayCommand(o =>
-        {
-            var files = Directory.GetFiles(CachePath, "*_preview");
-            foreach (var file in files)
-            {
-                File.Delete(file);
-            }
-            files = Directory.GetFiles(CachePath, "*_full");
-            foreach (var file in files)
-            {
-                File.Delete(file);
-            }
-            UpdateSizeOfCache();
-        }));
+        private RelayCommand _saveSettingsCommand;
+
+        public RelayCommand SaveSettingsCommand =>
+            _saveSettingsCommand ?? (_saveSettingsCommand = new RelayCommand(o =>
+                {
+                    _configuration.ActiveSite = CurrentSite;
+                    _configuration.CachePath = CachePath;
+                    var ratingConfiguration = _configuration.FetchConfiguration.RatingConfiguration;
+                    ratingConfiguration.Explicit = ExplicitCheck;
+                    ratingConfiguration.Questionable = QuestionableCheck;
+                    ratingConfiguration.Safe = SafeCheck;
+                    _messenger.Publish(new SettingsUpdatedMessage(this));
+                }));
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -145,12 +88,12 @@ namespace Cardbooru.Settings
             if (propertyName == "UndefinedCheck" || propertyName == "SafeCheck" ||
                 propertyName == "QuestionableCheck" || propertyName == "ExplicitCheck")
             {
+
                 _messenger.Publish(new ResetBooruImagesMessage(this));
                 GetConverter.UpdateRatingTags();
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
 
         static long GetDirectorySize(string p)
         {
@@ -172,7 +115,6 @@ namespace Cardbooru.Settings
             // Return total size
             return b;
         }
-
 
     }
 }

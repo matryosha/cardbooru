@@ -160,7 +160,7 @@
     <Compile Include="Application\Services\PostFetcherService.cs" />
     <Compile Include="Application\SystemHttpClient.cs" />
     <Compile Include="Helpers\Base\ResetBooruImagesMessage.cs" />
-    <Compile Include="Helpers\Base\SettingsMessage.cs" />
+    <Compile Include="Helpers\Base\SettingsUpdatedMessage.cs" />
     <Compile Include="Helpers\Base\VirtualizingWrapPanel.cs" />
     <Compile Include="Helpers\GetConverter.cs" />
     <Compile Include="Helpers\PageNumberKeeper.cs" />

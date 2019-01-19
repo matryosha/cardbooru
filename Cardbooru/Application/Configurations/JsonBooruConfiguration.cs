@@ -21,12 +21,10 @@ namespace Cardbooru.Application.Configurations
             DuckCopyShallow(this, configuration);
         }
         public JsonBooruConfiguration() { }
-
         public FetchConfiguration FetchConfiguration { get; set; }
         public string CachePath { get; set; }
         public BooruSiteType ActiveSite { get; set; }
         public bool ImageCaching { get; set; }
-
         public Task SaveConfiguration()
         {
             throw new NotImplementedException();
