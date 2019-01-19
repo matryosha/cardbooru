@@ -41,7 +41,7 @@ namespace Cardbooru.Models
         }
 
         public override string FullImageUrl {
-            get => base.FullImageUrl ?? (FullImageUrl = $"{_siteUrl}/images/{_directoryNum}/{_imageName}");
+            get => base.FullImageUrl ?? (base.FullImageUrl = $"{_siteUrl}/images/{_directoryNum}/{_imageName}");
             set { base.FullImageUrl = $"{_siteUrl}/images/{_directoryNum}/{value}"; }
         }
 
