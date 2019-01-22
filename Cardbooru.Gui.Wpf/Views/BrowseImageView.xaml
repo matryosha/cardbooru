@@ -1,0 +1,299 @@
+﻿<UserControl x:Class="Cardbooru.Gui.Wpf.Views.BrowseImageView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:infrastructure="clr-namespace:Cardbooru.Gui.Wpf.Infrastructure"
+        mc:Ignorable="d" d:DesignWidth="859" d:DesignHeight="611.5" 
+        Loaded="BrowseImageView_OnLoaded">
+    <UserControl.Resources>
+        <system:Double x:Key="ImageItemHeight">250</system:Double>
+        <system:Double x:Key="ImageItemWidth">250</system:Double>
+    </UserControl.Resources>
+    <!--Main Grid-->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Name="ListBoxColumn" Width="*" />
+        </Grid.ColumnDefinitions>
+        <!--Grid that contain error messages viewboxes-->
+        <Grid Background="#212121">
+            <!--ZIndex="1001" Opacity="1"-->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!--Trigger for close the grid with mouse-->
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseLeftButtonDown">
+                    <i:InvokeCommandAction Command="{Binding ToggleErrorOccured}"></i:InvokeCommandAction>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <!--Datatrigger for showing the grid when error occured-->
+            <Grid.Resources>
+                <Style TargetType="Grid">
+                    <Setter Property="Opacity" Value="0"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsErrorOccured}" Value="true">
+                            <Setter Property="ZIndex" Value="1001"></Setter>
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             To="0.9" Duration="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Resources>
+            <!--Adaptive text info-->
+            <Viewbox VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1">
+                <Viewbox.Resources>
+                    <Style TargetType="Viewbox">
+                        <Setter Property="Opacity" Value="1"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsErrorOccured}" Value="false">
+                                <Setter Property="Opacity" Value="0"></Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Viewbox.Resources>
+                <TextBlock Margin="20 0 20 0" >
+                        Error occured :(</TextBlock>
+            </Viewbox>
+            <!--Error info text-->
+            <Viewbox VerticalAlignment="Bottom" HorizontalAlignment="Center" Grid.Row="2" Height="50">
+                <TextBlock Text="{Binding ErrorInfo}" Margin="20 0 20 0" Opacity="0.5"/>
+            </Viewbox>
+        </Grid>
+        <!--List box with images-->
+        <ListBox Grid.Column="1" ItemsSource="{Binding BooruImages}"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 Name="mainListBox" Padding="20 0 0 40" Margin="0"
+                 BorderThickness="0"
+                 ScrollViewer.ScrollChanged="MainListBox_OnScrollChanged"
+                 ScrollViewer.Loaded="MainListBox_OnLoaded"
+                 ScrollViewer.Unloaded="MainListBox_OnUnLoaded">
+            <ListBox.Resources>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border Name="Border" Padding="2" SnapsToDevicePixels="true">
+                                    <ContentPresenter />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="true">
+                                        <Setter TargetName="Border" Property="Background"
+                                                    Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.Resources>
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <materialDesign:Card Cursor="Hand">
+                        <materialDesign:Card.Triggers>
+                            <EventTrigger RoutedEvent="materialDesign:Card.MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="#757575" 
+                                                Storyboard.TargetProperty=
+                                                            "(materialDesign:Card.Background).
+                                                            (SolidColorBrush.Color)"
+                                                            Duration="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="materialDesign:Card.MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="#424242" 
+                                                        Storyboard.TargetProperty=
+                                                        "(materialDesign:Card.Background).
+                                                            (SolidColorBrush.Color)"
+                                                        Duration="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+
+                            </EventTrigger>
+                        </materialDesign:Card.Triggers>
+                        <i:Interaction.Triggers>
+                            <!--In the begining I use just event in ItemContainerStyle but it caused ui freezing-->
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RelativeSource=
+                                        {RelativeSource FindAncestor, 
+                                        AncestorType={x:Type UserControl}}, 
+                                        Path=DataContext.OpenFullCommand}" CommandParameter="{Binding RelativeSource=
+                                        {RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, 
+                                        Path=Content}">
+                                </i:InvokeCommandAction>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Image Margin="5" Source="{Binding Path=Image}"
+                                   Height="{DynamicResource ImageItemHeight}" Width="{DynamicResource ImageItemWidth}" />
+                    </materialDesign:Card>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <!--Wrap panel-->
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <infrastructure:VirtualizingWrapPanel Orientation="Horizontal" IsItemsHost="True"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Padding" Value="0" />
+                    <!--disable one of the internal padding-->
+                    <Setter Property="Margin" Value="20" />
+                    <Setter Property="BorderThickness" Value="0" />
+
+                    <!--Disable default highlighting-->
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="FocusVisualStyle">
+                        <Setter.Value>
+                            <Style>
+                                <!-- This removes focus visualization -->
+                                <Setter Property="Control.Template" Value="{x:Null}"/>
+                            </Style>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsEnabled" Value="false">
+                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                    </Trigger>
+                                    <!-- Some default triggers removed to avoid background changes on selection -->
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <!--Disable default highlighting-->
+                    <Style.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             From="0" To="1" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="AliceBlue"></Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+        <!--Pages buttons-->
+        <Viewbox 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Bottom" 
+            Height="30"
+            Margin="5 0 0 5">
+            <Viewbox.Style>
+                <Style TargetType="Viewbox">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Visibility, ElementName=loadBtnViewbox}" Value="Collapsed">
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Viewbox.Style>
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    Margin="0 0 5 0"
+                    Padding="8 0"
+                    Click="PageSelect_Buttons"
+                    Command="{Binding PrevPageCommand}">
+                    <materialDesign:PackIcon Kind="ArrowLeftBold" />
+                </Button>
+                <Button
+                    Style="{StaticResource MaterialDesignFlatButton}" 
+                    Content="{Binding QueryPage}"/>
+                <Button
+                    Margin="5 0 0 0"
+                    Command="{Binding NextPageCommand}"
+                    Click="PageSelect_Buttons"
+                    Padding="8 0">
+                    <materialDesign:PackIcon Kind="ArrowRightBold" />
+                </Button>
+            </StackPanel>
+        </Viewbox>
+        <!--Viewbox that contain load button-->
+        <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" x:Name="loadBtnViewbox">
+            <Viewbox.Style>
+                <Style TargetType="Viewbox">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding BooruImages.Count}" Value="0"/>
+                                <Condition Binding="{Binding IsProcessing}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Visibility" Value="Visible"></Setter>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Viewbox.Style>
+            <Button
+                    Style="{StaticResource MaterialDesignFlatButton}" 
+                    Command="{Binding LoadCommand}">LOAD</Button>
+        </Viewbox>
+        <!--Page loading indicator-->
+        <!--<Viewbox HorizontalAlignment="Center" VerticalAlignment="Center" Height="50">
+            <Viewbox.Style>
+                <Style TargetType="Viewbox">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsProcessing}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Visibility" Value="Visible"></Setter>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Viewbox.Style>
+            <ProgressBar
+                IsIndeterminate="True"
+                Style="{StaticResource MaterialDesignCircularProgressBar}"/>
+        </Viewbox>-->
+        <!--StackPanel that contain loading bar-->
+        <StackPanel VerticalAlignment="Top">
+            <StackPanel.Resources>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsProcessing}" Value="true">
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Resources>
+            <ProgressBar IsIndeterminate="True"></ProgressBar>
+        </StackPanel>
+    </Grid>
+</UserControl>
+ 
