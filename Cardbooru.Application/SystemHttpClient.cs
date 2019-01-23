@@ -14,7 +14,7 @@ namespace Cardbooru.Application
         {
             _client = new HttpClient();
         }
-        public Task<string> GetStringAsync(string url)
+        public Task<string> GetStringAsync(string url, CancellationToken cancellationToken = default)
         {
             return _client.GetStringAsync(url);
         }
