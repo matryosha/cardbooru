@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cardbooru.Application.Configurations;
-using Cardbooru.Application.Entities;
 using Cardbooru.Application.Helpers;
 using Cardbooru.Application.Interfaces;
 using Cardbooru.Domain;

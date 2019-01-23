@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Cardbooru.Application.Entities;
 using Cardbooru.Application.Interfaces;
 using Cardbooru.Domain;
 using Newtonsoft.Json;

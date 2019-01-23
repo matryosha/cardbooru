@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using Cardbooru.Application.Entities;
 using Cardbooru.Domain;
 using Cardbooru.Domain.Entities;
 

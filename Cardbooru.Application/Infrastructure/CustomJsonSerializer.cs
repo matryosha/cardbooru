@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using Cardbooru.Application.Entities;
 using Cardbooru.Application.Interfaces;
 using Cardbooru.Domain;

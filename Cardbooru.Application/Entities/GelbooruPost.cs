@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Cardbooru.Domain;
 using Cardbooru.Domain.Entities;
 

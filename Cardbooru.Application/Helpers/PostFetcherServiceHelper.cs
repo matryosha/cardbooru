@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Text;
 using Cardbooru.Application.Configurations;
-using Cardbooru.Application.Entities;
 using Cardbooru.Application.Exceptions;
 using Cardbooru.Application.Interfaces;
 using Cardbooru.Domain;

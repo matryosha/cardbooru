@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Cardbooru.Application.Configurations;
-using Cardbooru.Application.Entities;
 using Cardbooru.Domain;
 using Cardbooru.Domain.Entities;
 
