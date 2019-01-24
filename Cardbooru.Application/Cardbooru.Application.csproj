@@ -67,7 +67,6 @@
     <Compile Include="Configurations\FetchConfiguration.cs" />
     <Compile Include="Configurations\GlobbingConfiguration.cs" />
     <Compile Include="Configurations\JsonBooruConfiguration.cs" />
-    <Compile Include="Configurations\SafebooruUrlConfiguration.cs" />
     <Compile Include="Entities\BooruImageWrapper.cs" />
     <Compile Include="Exceptions\AssemblePostUrlException.cs" />
     <Compile Include="Infrastructure\Extensions.cs" />
@@ -87,11 +86,11 @@
     <Compile Include="Interfaces\IPostFetcherService.cs" />
     <Compile Include="Managers\BooruPostManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\BitmapSourceBitmapImageCreatorService.cs" />
+    <Compile Include="Services\BitmapImageCreatorService.cs" />
     <Compile Include="Services\ImageCachingService.cs" />
     <Compile Include="Services\ImageFetcherService.cs" />
     <Compile Include="Services\PostFetcherService.cs" />
-    <Compile Include="SystemHttpClient.cs" />
+    <Compile Include="Services\SystemHttpClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AppSettings.json">

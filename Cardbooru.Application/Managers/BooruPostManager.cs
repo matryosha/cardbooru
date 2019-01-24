@@ -6,8 +6,6 @@ using Cardbooru.Application.Infrastructure;
 using Cardbooru.Application.Interfaces;
 using Cardbooru.Domain;
 using Cardbooru.Domain.Entities;
-using GelbooruPost = Cardbooru.Application.Entities.GelbooruPost;
-using SafebooruPost = Cardbooru.Application.Entities.SafebooruPost;
 
 namespace Cardbooru.Application.Managers
 {

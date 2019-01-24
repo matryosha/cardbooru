@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Cardbooru.Application.Interfaces;
 
-namespace Cardbooru.Application
+namespace Cardbooru.Application.Services
 {
     public class SystemHttpClient : IBooruHttpClient
     {
