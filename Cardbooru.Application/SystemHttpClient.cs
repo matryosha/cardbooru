@@ -8,28 +8,30 @@ namespace Cardbooru.Application
 {
     public class SystemHttpClient : IBooruHttpClient
     {
-        private HttpClient _client;
+        private readonly HttpClient _client;
 
         public SystemHttpClient()
         {
             _client = new HttpClient();
         }
-        public Task<string> GetStringAsync(string url, CancellationToken cancellationToken = default)
+
+        public async Task<string> GetStringAsync(string url, CancellationToken cancellationToken = default)
         {
-            return _client.GetStringAsync(url);
+            var response = await _client.GetAsync(url, cancellationToken).ConfigureAwait(false);
+            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
         public async Task<byte[]> GetByteArrayAsync(string url, 
             CancellationToken cancellationToken = default)
         {
-            byte[] result = { };
+            HttpResponseMessage response = null;
             try
             {
-                result = await _client.GetByteArrayAsync(url).ConfigureAwait(false);
+                response = await _client.GetAsync(url, cancellationToken).ConfigureAwait(false);
             }
             catch (ArgumentNullException e)
             {
-                return result;
+                return default;
             }
             catch (HttpRequestException e)
             {
@@ -43,8 +45,8 @@ namespace Cardbooru.Application
                     throw;
             }
 
-
-            return result;
+            if(response == null) return default;
+            return await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
         }
 
     }
