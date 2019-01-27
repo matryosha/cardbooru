@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Cardbooru.Application;
 using Cardbooru.Application.Entities;
 using Cardbooru.Application.Infrastructure.Messages;
 using Cardbooru.Application.Interfaces;
@@ -32,6 +33,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         private List<BooruImageWrapper> _booruImages;
         private int _queryPage;
         private int _currentBooruImageIndex = -1;
+        private BooruFullImageViewer _fullImageViewer;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public List<string> TagsList { get; set; }
@@ -43,7 +45,9 @@ namespace Cardbooru.Gui.Wpf.ViewModels
             IPostCollectionManager postCollectionManager,
             IPostFetcherService postFetcherService,
             IBooruConfiguration configuration,
-            IBooruPostManager booruPostManager)
+            IBooruPostManager booruPostManager,
+            IBooruFullImageViewerFactory booruFullImageViewerFactory
+            )
         {
             _messenger = messenger;
             _imageFetcherService = imageFetcherService;
@@ -51,44 +55,31 @@ namespace Cardbooru.Gui.Wpf.ViewModels
             _postFetcherService = postFetcherService;
             _configuration = configuration;
             _booruPostManager = booruPostManager;
+            _fullImageViewer = booruFullImageViewerFactory.Create();
         }
 
         //Todo navigation param toggles nav buttons
-        public void Init(
-            BooruImageWrapper booruImageWrapper,
-            List<IBooruPost> posts)
-        {
-            _posts = posts;
-            _currentBooruImage = booruImageWrapper;
-        }
         //ToDo Respect tags
         public void Init(
-            BooruImageWrapper booruImageWrapper,
-            List<IBooruPost> posts,
-            ICollection<BooruImageWrapper> booruImageWrapperList,
-            int queryPage)
+            BooruImageWrapper openedBooruImage,
+            BooruPostsProvider provider)
         {
-            _posts = posts;
-            _currentBooruImage = booruImageWrapper;
-            _booruImages = new List<BooruImageWrapper>(booruImageWrapperList);
-            _queryPage = queryPage;
+            _fullImageViewer.Init(provider, openedBooruImage);
+            _currentBooruImage = openedBooruImage;
+            Image = openedBooruImage.Image;
         }
 
         public async Task ShowFullImage()
         {
             try
             {
-                Image = _currentBooruImage.Image;
+                //Image = _currentBooruImage.Image;
                 _cancellationTokenSource?.Cancel();
                 _cancellationTokenSource = new CancellationTokenSource();
                 var cancellationToken = _cancellationTokenSource.Token;
-                var booruImageModel = _posts
-                    .FirstOrDefault(b => b.Hash == _currentBooruImage.Hash);
                 //Todo sometimes pic does not load
-                var fullImage = await _imageFetcherService.FetchImageAsync(
-                    booruImageModel, ImageSizeType.Full, cancellationToken: cancellationToken);
-
-                Image = fullImage;
+                Image =
+                    await _fullImageViewer.FetchImageAsync(_currentBooruImage, cancellationToken);
                 IsFullImageLoaded = true;
             }
             catch (OperationCanceledException e)

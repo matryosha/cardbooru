@@ -9,7 +9,7 @@ namespace Cardbooru.Application.Interfaces
     public interface IImageFetcherService
     {
         Task<BitmapImage> FetchImageAsync(
-            IBooruPost booruImage,
+            IBooruPost booruPost,
             ImageSizeType imageSizeType,
             bool caching = true,
             CancellationToken cancellationToken = default);

@@ -44,9 +44,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         {
             var imageViewer = _iocKernel.Get<FullImageBrowsingViewModel>();
             imageViewer.Init(fullImage.BooruImage, 
-                fullImage._booruPosts,
-                fullImage.BooruImageWrapperList,
-                fullImage.QueryPage);
+                fullImage.Provider);
 
             CurrentView = imageViewer;
         }

@@ -27,7 +27,7 @@ namespace Cardbooru.Application.Services
         }
 
         public async Task<BitmapImage> FetchImageAsync(
-            IBooruPost booruImage,
+            IBooruPost booruPost,
             ImageSizeType imageSizeType,
             bool caching = true,
             CancellationToken cancellationToken = default)
@@ -37,16 +37,16 @@ namespace Cardbooru.Application.Services
             BitmapImage resultImage;
             if (caching)
             {
-                if (_imageCachingService.IsHasCache(booruImage, imageSizeType))
+                if (_imageCachingService.IsHasCache(booruPost, imageSizeType))
                 {
                     resultImage = await _imageCachingService.GetImageAsync(
-                        booruImage, imageSizeType, cancellationToken).ConfigureAwait(false);
+                        booruPost, imageSizeType, cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
                     var imageBytes = await GetImageBytes(
-                        booruImage, imageSizeType, cancellationToken).ConfigureAwait(false);
-                    await _imageCachingService.CacheImageAsync(booruImage, imageSizeType, imageBytes,
+                        booruPost, imageSizeType, cancellationToken).ConfigureAwait(false);
+                    await _imageCachingService.CacheImageAsync(booruPost, imageSizeType, imageBytes,
                         imageSizeType, cancellationToken).ConfigureAwait(false);
                     resultImage = 
                         await _bitmapImageCreatorService.CreateImageAsync(imageBytes).ConfigureAwait(false);
@@ -56,7 +56,7 @@ namespace Cardbooru.Application.Services
             {
                 resultImage = 
                     await  _bitmapImageCreatorService.CreateImageAsync(await GetImageBytes(
-                        booruImage, imageSizeType, cancellationToken).ConfigureAwait(false))
+                        booruPost, imageSizeType, cancellationToken).ConfigureAwait(false))
                     .ConfigureAwait(false);
             }
 

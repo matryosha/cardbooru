@@ -102,10 +102,10 @@ namespace Cardbooru.Gui.Wpf.ViewModels
             _openFullImageCommand ??
             (_openFullImageCommand = new RelayCommand(o =>
             {
-                var openedBooruImageWrapper = o as BooruImageWrapper;
-                _messenger.Publish(new OpenFullImageMessage(
-                    this, openedBooruImageWrapper, _booruPostsProvider.GetCurrentBooruPosts(),
-                    BooruImages, QueryPage));
+                var openedBooruImage = o as BooruImageWrapper;
+                _messenger.Publish(
+                    new OpenFullImageMessage(this,
+                        openedBooruImage, _booruPostsProvider));
             }));
 
         private RelayCommand _prevPageCommand;

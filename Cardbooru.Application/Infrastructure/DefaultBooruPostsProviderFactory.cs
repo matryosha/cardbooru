@@ -25,5 +25,21 @@ namespace Cardbooru.Application.Infrastructure
         {
             return new BooruPostsProvider(_postFetcherService,_postManager,_imageFetcherService,_configuration);
         }
+
+        public BooruPostsProvider CreateFrom(BooruPostsProvider srcProvider)
+        {
+            var copyProvider = new BooruPostsProvider(_postFetcherService, _postManager, _imageFetcherService, _configuration);
+            var t = typeof(BooruPostsProvider);
+            foreach (var f in t.GetProperties())
+            {
+                var dstF = t.GetProperty(f.Name);
+                if (dstF == null)
+                    continue;
+
+                dstF.SetValue(copyProvider, f.GetValue(srcProvider, null), null);
+            }
+
+            return copyProvider;
+        }
     }
 }

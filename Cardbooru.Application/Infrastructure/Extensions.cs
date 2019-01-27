@@ -60,6 +60,10 @@ namespace Cardbooru.Application.Infrastructure
             kernel.Bind<IBooruPostsProviderFactory>()
                 .To<DefaultBooruPostsProviderFactory>()
                 .InSingletonScope();
+
+            kernel.Bind<IBooruFullImageViewerFactory>()
+                .To<DefaultBooruFullImageViewerFactory>()
+                .InSingletonScope();
         }
 
         public static void EnsureCacheDirectoryCreated(this IBooruConfiguration configuration)

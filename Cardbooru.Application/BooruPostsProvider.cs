@@ -16,13 +16,13 @@ namespace Cardbooru.Application
         private readonly IBooruPostManager _postManager;
         private readonly IImageFetcherService _imageFetcherService;
         private readonly IBooruConfiguration _configuration;
-        private int _queryPage;
-        private BooruSiteType _siteType;
-        private int _queryPostLimit;
-        private List<string> _tags;
 
-        public List<IBooruPost> Posts { get; private set; }
-        public List<BooruImageWrapper> BooruImages { get; private set; }
+        public int QueryPage { get; set; }
+        public BooruSiteType SiteType { get; set; }
+        public int QueryPostLimit { get; set; }
+        public List<string> Tags { get; set; }
+        public List<IBooruPost> Posts { get; set; }
+        public List<BooruImageWrapper> BooruPreviewImages { get; set; }
 
         public BooruPostsProvider(
             IPostFetcherService postFetcherService,
@@ -49,29 +49,29 @@ namespace Cardbooru.Application
             CancellationToken cancellationToken = default
             )
         {
-            if(BooruImages == null)
-                BooruImages = new List<BooruImageWrapper>();
+            if(BooruPreviewImages == null)
+                BooruPreviewImages = new List<BooruImageWrapper>();
 
             if(Posts == null)
                 Posts = new List<IBooruPost>();
 
-            _queryPage = queryPageNumber;
-            _siteType = siteType;
-            _queryPostLimit = postLimit;
+            QueryPage = queryPageNumber;
+            SiteType = siteType;
+            QueryPostLimit = postLimit;
 
             var ratingTags = _postManager.GetRatingTagString(_configuration.ActiveSite,
                 _configuration.FetchConfiguration.RatingConfiguration);
-            _tags = new List<string> {ratingTags};
-            _tags.AddRange(tags);
-            BooruImages.Clear();
+            Tags = new List<string> {ratingTags};
+            Tags.AddRange(tags);
+            BooruPreviewImages.Clear();
             Posts.Clear();
 
             var postsString = 
                 await _postFetcherService.FetchPostsAsync(
-                    _siteType,
-                    _queryPostLimit, 
-                    tags: _tags, 
-                    pageNumber: _queryPage, 
+                    SiteType,
+                    QueryPostLimit, 
+                    tags: Tags, 
+                    pageNumber: QueryPage, 
                     cancellationToken: cancellationToken).ConfigureAwait(false);
 
             var posts = _postManager.DeserializePosts(
@@ -106,8 +106,8 @@ namespace Cardbooru.Application
             await GetPosts(
                 _configuration.ActiveSite,
                 addImageCallback,
-                _tags,
-                ++_queryPage,
+                Tags,
+                ++QueryPage,
                 _configuration.FetchConfiguration.PostLimit,
                 cancellationToken).ConfigureAwait(false);
         }
@@ -120,6 +120,11 @@ namespace Cardbooru.Application
         public IBooruPost GetBooruPost(string booruImageHash)
         {
             return Posts.FirstOrDefault(p => p.Hash == booruImageHash);
+        }
+
+        public BooruImageWrapper GetPreviewBooruImage(IBooruPost post)
+        {
+            return BooruPreviewImages.FirstOrDefault(i => i.Hash == post.Hash);
         }
 
         public List<IBooruPost> GetCurrentBooruPosts()
@@ -146,7 +151,7 @@ namespace Cardbooru.Application
 
             addImageCallback.Invoke(booruImage);
 
-            BooruImages.Add(booruImage);
+            BooruPreviewImages.Add(booruImage);
         }
         
     }
