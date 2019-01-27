@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,11 +22,19 @@ namespace Cardbooru.Application
         private IBooruPost _currentBooruPost;
         private int _currentBooruImageIndex = -1;
 
-        public void Init(BooruPostsProvider provider,
-            BooruImage currentBooruImage)
+        public IBooruPost CurrentBooruPost => 
+            _currentBooruPost ?? (
+                _currentBooruPost = 
+                    _postsProvider.GetBooruPost(CurrentBooruImage));
+
+        public BooruImage CurrentBooruImage
         {
-            _postsProvider = _postsProviderFactory.CreateFrom(provider);
-            _currentBooruImage = currentBooruImage;
+            get => _currentBooruImage;
+            set
+            {
+                _currentBooruPost = null;
+                _currentBooruImage = value;
+            }
         }
 
         public BooruFullImageViewer(
@@ -38,13 +47,20 @@ namespace Cardbooru.Application
             _postsProviderFactory = postsProviderFactory;
         }
 
+        public void Init(BooruPostsProvider provider,
+            BooruImage currentBooruImage)
+        {
+            _postsProvider = _postsProviderFactory.CreateFrom(provider);
+            CurrentBooruImage = currentBooruImage;
+        }
+
         public async Task<BooruImage> GetNextBooruImageAsync(
             Action<BooruImage> previewImageLoadedCallback,
             CancellationToken cancellationToken)
         {
             if (_currentBooruImageIndex == -1)
             {
-                _currentBooruImageIndex = GetBooruImageIndex(_currentBooruImage);
+                _currentBooruImageIndex = GetBooruImageIndex(CurrentBooruImage);
             }
 
             if (_currentBooruImageIndex == _postsProvider.BooruPreviewImages.Count - 1)
@@ -69,7 +85,7 @@ namespace Cardbooru.Application
         {
             if (_currentBooruImageIndex == -1)
             {
-                _currentBooruImageIndex = GetBooruImageIndex(_currentBooruImage);
+                _currentBooruImageIndex = GetBooruImageIndex(CurrentBooruImage);
             }
 
             if (_currentBooruImageIndex == 0)
@@ -117,6 +133,11 @@ namespace Cardbooru.Application
                 cancellationToken);
         }
 
+        public List<string> GetTags()
+        {
+            return CurrentBooruPost.TagsString.Split(' ').ToList();
+        }
+
         private async Task<BooruImage> GetBooruImageAsync(int booruImageIndex,
             Action<BooruImage> previewImageLoadedCallback,
             CancellationToken cancellationToken)
@@ -132,11 +153,13 @@ namespace Cardbooru.Application
             fullImage = await _imageFetcherService.FetchImageAsync(booruPost, ImageSizeType.Full,
                 cancellationToken: cancellationToken);
 
-            return new BooruImage
+            CurrentBooruImage = new BooruImage
             {
                 Hash = booruImageHash,
                 Image = fullImage
             };
+
+            return CurrentBooruImage;
         }
 
         private int GetBooruImageIndex(BooruImage booruImage)
