@@ -22,9 +22,10 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         private CancellationTokenSource _cancellationTokenSource;  
         private BooruImage _currentBooruImage;
         private BooruFullImageViewer _fullImageViewer;
-
         public event PropertyChangedEventHandler PropertyChanged;
-        public List<string> TagsList { get; set; }
+
+        public List<string> TagsList => _fullImageViewer.GetTags();
+
         public ImageSource Image { get; set; } 
         public bool IsFullImageLoaded { get; set; }
 
@@ -67,16 +68,12 @@ namespace Cardbooru.Gui.Wpf.ViewModels
 
         #region Commands
         private RelayCommand _closeImageCommand;
-        public RelayCommand CloseImageCommand
-        {
-            get => _closeImageCommand ?? (_closeImageCommand = new RelayCommand(o =>
+        public RelayCommand CloseImageCommand =>
+            _closeImageCommand ?? (_closeImageCommand = new RelayCommand(o =>
             {
-                //BooruImageModel.FullImage = null;
-                //BooruImageModel.IsFullImageLoaded = false;
                 _fullImageViewer = null;
                 _messenger.Publish(new CloseFullImageMessage(this));
             }));
-        }
 
         private RelayCommand _nextImage;
         public RelayCommand NextImage => _nextImage ?? (_nextImage = new RelayCommand(async o => {
@@ -131,9 +128,10 @@ namespace Cardbooru.Gui.Wpf.ViewModels
 
         private void SetImage(BooruImage booruImage)
         {
+            //ToDo Probably it works not fine because sometimes it TagsList could contain tags from prev image 
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TagsList"));
             _currentBooruImage = booruImage;
             Image = booruImage.Image;
         }
-
     }
 }
