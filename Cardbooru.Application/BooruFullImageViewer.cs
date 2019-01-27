@@ -95,14 +95,17 @@ namespace Cardbooru.Application
             Action<BooruImageWrapper> previewImageLoadedCallback,
             CancellationToken cancellationToken)
         {
-            previewImageLoadedCallback.Invoke(
-                _postsProvider.BooruPreviewImages[booruImageIndex]);
+            var previewBooruImage = 
+                _postsProvider.BooruPreviewImages[booruImageIndex];
+            previewImageLoadedCallback.Invoke(previewBooruImage);
 
-            var booruImageHash = _postsProvider.BooruPreviewImages[booruImageIndex].Hash;
+            var booruImageHash = previewBooruImage.Hash;
             var booruPost = _postsProvider.Posts.FirstOrDefault(p => p.Hash == booruImageHash);
             BitmapImage fullImage = null;
+
             fullImage = await _imageFetcherService.FetchImageAsync(booruPost, ImageSizeType.Full,
                 cancellationToken: cancellationToken);
+
             return new BooruImageWrapper
             {
                 Hash = booruImageHash,
