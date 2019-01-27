@@ -37,13 +37,13 @@ namespace Cardbooru.Application.Managers
             throw new Exception("Unknown booru type for deserialize");
         }
 
-        public async Task<List<BooruImageWrapper>> GetImagesAsync(
+        public async Task<List<BooruImage>> GetImagesAsync(
             BooruSiteType booruSiteType,
             ImageSizeType imageType,
             ICollection<IBooruPost> collection,
             CancellationToken cancellationToken = default)
         {
-            var images = new List<BooruImageWrapper>();
+            var images = new List<BooruImage>();
 
             foreach (var booruImage in collection)
             {
@@ -59,7 +59,7 @@ namespace Cardbooru.Application.Managers
                     booruImage, imageType, cancellationToken: cancellationToken);
 
                 if (imageFile == null) continue;
-                var booruImageWrapper  = new BooruImageWrapper();
+                var booruImageWrapper  = new BooruImage();
                 booruImageWrapper.Hash = booruImage.Hash;
                 booruImageWrapper.Image = imageFile;
                 images.Add(booruImageWrapper);

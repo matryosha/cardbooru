@@ -74,7 +74,7 @@
     <Compile Include="Configurations\FetchConfiguration.cs" />
     <Compile Include="Configurations\GlobbingConfiguration.cs" />
     <Compile Include="Configurations\JsonBooruConfiguration.cs" />
-    <Compile Include="Entities\BooruImageWrapper.cs" />
+    <Compile Include="Entities\BooruImage.cs" />
     <Compile Include="Exceptions\AssemblePostUrlException.cs" />
     <Compile Include="Infrastructure\Extensions.cs" />
     <Compile Include="Helpers\PostFetcherServiceHelper.cs" />

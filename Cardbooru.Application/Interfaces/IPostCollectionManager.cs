@@ -10,7 +10,7 @@ namespace Cardbooru.Application.Interfaces
     //ToDo refactor
     public interface IPostCollectionManager
     {
-        Task<List<BooruImageWrapper>> GetImagesAsync(
+        Task<List<BooruImage>> GetImagesAsync(
             BooruSiteType booruSiteType,
             ImageSizeType imageType,
             ICollection<IBooruPost> collection,

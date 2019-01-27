@@ -7,10 +7,10 @@ namespace Cardbooru.Application.Infrastructure.Messages
         MvxMessage
     {
         public BooruPostsProvider Provider { get; }
-        public readonly BooruImageWrapper BooruImage;
+        public readonly BooruImage BooruImage;
 
         public OpenFullImageMessage(object sender, 
-            BooruImageWrapper booruImage,
+            BooruImage booruImage,
             BooruPostsProvider provider) 
             : base(sender)
         {

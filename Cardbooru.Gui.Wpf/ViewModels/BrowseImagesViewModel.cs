@@ -38,8 +38,8 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         public bool IsErrorOccured { get; set; }
         public string ErrorInfo { get; set; }
         public object CurrentScroll { get; set; }      
-        public ObservableCollection<BooruImageWrapper> BooruImages { get; set; } = 
-            new ObservableCollection<BooruImageWrapper>();
+        public ObservableCollection<BooruImage> BooruImages { get; set; } = 
+            new ObservableCollection<BooruImage>();
 
         public BrowseImagesViewModel(IMvxMessenger messenger,
             IPostCollectionManager postCollectionManager,
@@ -102,7 +102,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
             _openFullImageCommand ??
             (_openFullImageCommand = new RelayCommand(o =>
             {
-                var openedBooruImage = o as BooruImageWrapper;
+                var openedBooruImage = o as BooruImage;
                 _messenger.Publish(
                     new OpenFullImageMessage(this,
                         openedBooruImage, _booruPostsProvider));
@@ -153,7 +153,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
             BooruImages.Clear();
         }
 
-        private void AddImage(BooruImageWrapper wrapper)
+        private void AddImage(BooruImage wrapper)
         {
             lock (_booruImagesLockObj)
             {

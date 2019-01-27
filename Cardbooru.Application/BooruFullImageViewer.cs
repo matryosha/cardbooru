@@ -17,12 +17,12 @@ namespace Cardbooru.Application
         private readonly IBooruConfiguration _configuration;
         private readonly IBooruPostsProviderFactory _postsProviderFactory;
         private BooruPostsProvider _postsProvider;
-        private BooruImageWrapper _currentBooruImage;
+        private BooruImage _currentBooruImage;
         private IBooruPost _currentBooruPost;
         private int _currentBooruImageIndex = -1;
 
         public void Init(BooruPostsProvider provider,
-            BooruImageWrapper currentBooruImage)
+            BooruImage currentBooruImage)
         {
             _postsProvider = _postsProviderFactory.CreateFrom(provider);
             _currentBooruImage = currentBooruImage;
@@ -38,8 +38,8 @@ namespace Cardbooru.Application
             _postsProviderFactory = postsProviderFactory;
         }
 
-        public async Task<BooruImageWrapper> GetNextBooruImageAsync(
-            Action<BooruImageWrapper> previewImageLoadedCallback,
+        public async Task<BooruImage> GetNextBooruImageAsync(
+            Action<BooruImage> previewImageLoadedCallback,
             CancellationToken cancellationToken)
         {
             if (_currentBooruImageIndex == -1)
@@ -63,8 +63,8 @@ namespace Cardbooru.Application
                 cancellationToken);
         }
 
-        public async Task<BooruImageWrapper> GetPrevBooruImageAsync(
-            Action<BooruImageWrapper> previewImageLoadedCallback,
+        public async Task<BooruImage> GetPrevBooruImageAsync(
+            Action<BooruImage> previewImageLoadedCallback,
             CancellationToken cancellationToken)
         {
             if (_currentBooruImageIndex == -1)
@@ -91,7 +91,7 @@ namespace Cardbooru.Application
                 cancellationToken);
         }
 
-        public Task<BitmapImage> FetchImageAsync(BooruImageWrapper booruImage,
+        public Task<BitmapImage> FetchImageAsync(BooruImage booruImage,
             CancellationToken cancellationToken = default)
         {
             return FetchImageAsync(
@@ -117,8 +117,8 @@ namespace Cardbooru.Application
                 cancellationToken);
         }
 
-        private async Task<BooruImageWrapper> GetBooruImageAsync(int booruImageIndex,
-            Action<BooruImageWrapper> previewImageLoadedCallback,
+        private async Task<BooruImage> GetBooruImageAsync(int booruImageIndex,
+            Action<BooruImage> previewImageLoadedCallback,
             CancellationToken cancellationToken)
         {
             var previewBooruImage = 
@@ -132,14 +132,14 @@ namespace Cardbooru.Application
             fullImage = await _imageFetcherService.FetchImageAsync(booruPost, ImageSizeType.Full,
                 cancellationToken: cancellationToken);
 
-            return new BooruImageWrapper
+            return new BooruImage
             {
                 Hash = booruImageHash,
                 Image = fullImage
             };
         }
 
-        private int GetBooruImageIndex(BooruImageWrapper booruImage)
+        private int GetBooruImageIndex(BooruImage booruImage)
         {
             return _postsProvider.BooruPreviewImages.IndexOf(booruImage);
         }

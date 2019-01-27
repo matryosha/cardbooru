@@ -30,8 +30,8 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         private readonly IBooruPostManager _booruPostManager;
         private CancellationTokenSource _cancellationTokenSource;  
         private List<IBooruPost> _posts;
-        private BooruImageWrapper _currentBooruImage;
-        private List<BooruImageWrapper> _booruImages;
+        private BooruImage _currentBooruImage;
+        private List<BooruImage> _booruImages;
         private int _queryPage;
         private int _currentBooruImageIndex = -1;
         private BooruFullImageViewer _fullImageViewer;
@@ -62,7 +62,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         //Todo navigation param toggles nav buttons
         //ToDo Respect tags
         public void Init(
-            BooruImageWrapper openedBooruImage,
+            BooruImage openedBooruImage,
             BooruPostsProvider provider)
         {
             _fullImageViewer.Init(provider, openedBooruImage);
@@ -110,7 +110,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
 
             IsFullImageLoaded = false;  
             
-            BooruImageWrapper booruImage;
+            BooruImage booruImage;
             try
             {
                 booruImage = await _fullImageViewer.GetNextBooruImageAsync(SetImage, cancellationToken);
@@ -132,7 +132,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
 
             IsFullImageLoaded = false;
 
-            BooruImageWrapper booruImage;
+            BooruImage booruImage;
             try
             {
                 booruImage = await _fullImageViewer.GetPrevBooruImageAsync(SetImage, cancellationToken);
@@ -153,7 +153,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
 
         #endregion
 
-        private void SetImage(BooruImageWrapper booruImage)
+        private void SetImage(BooruImage booruImage)
         {
             _currentBooruImage = booruImage;
             Image = booruImage.Image;

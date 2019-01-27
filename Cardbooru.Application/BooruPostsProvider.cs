@@ -22,7 +22,7 @@ namespace Cardbooru.Application
         public int QueryPostLimit { get; set; }
         public List<string> Tags { get; set; }
         public List<IBooruPost> Posts { get; set; }
-        public List<BooruImageWrapper> BooruPreviewImages { get; set; }
+        public List<BooruImage> BooruPreviewImages { get; set; }
 
         public BooruPostsProvider(
             IPostFetcherService postFetcherService,
@@ -39,17 +39,17 @@ namespace Cardbooru.Application
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="addImageCallback">Invoke when adding <see cref="BooruImageWrapper"/></param>
+        /// <param name="addImageCallback">Invoke when adding <see cref="BooruImage"/></param>
         public async Task GetPosts(
             BooruSiteType siteType, 
-            Action<BooruImageWrapper> addImageCallback,
+            Action<BooruImage> addImageCallback,
             IList<string> tags,
             int queryPageNumber,
             int postLimit,
             CancellationToken cancellationToken = default
             )
         {
-            BooruPreviewImages = new List<BooruImageWrapper>();
+            BooruPreviewImages = new List<BooruImage>();
 
             Posts = new List<IBooruPost>();
 
@@ -83,7 +83,7 @@ namespace Cardbooru.Application
 
         }
 
-        public async Task GetPosts(Action<BooruImageWrapper> addImageCallback,
+        public async Task GetPosts(Action<BooruImage> addImageCallback,
             int queryPage,
             CancellationToken cancellationToken = default)
         {
@@ -96,7 +96,7 @@ namespace Cardbooru.Application
                 cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task GetNextPosts(Action<BooruImageWrapper> addImageCallback,
+        public async Task GetNextPosts(Action<BooruImage> addImageCallback,
             CancellationToken cancellationToken = default)
         {
             await GetPosts(
@@ -108,7 +108,7 @@ namespace Cardbooru.Application
                 cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task GetPrevPosts(Action<BooruImageWrapper> addImageCallback,
+        public async Task GetPrevPosts(Action<BooruImage> addImageCallback,
             CancellationToken cancellationToken = default)
         {
             await GetPosts(
@@ -120,7 +120,7 @@ namespace Cardbooru.Application
                 cancellationToken).ConfigureAwait(false);
         }
 
-        public IBooruPost GetBooruPost(BooruImageWrapper booruImage)
+        public IBooruPost GetBooruPost(BooruImage booruImage)
         {
             return Posts.FirstOrDefault(p => p.Hash == booruImage.Hash);
         }
@@ -130,7 +130,7 @@ namespace Cardbooru.Application
             return Posts.FirstOrDefault(p => p.Hash == booruImageHash);
         }
 
-        public BooruImageWrapper GetPreviewBooruImage(IBooruPost post)
+        public BooruImage GetPreviewBooruImage(IBooruPost post)
         {
             return BooruPreviewImages.FirstOrDefault(i => i.Hash == post.Hash);
         }
@@ -141,7 +141,7 @@ namespace Cardbooru.Application
         }
 
         private async Task AddBooruImage(IBooruPost post,
-            Action<BooruImageWrapper> addImageCallback,
+            Action<BooruImage> addImageCallback,
             CancellationToken cancellationToken)
         {
             var image =
@@ -151,7 +151,7 @@ namespace Cardbooru.Application
                 caching: false,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            var booruImage = new BooruImageWrapper
+            var booruImage = new BooruImage
             {
                 Hash = post.Hash,
                 Image = image
