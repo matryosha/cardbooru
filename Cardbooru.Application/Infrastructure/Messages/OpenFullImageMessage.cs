@@ -10,11 +10,11 @@ namespace Cardbooru.Application.Infrastructure.Messages
     {
         public ICollection<BooruImageWrapper> BooruImageWrapperList { get; }
         public int QueryPage { get; }
-        public readonly BooruImageWrapper _booruImageWrapper;
+        public readonly BooruImageWrapper BooruImage;
         public readonly List<IBooruPost> _booruPosts;
 
         public OpenFullImageMessage(object sender, 
-            BooruImageWrapper booruImageWrapper,
+            BooruImageWrapper booruImage,
             List<IBooruPost> booruPosts,
             ICollection<BooruImageWrapper> booruImageWrapperList = default,
             int queryPage = -1) 
@@ -22,7 +22,7 @@ namespace Cardbooru.Application.Infrastructure.Messages
         {
             BooruImageWrapperList = booruImageWrapperList;
             QueryPage = queryPage;
-            _booruImageWrapper = booruImageWrapper;
+            BooruImage = booruImage;
             _booruPosts = booruPosts;
         }
 

@@ -43,7 +43,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         private void OpenFullImage(OpenFullImageMessage fullImage)
         {
             var imageViewer = _iocKernel.Get<FullImageBrowsingViewModel>();
-            imageViewer.Init(fullImage._booruImageWrapper, 
+            imageViewer.Init(fullImage.BooruImage, 
                 fullImage._booruPosts,
                 fullImage.BooruImageWrapperList,
                 fullImage.QueryPage);
