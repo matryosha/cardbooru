@@ -60,6 +60,7 @@
     <Compile Include="Entities\DanbooruPost.cs" />
     <Compile Include="Entities\GelbooruPost.cs" />
     <Compile Include="Entities\SafebooruPost.cs" />
+    <Compile Include="Exceptions\QueryPageException.cs" />
     <Compile Include="Infrastructure\BooruContractResolver.cs" />
     <Compile Include="Infrastructure\BooruPostMapping.cs" />
     <Compile Include="Infrastructure\DefaultBooruFullImageViewerFactory.cs" />

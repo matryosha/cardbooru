@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Cardbooru.Application;
 using Cardbooru.Application.Entities;
+using Cardbooru.Application.Exceptions;
 using Cardbooru.Application.Infrastructure.Messages;
 using Cardbooru.Application.Interfaces;
 using Cardbooru.Domain;
@@ -96,6 +97,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
             {
                 //BooruImageModel.FullImage = null;
                 //BooruImageModel.IsFullImageLoaded = false;
+                _fullImageViewer = null;
                 _messenger.Publish(new CloseFullImageMessage(this));
             }));
         }
@@ -137,6 +139,11 @@ namespace Cardbooru.Gui.Wpf.ViewModels
             }
             catch (OperationCanceledException e)
             {
+                return;
+            }
+            catch (QueryPageException e)
+            {
+                IsFullImageLoaded = true;
                 return;
             }
             Image = booruImage.Image;

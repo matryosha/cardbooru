@@ -49,11 +49,9 @@ namespace Cardbooru.Application
             CancellationToken cancellationToken = default
             )
         {
-            if(BooruPreviewImages == null)
-                BooruPreviewImages = new List<BooruImageWrapper>();
+            BooruPreviewImages = new List<BooruImageWrapper>();
 
-            if(Posts == null)
-                Posts = new List<IBooruPost>();
+            Posts = new List<IBooruPost>();
 
             QueryPage = queryPageNumber;
             SiteType = siteType;
@@ -63,8 +61,6 @@ namespace Cardbooru.Application
                 _configuration.FetchConfiguration.RatingConfiguration);
             Tags = new List<string> {ratingTags};
             Tags.AddRange(tags);
-            BooruPreviewImages.Clear();
-            Posts.Clear();
 
             var postsString = 
                 await _postFetcherService.FetchPostsAsync(
@@ -108,6 +104,18 @@ namespace Cardbooru.Application
                 addImageCallback,
                 Tags,
                 ++QueryPage,
+                _configuration.FetchConfiguration.PostLimit,
+                cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task GetPrevPosts(Action<BooruImageWrapper> addImageCallback,
+            CancellationToken cancellationToken = default)
+        {
+            await GetPosts(
+                _configuration.ActiveSite,
+                addImageCallback,
+                Tags,
+                --QueryPage,
                 _configuration.FetchConfiguration.PostLimit,
                 cancellationToken).ConfigureAwait(false);
         }

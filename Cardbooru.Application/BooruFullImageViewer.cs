@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Cardbooru.Application.Entities;
+using Cardbooru.Application.Exceptions;
 using Cardbooru.Application.Interfaces;
 using Cardbooru.Domain;
 using Cardbooru.Domain.Entities;
@@ -37,7 +38,7 @@ namespace Cardbooru.Application
             _postsProviderFactory = postsProviderFactory;
         }
 
-        public Task<BooruImageWrapper> GetNextBooruImageAsync(
+        public async Task<BooruImageWrapper> GetNextBooruImageAsync(
             Action<BooruImageWrapper> previewImageLoadedCallback,
             CancellationToken cancellationToken)
         {
@@ -46,12 +47,23 @@ namespace Cardbooru.Application
                 _currentBooruImageIndex = GetBooruImageIndex(_currentBooruImage);
             }
 
-            return GetBooruImageAsync(++_currentBooruImageIndex,
+            if (_currentBooruImageIndex == _postsProvider.BooruPreviewImages.Count - 1)
+            {
+                var nextProvider = _postsProviderFactory.CreateFrom(_postsProvider);
+
+                await nextProvider.GetNextPosts(wrapper => { }, cancellationToken);
+
+                _currentBooruImageIndex = -1;
+                _postsProvider = nextProvider;
+
+            }
+
+            return await GetBooruImageAsync(++_currentBooruImageIndex,
                 previewImageLoadedCallback,
                 cancellationToken);
         }
 
-        public Task<BooruImageWrapper> GetPrevBooruImageAsync(
+        public async Task<BooruImageWrapper> GetPrevBooruImageAsync(
             Action<BooruImageWrapper> previewImageLoadedCallback,
             CancellationToken cancellationToken)
         {
@@ -60,7 +72,21 @@ namespace Cardbooru.Application
                 _currentBooruImageIndex = GetBooruImageIndex(_currentBooruImage);
             }
 
-            return GetBooruImageAsync(--_currentBooruImageIndex, 
+            if (_currentBooruImageIndex == 0)
+            {
+                if (_postsProvider.QueryPage == 1)
+                {
+                    throw new QueryPageException("First page");
+                }
+
+                var nextProvider = _postsProviderFactory.CreateFrom(_postsProvider);
+                await nextProvider.GetPrevPosts(wrapper => { }, cancellationToken);
+
+                _currentBooruImageIndex = nextProvider.BooruPreviewImages.Count;
+                _postsProvider = nextProvider;
+            }
+
+            return await GetBooruImageAsync(--_currentBooruImageIndex, 
                 previewImageLoadedCallback,
                 cancellationToken);
         }
