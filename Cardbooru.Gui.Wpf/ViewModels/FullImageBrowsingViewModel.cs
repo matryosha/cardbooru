@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Cardbooru.Application;
 using Cardbooru.Application.Entities;
 using Cardbooru.Application.Exceptions;
 using Cardbooru.Application.Infrastructure.Messages;
 using Cardbooru.Application.Interfaces;
-using Cardbooru.Domain;
-using Cardbooru.Domain.Entities;
 using Cardbooru.Gui.Wpf.Infrastructure;
 using Cardbooru.Gui.Wpf.Interfaces;
 using MvvmCross.Plugins.Messenger;
@@ -23,17 +19,8 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         IUserControlViewModel {
 
         private readonly IMvxMessenger _messenger;
-        private readonly IImageFetcherService _imageFetcherService;
-        private readonly IPostCollectionManager _postCollectionManager;
-        private readonly IPostFetcherService _postFetcherService;
-        private readonly IBooruConfiguration _configuration;
-        private readonly IBooruPostManager _booruPostManager;
         private CancellationTokenSource _cancellationTokenSource;  
-        private List<IBooruPost> _posts;
         private BooruImage _currentBooruImage;
-        private List<BooruImage> _booruImages;
-        private int _queryPage;
-        private int _currentBooruImageIndex = -1;
         private BooruFullImageViewer _fullImageViewer;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -42,20 +29,10 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         public bool IsFullImageLoaded { get; set; }
 
         public FullImageBrowsingViewModel(IMvxMessenger messenger,
-            IImageFetcherService imageFetcherService,
-            IPostCollectionManager postCollectionManager,
-            IPostFetcherService postFetcherService,
-            IBooruConfiguration configuration,
-            IBooruPostManager booruPostManager,
             IBooruFullImageViewerFactory booruFullImageViewerFactory
             )
         {
             _messenger = messenger;
-            _imageFetcherService = imageFetcherService;
-            _postCollectionManager = postCollectionManager;
-            _postFetcherService = postFetcherService;
-            _configuration = configuration;
-            _booruPostManager = booruPostManager;
             _fullImageViewer = booruFullImageViewerFactory.Create();
         }
 
@@ -74,7 +51,6 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         {
             try
             {
-                //Image = _currentBooruImage.Image;
                 _cancellationTokenSource?.Cancel();
                 _cancellationTokenSource = new CancellationTokenSource();
                 var cancellationToken = _cancellationTokenSource.Token;
