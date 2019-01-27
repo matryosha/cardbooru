@@ -27,11 +27,11 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         private readonly IBooruConfiguration _configuration;
         private readonly IBooruPostManager _booruPostManager;
         private CancellationTokenSource _cancellationTokenSource;  
-        private List<IBooruPost> _booruImageModelPosts;
-        private BooruImageWrapper _booruImageWrapper;
-        private List<BooruImageWrapper> _booruImageWrapperList;
+        private List<IBooruPost> _posts;
+        private BooruImageWrapper _currentBooruImage;
+        private List<BooruImageWrapper> _booruImages;
         private int _queryPage;
-        private int _lastImageIndex = -1;
+        private int _currentBooruImageIndex = -1;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public List<string> TagsList { get; set; }
@@ -58,35 +58,43 @@ namespace Cardbooru.Gui.Wpf.ViewModels
             BooruImageWrapper booruImageWrapper,
             List<IBooruPost> posts)
         {
-            _booruImageModelPosts = posts;
-            _booruImageWrapper = booruImageWrapper;
+            _posts = posts;
+            _currentBooruImage = booruImageWrapper;
         }
-
+        //ToDo Respect tags
         public void Init(
             BooruImageWrapper booruImageWrapper,
             List<IBooruPost> posts,
             ICollection<BooruImageWrapper> booruImageWrapperList,
             int queryPage)
         {
-            _booruImageModelPosts = posts;
-            _booruImageWrapper = booruImageWrapper;
-            _booruImageWrapperList = new List<BooruImageWrapper>(booruImageWrapperList);
+            _posts = posts;
+            _currentBooruImage = booruImageWrapper;
+            _booruImages = new List<BooruImageWrapper>(booruImageWrapperList);
             _queryPage = queryPage;
         }
 
         public async Task ShowFullImage()
         {
-            Image = _booruImageWrapper.Image;
-            _cancellationTokenSource = new CancellationTokenSource();
-            var cancellationToken = _cancellationTokenSource.Token;
-            var booruImageModel = _booruImageModelPosts
-                .FirstOrDefault(b => b.Hash == _booruImageWrapper.Hash);
-            //Todo sometimes pic does not load
-            var fullImage = await _imageFetcherService.FetchImageAsync(
-                booruImageModel, ImageSizeType.Full);
+            try
+            {
+                Image = _currentBooruImage.Image;
+                _cancellationTokenSource?.Cancel();
+                _cancellationTokenSource = new CancellationTokenSource();
+                var cancellationToken = _cancellationTokenSource.Token;
+                var booruImageModel = _posts
+                    .FirstOrDefault(b => b.Hash == _currentBooruImage.Hash);
+                //Todo sometimes pic does not load
+                var fullImage = await _imageFetcherService.FetchImageAsync(
+                    booruImageModel, ImageSizeType.Full, cancellationToken: cancellationToken);
 
-            Image = fullImage;
-            IsFullImageLoaded = true;
+                Image = fullImage;
+                IsFullImageLoaded = true;
+            }
+            catch (OperationCanceledException e)
+            {
+
+            }
         }
 
         #region Commands
@@ -102,115 +110,89 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         }
 
         private RelayCommand _nextImage;
-        public RelayCommand NextImage
-        {
-            get => _nextImage ?? (_nextImage = new RelayCommand(async o => {
-                _cancellationTokenSource.Cancel();
-                _cancellationTokenSource = new CancellationTokenSource();
-                var cancellationToken = _cancellationTokenSource.Token;
+        public RelayCommand NextImage => _nextImage ?? (_nextImage = new RelayCommand(async o => {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = _cancellationTokenSource.Token;
 
-                if (_lastImageIndex == -1)
-                {
-                    _lastImageIndex = _booruImageModelPosts.FindIndex(b => b.Hash == _booruImageWrapper.Hash);
-                }
+            if (_currentBooruImageIndex == -1)
+            {
+                _currentBooruImageIndex = _posts.FindIndex(b => b.Hash == _currentBooruImage.Hash);
+            }
 
-                IsFullImageLoaded = false;
+            IsFullImageLoaded = false;
 
-                if (_lastImageIndex == _booruImageWrapperList.Count - 1)
-                {
-                    Image = null;
-                    var nextPosts =
-                        await _postFetcherService.FetchPostsAsync(_configuration.ActiveSite,
-                            pageNumber: _queryPage + 1);
+            if (_currentBooruImageIndex == _booruImages.Count - 1)
+            {
+                Image = null;
+                var nextPostsString =
+                    await _postFetcherService.FetchPostsAsync(_configuration.ActiveSite,
+                        pageNumber: _queryPage + 1);
 
-                    var nextBooruImageModelPosts =
-                        _booruPostManager.DeserializePosts(_configuration.ActiveSite,
-                            nextPosts);
+                var nextPosts =
+                    _booruPostManager.DeserializePosts(_configuration.ActiveSite,
+                        nextPostsString);
 
-                    var nextBooruImageWrapperList =
-                         await _postCollectionManager.GetImagesAsync(_configuration.ActiveSite, 
-                             ImageSizeType.Preview, nextBooruImageModelPosts);
+                var nextBooruImages =
+                    await _postCollectionManager.GetImagesAsync(_configuration.ActiveSite, 
+                        ImageSizeType.Preview, nextPosts);
 
-                    if (cancellationToken.IsCancellationRequested) return;
+                if (cancellationToken.IsCancellationRequested) return;
 
-
-
-                    _queryPage++;
-                    _lastImageIndex = -1;
-                    _booruImageWrapper = _booruImageWrapperList[0];
-                    _booruImageWrapperList = nextBooruImageWrapperList;
-                    _booruImageModelPosts = nextBooruImageModelPosts;
-                    //Image = _booruImageWrapper.Image;
-
-                    //BitmapImage nextFullImage = null;
-                    //try
-                    //{
-                    //    nextFullImage = await _imageFetcherService.FetchImageAsync(nextBooruImageModelPosts[0], ImageSizeType.Full,
-                    //        cancellationToken: cancellationToken);
-                    //}
-                    //catch (OperationCanceledException e)
-                    //{
-                    //    return;
-                    //}
-
-                    //if (cancellationToken.IsCancellationRequested) return;
-                    //Image = nextFullImage;
-                    //IsFullImageLoaded = true;
-                    //return;
-                }
+                _queryPage++;
+                _currentBooruImageIndex = -1;
+                _currentBooruImage = _booruImages[0];
+                _booruImages = nextBooruImages;
+                _posts = nextPosts;
+            }
                                    
-                Image = _booruImageWrapperList[++_lastImageIndex].Image;
+            Image = _booruImages[++_currentBooruImageIndex].Image;
 
-                var nextBooruImageModel =
-                    _booruImageModelPosts.FirstOrDefault(b => b.Hash == _booruImageWrapperList[_lastImageIndex].Hash);
-                BitmapImage fullImage = null;
-                try
-                {
-                    fullImage = await _imageFetcherService.FetchImageAsync(nextBooruImageModel, ImageSizeType.Full,
-                        cancellationToken: cancellationToken);
-                }
-                catch (AggregateException e)
-                {
-                    return;
-                }
-                catch (OperationCanceledException e)
-                {
-                    return;
-                }
+            var nextBooruImage =
+                _posts.FirstOrDefault(b => b.Hash == _booruImages[_currentBooruImageIndex].Hash);
+            BitmapImage fullImage = null;
+            try
+            {
+                fullImage = await _imageFetcherService.FetchImageAsync(nextBooruImage, ImageSizeType.Full,
+                    cancellationToken: cancellationToken);
+            }
+            catch (OperationCanceledException e)
+            {
+                return;
+            }
 
-                if (cancellationToken.IsCancellationRequested == true)
-                {
-                    _lastImageIndex--;
-                    return;
-                }
-                Image = fullImage;
-                IsFullImageLoaded = true;
-                //if(_currentImageIndex == -1)
-                //    await Task.Run(() => FindCurrentImageIndex());
-                //if (_currentImageIndex + 1 == _booruImagesCollection.Count)
-                //{
-                //    _booruImagesCollection = new ObservableCollection<BooruPost>();
+            if (cancellationToken.IsCancellationRequested == true)
+            {
+                _currentBooruImageIndex--;
+                return;
+            }
+            Image = fullImage;
+            IsFullImageLoaded = true;
+            //if(_currentImageIndex == -1)
+            //    await Task.Run(() => FindCurrentImageIndex());
+            //if (_currentImageIndex + 1 == _booruImagesCollection.Count)
+            //{
+            //    _booruImagesCollection = new ObservableCollection<BooruPost>();
 
-                //    await BooruWorker.FillBooruImages(new PageNumberKeeper{NextQueriedPage = ++_currentPage}, _booruImagesCollection,
-                //        (BooruSiteType)Enum.Parse(typeof(BooruSiteType), Properties.Settings.Default.CurrentSite), cancellationTokenSource.Token);
-                //    _currentImageIndex = -1;
-                //}
+            //    await BooruWorker.FillBooruImages(new PageNumberKeeper{NextQueriedPage = ++_currentPage}, _booruImagesCollection,
+            //        (BooruSiteType)Enum.Parse(typeof(BooruSiteType), Properties.Settings.Default.CurrentSite), cancellationTokenSource.Token);
+            //    _currentImageIndex = -1;
+            //}
 
 
-                //var nextImage = _booruImagesCollection[++_currentImageIndex];
-                //PreviewImage = nextImage.PreviewImage;
-                //await BooruWorker.LoadFullImage(nextImage, cancellationTokenSource.Token);
-                //BooruImageModel.FullImage = null;
-                //BooruImageModel = nextImage;
-                //TagsList = BooruImageModel.TagsList;
-            }));
-        }
+            //var nextImage = _booruImagesCollection[++_currentImageIndex];
+            //PreviewImage = nextImage.PreviewImage;
+            //await BooruWorker.LoadFullImage(nextImage, cancellationTokenSource.Token);
+            //BooruImageModel.FullImage = null;
+            //BooruImageModel = nextImage;
+            //TagsList = BooruImageModel.TagsList;
+        }));
 
         private RelayCommand _prevImage;
         public RelayCommand PrevImage => _prevImage ?? (_prevImage = new RelayCommand(async o => {
-            if (_lastImageIndex == -1)
-                _lastImageIndex = _booruImageModelPosts.FindIndex(b => b.Hash == _booruImageWrapper.Hash);
-            if (_queryPage == 1 && _lastImageIndex == 0) return;
+            if (_currentBooruImageIndex == -1)
+                _currentBooruImageIndex = _posts.FindIndex(b => b.Hash == _currentBooruImage.Hash);
+            if (_queryPage == 1 && _currentBooruImageIndex == 0) return;
 
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
@@ -218,7 +200,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
 
             IsFullImageLoaded = false;
 
-            if (_lastImageIndex == 0)
+            if (_currentBooruImageIndex == 0)
             {
                 Image = null;
                 var prevPosts =
@@ -236,17 +218,17 @@ namespace Cardbooru.Gui.Wpf.ViewModels
                 if (cancellationToken.IsCancellationRequested) return;
 
                 _queryPage--;
-                _lastImageIndex = prevBooruImageWrapperList.Count - 1;
-                _booruImageWrapperList = prevBooruImageWrapperList;
-                _booruImageWrapper = _booruImageWrapperList[_lastImageIndex];
-                _booruImageModelPosts = prevBooruImageModelPosts;
-                Image = _booruImageWrapper.Image;
+                _currentBooruImageIndex = prevBooruImageWrapperList.Count - 1;
+                _booruImages = prevBooruImageWrapperList;
+                _currentBooruImage = _booruImages[_currentBooruImageIndex];
+                _posts = prevBooruImageModelPosts;
+                Image = _currentBooruImage.Image;
 
                 BitmapImage fullImage = null;
                 try
                 {
                     fullImage = await _imageFetcherService.FetchImageAsync(prevBooruImageModelPosts[prevBooruImageModelPosts.FindIndex(
-                            b => b.Hash == _booruImageWrapper.Hash)], ImageSizeType.Full,
+                            b => b.Hash == _currentBooruImage.Hash)], ImageSizeType.Full,
                         cancellationToken: cancellationToken);
                 }
                 catch (OperationCanceledException e)
@@ -260,32 +242,31 @@ namespace Cardbooru.Gui.Wpf.ViewModels
                 return;
             }
                 
-            Image = _booruImageWrapperList[_lastImageIndex - 1].Image;
+            Image = _booruImages[--_currentBooruImageIndex].Image;
 
-            var prevBooruImageModel =
-                 _booruImageModelPosts
-                    .FirstOrDefault(b => b.Hash == _booruImageWrapperList[_lastImageIndex - 1].Hash);
+            var prevBooruImage =
+                 _posts
+                    .FirstOrDefault(b => b.Hash == _booruImages[_currentBooruImageIndex].Hash);
             BitmapImage prevFullImage = null;
 
             try
             {
-                prevFullImage = await _imageFetcherService.FetchImageAsync(prevBooruImageModel, ImageSizeType.Full,
+                prevFullImage = await _imageFetcherService.FetchImageAsync(prevBooruImage, ImageSizeType.Full,
                     cancellationToken: cancellationToken);
-            }
-            catch (TaskCanceledException e)
-            {
-                return;
             }
             catch (OperationCanceledException e)
             {
                 return;
             }
-            
 
-            if(cancellationToken.IsCancellationRequested) return;
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                _currentBooruImageIndex++;
+                return;
+            }
 
             Image = prevFullImage;
-            _lastImageIndex--;
             IsFullImageLoaded = true;
             //if (_currentPage == 1 && _currentImageIndex==0) return;
             //BooruImageModel.IsFullImageLoaded = false;
