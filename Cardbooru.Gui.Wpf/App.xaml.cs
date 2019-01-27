@@ -27,7 +27,7 @@ namespace Cardbooru.Gui.Wpf
 
         protected override void OnExit(ExitEventArgs e) {
             base.OnExit(e);
-            //Cardbooru.Gui.Wpf.Ap.Default.Save();
+            _configuration.SaveConfiguration();
         }
       
     }

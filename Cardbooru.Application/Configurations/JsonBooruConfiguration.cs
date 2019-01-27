@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Cardbooru.Application.Interfaces;
 using Cardbooru.Domain;
@@ -10,6 +9,13 @@ namespace Cardbooru.Application.Configurations
 {
     public class JsonBooruConfiguration : IBooruConfiguration
     {
+        public FetchConfiguration FetchConfiguration { get; set; }
+        public string CachePath { get; set; }
+        public BooruSiteType ActiveSite { get; set; }
+        public bool ImageCaching { get; set; }
+
+        public JsonBooruConfiguration() { }
+
         public JsonBooruConfiguration(IKernel ioc)
         {
             var configuration = JsonConvert
@@ -20,14 +26,14 @@ namespace Cardbooru.Application.Configurations
 
             DuckCopyShallow(this, configuration);
         }
-        public JsonBooruConfiguration() { }
-        public FetchConfiguration FetchConfiguration { get; set; }
-        public string CachePath { get; set; }
-        public BooruSiteType ActiveSite { get; set; }
-        public bool ImageCaching { get; set; }
+        
         public Task SaveConfiguration()
         {
-            throw new NotImplementedException();
+            var settings = JsonConvert.SerializeObject(this, Formatting.Indented);
+            System.IO.File.WriteAllText(Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "AppSettings.json"), settings);
+            return Task.CompletedTask;
         }
 
         private static void DuckCopyShallow(JsonBooruConfiguration dst, JsonBooruConfiguration src)
