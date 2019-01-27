@@ -55,12 +55,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BooruPostsProvider.cs" />
     <Compile Include="Entities\DanbooruPost.cs" />
     <Compile Include="Entities\GelbooruPost.cs" />
     <Compile Include="Entities\SafebooruPost.cs" />
     <Compile Include="Infrastructure\BooruContractResolver.cs" />
     <Compile Include="Infrastructure\BooruPostMapping.cs" />
+    <Compile Include="Infrastructure\DefaultBooruPostsProviderFactory.cs" />
     <Compile Include="Infrastructure\CustomJsonSerializer.cs" />
+    <Compile Include="Interfaces\IBooruPostsProviderFactory.cs" />
     <Compile Include="Managers\BooruCollectionManager.cs" />
     <Compile Include="Bootstrap\MessengerPluginBootstrap.cs" />
     <Compile Include="Configurations\BooruSiteUrlConfiguration.cs" />

@@ -56,6 +56,10 @@ namespace Cardbooru.Application.Infrastructure
             kernel.Bind<CustomJsonSerializer>()
                 .ToSelf()
                 .InSingletonScope();
+
+            kernel.Bind<IBooruPostsProviderFactory>()
+                .To<DefaultBooruPostsProviderFactory>()
+                .InSingletonScope();
         }
 
         public static void EnsureCacheDirectoryCreated(this IBooruConfiguration configuration)

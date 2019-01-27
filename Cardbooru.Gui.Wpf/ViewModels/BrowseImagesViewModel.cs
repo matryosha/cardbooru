@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Windows.Data;
+using Cardbooru.Application;
 using Cardbooru.Application.Entities;
 using Cardbooru.Application.Infrastructure.Messages;
 using Cardbooru.Application.Interfaces;
-using Cardbooru.Domain;
-using Cardbooru.Domain.Entities;
 using Cardbooru.Gui.Wpf.Infrastructure;
 using Cardbooru.Gui.Wpf.Interfaces;
 using MvvmCross.Plugins.Messenger;
@@ -26,8 +25,9 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         private readonly IPostFetcherService _postFetcherService;
         private readonly IBooruConfiguration _configuration;
         private readonly IBooruPostManager _booruPostManager;
+        private readonly BooruPostsProvider _booruPostsProvider;
+        private readonly object _booruImagesLockObj = new object();
         private CancellationTokenSource _cancellationTokenSource;
-        private List<IBooruPost> _currentPageBooruPosts;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public int QueryPage { get; set; } = 1;
@@ -37,8 +37,8 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         public bool IsProcessing { get; set; }
         public bool IsErrorOccured { get; set; }
         public string ErrorInfo { get; set; }
-        public object CurrentScroll { get; set; }
-        public ObservableCollection<BooruImageWrapper> BooruImages { get; set; } =
+        public object CurrentScroll { get; set; }      
+        public ObservableCollection<BooruImageWrapper> BooruImages { get; set; } = 
             new ObservableCollection<BooruImageWrapper>();
 
         public BrowseImagesViewModel(IMvxMessenger messenger,
@@ -46,7 +46,8 @@ namespace Cardbooru.Gui.Wpf.ViewModels
             IImageFetcherService imageFetcherService,
             IPostFetcherService postFetcherService,
             IBooruConfiguration configuration,
-            IBooruPostManager booruPostManager)
+            IBooruPostManager booruPostManager,
+            IBooruPostsProviderFactory postsProviderFactory)
         {
             _messenger = messenger;
             _imageFetcherService = imageFetcherService;
@@ -56,6 +57,9 @@ namespace Cardbooru.Gui.Wpf.ViewModels
             _booruPostManager = booruPostManager;
             _settingsUpdatedToken = _messenger.Subscribe<SettingsUpdatedMessage>(SettingsUpdated);
             _resetToken = _messenger.Subscribe<ResetBooruImagesMessage>(DropImages);
+            _booruPostsProvider = postsProviderFactory.Create();
+
+            BindingOperations.EnableCollectionSynchronization(BooruImages, _booruImagesLockObj);
         }
 
         #region Commands
@@ -74,33 +78,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
                 IsProcessing = true;
                 try
                 {
-                    var tags = new List<string>();
-                    tags.Add(_booruPostManager.GetRatingTagString(_configuration.ActiveSite,
-                        _configuration.FetchConfiguration.RatingConfiguration));
-
-                    var postsString = await _postFetcherService.FetchPostsAsync(_configuration.ActiveSite,
-                        _configuration.FetchConfiguration.PostLimit, QueryPage, tags);
-
-                    _currentPageBooruPosts =  _booruPostManager.DeserializePosts(
-                        _configuration.ActiveSite, postsString);
-
-                    foreach (var booruImageModelBase in _currentPageBooruPosts)
-                    {
-                        var image = await _imageFetcherService.FetchImageAsync(
-                            booruImageModelBase, ImageSizeType.Preview,
-                            cancellationToken: cancellationToken,
-                            caching: false);
-
-                        cancellationToken.ThrowIfCancellationRequested();
-
-                        var booruImageWrapper = new BooruImageWrapper
-                        {
-                            Hash = booruImageModelBase.Hash,
-                            Image = image
-                        };
-
-                        BooruImages.Add(booruImageWrapper);
-                    }
+                    await _booruPostsProvider.GetPosts(AddImage, QueryPage, cancellationToken);
 
                     IsProcessing = false;
                 }
@@ -126,7 +104,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
             {
                 var openedBooruImageWrapper = o as BooruImageWrapper;
                 _messenger.Publish(new OpenFullImageMessage(
-                    this, openedBooruImageWrapper, _currentPageBooruPosts,
+                    this, openedBooruImageWrapper, _booruPostsProvider.GetCurrentBooruPosts(),
                     BooruImages, QueryPage));
             }));
 
@@ -173,6 +151,14 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         {
             _cancellationTokenSource?.Cancel();
             BooruImages.Clear();
+        }
+
+        private void AddImage(BooruImageWrapper wrapper)
+        {
+            lock (_booruImagesLockObj)
+            {
+                BooruImages.Add(wrapper);
+            }
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
