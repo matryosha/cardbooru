@@ -12,16 +12,13 @@ namespace Cardbooru.Application.Managers
     class BooruPostManager : IBooruPostManager
     {
         private readonly CustomJsonSerializer _jsonSerializer;
-        private readonly IBooruConfiguration _configuration;
         private readonly BooruContractResolver _booruContractResolver;
 
-        public BooruPostManager(CustomJsonSerializer jsonSerializer, 
-            IBooruConfiguration configuration)
+        public BooruPostManager(CustomJsonSerializer jsonSerializer)
         {
             _jsonSerializer = jsonSerializer;
-            _configuration = configuration;
             _booruContractResolver = 
-                new BooruContractResolver(_configuration);
+                new BooruContractResolver();
         }
 
         public List<IBooruPost> DeserializePosts(BooruSiteType type, string posts)
