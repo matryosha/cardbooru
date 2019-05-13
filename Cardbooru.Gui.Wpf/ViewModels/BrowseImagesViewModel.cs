@@ -21,11 +21,6 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         private IDisposable _settingsUpdatedToken;
         private IDisposable _resetToken;
         private readonly IMvxMessenger _messenger;
-        private readonly IPostCollectionManager _postCollectionManager;
-        private readonly IImageFetcherService _imageFetcherService;
-        private readonly IPostFetcherService _postFetcherService;
-        private readonly IBooruConfiguration _configuration;
-        private readonly IBooruPostManager _booruPostManager;
         private readonly BooruPostsProvider _booruPostsProvider;
         private readonly object _booruImagesLockObj = new object();
         private CancellationTokenSource _cancellationTokenSource;
@@ -43,19 +38,9 @@ namespace Cardbooru.Gui.Wpf.ViewModels
             new ObservableCollection<BooruImage>();
 
         public BrowseImagesViewModel(IMvxMessenger messenger,
-            IPostCollectionManager postCollectionManager,
-            IImageFetcherService imageFetcherService,
-            IPostFetcherService postFetcherService,
-            IBooruConfiguration configuration,
-            IBooruPostManager booruPostManager,
             IBooruPostsProviderFactory postsProviderFactory)
         {
             _messenger = messenger;
-            _imageFetcherService = imageFetcherService;
-            _postCollectionManager = postCollectionManager;
-            _postFetcherService = postFetcherService;
-            _configuration = configuration;
-            _booruPostManager = booruPostManager;
             _settingsUpdatedToken = _messenger.Subscribe<SettingsUpdatedMessage>(SettingsUpdated);
             _resetToken = _messenger.Subscribe<ResetBooruImagesMessage>(DropImages);
             _booruPostsProvider = postsProviderFactory.Create();
