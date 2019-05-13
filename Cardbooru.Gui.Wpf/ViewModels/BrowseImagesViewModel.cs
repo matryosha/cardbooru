@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Data;
@@ -82,19 +83,19 @@ namespace Cardbooru.Gui.Wpf.ViewModels
 
                     IsProcessing = false;
                 }
-                //catch (HttpRequestException e)
-                //{
-                //    ToggleErrorOccured.Execute(null);
-                //    ErrorInfo = e.Message;
-                //    IsProcessing = false;
-                //}
+                catch (HttpRequestException e)
+                {
+                    ToggleErrorOccured.Execute(null);
+                    ErrorInfo = e.Message;
+                    IsProcessing = false;
+                }
                 catch (OperationCanceledException) { }
-                //catch (Exception e)
-                //{
-                //    ToggleErrorOccured.Execute(null);
-                //    ErrorInfo = e.Message;
-                //    IsProcessing = false;
-                //}
+                catch (Exception e)
+                {
+                    ToggleErrorOccured.Execute(null);
+                    ErrorInfo = e.Message;
+                    IsProcessing = false;
+                }
             }));
 
         private RelayCommand _openFullImageCommand;
