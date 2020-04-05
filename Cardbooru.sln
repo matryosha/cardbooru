@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardbooru.Gui.Wpf", "Cardbooru.Gui.Wpf\Cardbooru.Gui.Wpf.csproj", "{917744D5-3925-490E-962B-16068C7632B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardbooru.Gui.Wpf", "Cardbooru.Gui.Wpf\Cardbooru.Gui.Wpf.csproj", "{917744D5-3925-490E-962B-16068C7632B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardbooru.Application", "Cardbooru.Application\Cardbooru.Application.csproj", "{76DED8CA-5AB9-4A14-82FC-427766E46C8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardbooru.Application", "Cardbooru.Application\Cardbooru.Application.csproj", "{76DED8CA-5AB9-4A14-82FC-427766E46C8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardbooru.Domain", "Cardbooru.Domain\Cardbooru.Domain.csproj", "{E4BFFB55-95E0-40AB-A101-05080BBDE8E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardbooru.Domain", "Cardbooru.Domain\Cardbooru.Domain.csproj", "{E4BFFB55-95E0-40AB-A101-05080BBDE8E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
