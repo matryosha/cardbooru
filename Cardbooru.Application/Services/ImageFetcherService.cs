@@ -1,9 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-using Cardbooru.Application.Interfaces;
+﻿using Cardbooru.Application.Interfaces;
 using Cardbooru.Domain;
 using Cardbooru.Domain.Entities;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Cardbooru.Application.Services
 {
@@ -11,22 +10,19 @@ namespace Cardbooru.Application.Services
     {
         private readonly IBooruHttpClient _httpClient;
         private readonly IImageCachingService _imageCachingService;
-        private readonly IBitmapImageCreatorService _bitmapImageCreatorService;
         private readonly IBooruConfiguration _configuration;
 
         public ImageFetcherService(
             IBooruHttpClient httpClient,
             IImageCachingService imageCachingService,
-            IBitmapImageCreatorService bitmapImageCreatorService,
             IBooruConfiguration configuration)
         {
             _httpClient = httpClient;
             _imageCachingService = imageCachingService;
-            _bitmapImageCreatorService = bitmapImageCreatorService;
             _configuration = configuration;
         }
 
-        public async Task<BitmapImage> FetchImageAsync(
+        public async Task<byte[]> FetchImageAsync(
             IBooruPost booruPost,
             ImageSizeType imageSizeType,
             bool caching = true,
@@ -34,47 +30,32 @@ namespace Cardbooru.Application.Services
         {
             caching = _configuration.ImageCaching;
             cancellationToken.ThrowIfCancellationRequested();
-            BitmapImage resultImage;
+            byte[] resultBytes;
             if (caching)
             {
                 if (_imageCachingService.IsHasCache(booruPost, imageSizeType))
                 {
-                    resultImage = await _imageCachingService.GetImageAsync(
+                    resultBytes = await _imageCachingService.GetImageAsync(
                         booruPost, imageSizeType, cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    var imageBytes = await GetImageBytes(
+                    resultBytes = await GetImageBytes(
                         booruPost, imageSizeType, cancellationToken).ConfigureAwait(false);
-                    await _imageCachingService.CacheImageAsync(booruPost, imageSizeType, imageBytes,
+                    await _imageCachingService.CacheImageAsync(booruPost, imageSizeType, resultBytes,
                         imageSizeType, cancellationToken).ConfigureAwait(false);
-                    resultImage = 
-                        await _bitmapImageCreatorService.CreateImageAsync(imageBytes).ConfigureAwait(false);
                 }
             }
             else
             {
-                resultImage = 
-                    await  _bitmapImageCreatorService.CreateImageAsync(await GetImageBytes(
-                        booruPost, imageSizeType, cancellationToken).ConfigureAwait(false))
-                    .ConfigureAwait(false);
+                resultBytes = await GetImageBytes(booruPost, imageSizeType, cancellationToken).ConfigureAwait(false);
             }
 
-            
-            return resultImage;
-            //    return await _bitmapImageCreatorService.CreateImageAsync(
-            //        await GetImageBytes(booruImage, imageSizeType));
 
-            //if (_imageCachingService.IsHasCache(booruImage, imageSizeType))
-            //    return await _imageCachingService.GetImageAsync(booruImage, imageSizeType, token);
-
-            //var imageBytes = await GetImageBytes(booruImage, imageSizeType);
-            //await _imageCachingService.CacheImageAsync(booruImage, imageSizeType, imageBytes,
-            //    imageSizeType, token);
-            //return await _bitmapImageCreatorService.CreateImageAsync(imageBytes);
+            return resultBytes;
         }
 
-        private async Task<byte[]> GetImageBytes(IBooruPost modelBase, 
+        private async Task<byte[]> GetImageBytes(IBooruPost modelBase,
             ImageSizeType type,
             CancellationToken cancellationToken)
         {

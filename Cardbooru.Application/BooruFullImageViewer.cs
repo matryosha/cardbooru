@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using Cardbooru.Application.Entities;
 using Cardbooru.Application.Exceptions;
 using Cardbooru.Application.Interfaces;
@@ -107,7 +106,7 @@ namespace Cardbooru.Application
                 cancellationToken);
         }
 
-        public Task<BitmapImage> FetchImageAsync(BooruImage booruImage,
+        public Task<byte[]> FetchImageAsync(BooruImage booruImage,
             CancellationToken cancellationToken = default)
         {
             return FetchImageAsync(
@@ -115,7 +114,7 @@ namespace Cardbooru.Application
                 cancellationToken);  
         }
 
-        public Task<BitmapImage> FetchImageAsync(string booruImageHash,
+        public Task<byte[]> FetchImageAsync(string booruImageHash,
             CancellationToken cancellationToken = default)
         {
             return FetchImageAsync(
@@ -123,7 +122,7 @@ namespace Cardbooru.Application
                 cancellationToken);
         }
 
-        public Task<BitmapImage> FetchImageAsync(IBooruPost post,
+        public Task<byte[]> FetchImageAsync(IBooruPost post,
             CancellationToken cancellationToken)
         {
             return _imageFetcherService.FetchImageAsync(
@@ -148,7 +147,7 @@ namespace Cardbooru.Application
 
             var booruImageHash = previewBooruImage.Hash;
             var booruPost = _postsProvider.Posts.FirstOrDefault(p => p.Hash == booruImageHash);
-            BitmapImage fullImage = null;
+            byte[] fullImage;
 
             fullImage = await _imageFetcherService.FetchImageAsync(booruPost, ImageSizeType.Full,
                 cancellationToken: cancellationToken);
@@ -156,7 +155,7 @@ namespace Cardbooru.Application
             CurrentBooruImage = new BooruImage
             {
                 Hash = booruImageHash,
-                Image = fullImage
+                Data = fullImage
             };
 
             return CurrentBooruImage;

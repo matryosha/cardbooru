@@ -61,7 +61,7 @@ namespace Cardbooru.Application.Managers
                 if (imageFile == null) continue;
                 var booruImageWrapper  = new BooruImage();
                 booruImageWrapper.Hash = booruImage.Hash;
-                booruImageWrapper.Image = imageFile;
+                booruImageWrapper.Data = imageFile;
                 images.Add(booruImageWrapper);
             }
 

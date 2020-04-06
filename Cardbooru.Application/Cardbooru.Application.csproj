@@ -1,12 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<UseWPF>true</UseWPF>
 		<OutputType>Library</OutputType>
 	</PropertyGroup>
-	<ItemGroup>
-		<FrameworkReference Include="Microsoft.WindowsDesktop.App" />
-	</ItemGroup>
 	<ItemGroup>
 		<Content Include="AppSettings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -19,10 +15,5 @@
 		<PackageReference Include="MvvmCross.Plugin.Messenger" Version="5.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
 		<PackageReference Include="Ninject" Version="3.3.4" />
-	</ItemGroup>
-	<ItemGroup>
-		<Reference Include="PresentationCore">
-			<HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationCore.dll</HintPath>
-		</Reference>
 	</ItemGroup>
 </Project>

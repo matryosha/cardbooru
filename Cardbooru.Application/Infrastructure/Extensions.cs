@@ -25,10 +25,6 @@ namespace Cardbooru.Application.Infrastructure
                 .ToSelf()
                 .InSingletonScope();
 
-            kernel.Bind<IBitmapImageCreatorService>()
-                .To<BitmapImageCreatorService>()
-                .InSingletonScope();
-
             kernel.Bind<IImageCachingService>()
                 .To<ImageCachingService>()
                 .InSingletonScope();

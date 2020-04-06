@@ -154,7 +154,7 @@ namespace Cardbooru.Application
             var booruImage = new BooruImage
             {
                 Hash = post.Hash,
-                Image = image
+                Data = image
             };
 
             addImageCallback.Invoke(booruImage);

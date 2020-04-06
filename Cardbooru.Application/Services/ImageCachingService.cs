@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using Cardbooru.Application.Interfaces;
 using Cardbooru.Domain;
 using Cardbooru.Domain.Entities;
@@ -11,12 +10,9 @@ namespace Cardbooru.Application.Services
     public class ImageCachingService : IImageCachingService
     {
         private string _cachePath;
-        private readonly IBitmapImageCreatorService _imageCreatorService;
-        public ImageCachingService(IBooruConfiguration conf,
-            IBitmapImageCreatorService imageCreatorService)
+        public ImageCachingService(IBooruConfiguration conf)
         {
             _cachePath = conf.CachePath;
-            _imageCreatorService = imageCreatorService;
         }
 
 
@@ -39,7 +35,7 @@ namespace Cardbooru.Application.Services
             }
         }
 
-        public async Task<BitmapImage> GetImageAsync(
+        public async Task<byte[]> GetImageAsync(
             IBooruPost booruImage, 
             ImageSizeType imageType,
             CancellationToken cancellationToken = default)
@@ -52,7 +48,7 @@ namespace Cardbooru.Application.Services
                 await file.ReadAsync(buff, 0, (int)file.Length, cancellationToken).ConfigureAwait(false);
             }
 
-            return await _imageCreatorService.CreateImageAsync(buff).ConfigureAwait(false);
+            return buff;
         }
 
         public bool IsHasCache(IBooruPost booruImage, 
