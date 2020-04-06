@@ -4,11 +4,13 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Cardbooru.Application;
 using Cardbooru.Application.Entities;
 using Cardbooru.Application.Exceptions;
 using Cardbooru.Application.Infrastructure.Messages;
 using Cardbooru.Application.Interfaces;
+using Cardbooru.Gui.Wpf.Entities;
 using Cardbooru.Gui.Wpf.Infrastructure;
 using Cardbooru.Gui.Wpf.Interfaces;
 using MvvmCross.Plugins.Messenger;
@@ -20,7 +22,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
 
         private readonly IMvxMessenger _messenger;
         private CancellationTokenSource _cancellationTokenSource;  
-        private BooruImage _currentBooruImage;
+        private BooruImageWpf _currentBooruImage;
         private BooruFullImageViewer _fullImageViewer;
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -40,12 +42,12 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         //Todo navigation param toggles nav buttons
         //ToDo Respect tags
         public void Init(
-            BooruImage openedBooruImage,
+            BooruImageWpf openedBooruImage,
             BooruPostsProvider provider)
         {
             _fullImageViewer.Init(provider, openedBooruImage);
             _currentBooruImage = openedBooruImage;
-            Image = openedBooruImage.Image;
+            Image = openedBooruImage.BitmapImage;
         }
 
         public async Task ShowFullImage()
@@ -56,8 +58,13 @@ namespace Cardbooru.Gui.Wpf.ViewModels
                 _cancellationTokenSource = new CancellationTokenSource();
                 var cancellationToken = _cancellationTokenSource.Token;
                 //Todo sometimes pic does not load
-                Image =
-                    await _fullImageViewer.FetchImageAsync(_currentBooruImage, cancellationToken);
+
+
+                var fullImageData = await _fullImageViewer.FetchImageAsync(_currentBooruImage, cancellationToken);
+                BitmapImage bitmapImage = null;
+                await Task.Run(() => bitmapImage = BitmapImageCreator.Create(fullImageData));
+                Image = bitmapImage;
+                   
                 IsFullImageLoaded = true;
             }
             catch (OperationCanceledException e)
@@ -92,7 +99,10 @@ namespace Cardbooru.Gui.Wpf.ViewModels
             {
                 return;
             }
-            Image = booruImage.Image;
+
+            var booruImageWpf = new BooruImageWpf(booruImage);
+            booruImageWpf.InitializeImage();
+            Image = booruImageWpf.BitmapImage;
  
             IsFullImageLoaded = true;
         }));
@@ -119,7 +129,10 @@ namespace Cardbooru.Gui.Wpf.ViewModels
                 IsFullImageLoaded = true;
                 return;
             }
-            Image = booruImage.Image;
+
+            var booruImageWpf = new BooruImageWpf(booruImage);
+            booruImageWpf.InitializeImage();
+            Image = booruImageWpf.BitmapImage;
 
             IsFullImageLoaded = true;
         }));
@@ -130,8 +143,10 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         {
             //ToDo Probably it works not fine because sometimes it TagsList could contain tags from prev image 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TagsList"));
-            _currentBooruImage = booruImage;
-            Image = booruImage.Image;
+            var booruImageWpf = new BooruImageWpf(booruImage);
+            booruImageWpf.InitializeImage();
+            _currentBooruImage = booruImageWpf;
+            Image = booruImageWpf.BitmapImage;
         }
     }
 }

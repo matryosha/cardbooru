@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Cardbooru.Application.Infrastructure.Messages;
+using Cardbooru.Gui.Wpf.Entities;
 using Cardbooru.Gui.Wpf.Infrastructure;
 using Cardbooru.Gui.Wpf.Interfaces;
 using MvvmCross.Plugins.Messenger;
@@ -43,7 +44,7 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         private void OpenFullImage(OpenFullImageMessage fullImage)
         {
             var imageViewer = _iocKernel.Get<FullImageBrowsingViewModel>();
-            imageViewer.Init(fullImage.BooruImage, 
+            imageViewer.Init(fullImage.BooruImage as BooruImageWpf, 
                 fullImage.Provider);
 
             CurrentView = imageViewer;

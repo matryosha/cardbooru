@@ -9,6 +9,7 @@ using Cardbooru.Application;
 using Cardbooru.Application.Entities;
 using Cardbooru.Application.Infrastructure.Messages;
 using Cardbooru.Application.Interfaces;
+using Cardbooru.Gui.Wpf.Entities;
 using Cardbooru.Gui.Wpf.Infrastructure;
 using Cardbooru.Gui.Wpf.Interfaces;
 using MvvmCross.Plugins.Messenger;
@@ -34,8 +35,8 @@ namespace Cardbooru.Gui.Wpf.ViewModels
         public bool IsErrorOccured { get; set; }
         public string ErrorInfo { get; set; }
         public object CurrentScroll { get; set; }      
-        public ObservableCollection<BooruImage> BooruImages { get; set; } = 
-            new ObservableCollection<BooruImage>();
+        public ObservableCollection<BooruImageWpf> BooruImages { get; set; } = 
+            new ObservableCollection<BooruImageWpf>();
 
         public BrowseImagesViewModel(IMvxMessenger messenger,
             IBooruPostsProviderFactory postsProviderFactory)
@@ -141,9 +142,12 @@ namespace Cardbooru.Gui.Wpf.ViewModels
 
         private void AddImage(BooruImage wrapper)
         {
+            var wpfBooruImage = new BooruImageWpf(wrapper);
+            wpfBooruImage.InitializeImage();
+
             lock (_booruImagesLockObj)
             {
-                BooruImages.Add(wrapper);
+                BooruImages.Add(wpfBooruImage);
             }
         }
 
