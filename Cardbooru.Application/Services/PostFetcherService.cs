@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Cardbooru.Application.Configurations;
 using Cardbooru.Application.Helpers;
 using Cardbooru.Application.Interfaces;
-using Cardbooru.Domain;
+using Cardbooru.Core;
 
 namespace Cardbooru.Application.Services
 {

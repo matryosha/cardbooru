@@ -1,4 +1,4 @@
-﻿using Cardbooru.Domain;
+﻿using Cardbooru.Core;
 using Newtonsoft.Json.Serialization;
 
 namespace Cardbooru.Application.Infrastructure

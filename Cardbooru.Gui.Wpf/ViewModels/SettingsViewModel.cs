@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Cardbooru.Application.Infrastructure.Messages;
 using Cardbooru.Application.Interfaces;
-using Cardbooru.Domain;
+using Cardbooru.Core;
 using Cardbooru.Gui.Wpf.Infrastructure;
 using Cardbooru.Gui.Wpf.Interfaces;
 using MvvmCross.Plugins.Messenger;

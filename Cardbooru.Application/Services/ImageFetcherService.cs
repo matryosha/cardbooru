@@ -1,6 +1,6 @@
 ﻿using Cardbooru.Application.Interfaces;
-using Cardbooru.Domain;
-using Cardbooru.Domain.Entities;
+using Cardbooru.Core;
+using Cardbooru.Core.Entities;
 using System.Threading;
 using System.Threading.Tasks;
 

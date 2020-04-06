@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using Cardbooru.Application.Interfaces;
-using Cardbooru.Domain;
+using Cardbooru.Core;
 using Newtonsoft.Json;
 using Ninject;
 

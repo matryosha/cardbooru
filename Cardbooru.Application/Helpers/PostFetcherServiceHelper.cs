@@ -4,7 +4,7 @@ using System.Text;
 using Cardbooru.Application.Configurations;
 using Cardbooru.Application.Exceptions;
 using Cardbooru.Application.Interfaces;
-using Cardbooru.Domain;
+using Cardbooru.Core;
 
 namespace Cardbooru.Application.Helpers
 {

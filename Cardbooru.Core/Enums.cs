@@ -1,4 +1,4 @@
-﻿namespace Cardbooru.Domain
+﻿namespace Cardbooru.Core
 {
     public enum ImageSizeType
     {

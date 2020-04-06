@@ -4,8 +4,8 @@ using Cardbooru.Application.Configurations;
 using Cardbooru.Application.Entities;
 using Cardbooru.Application.Infrastructure;
 using Cardbooru.Application.Interfaces;
-using Cardbooru.Domain;
-using Cardbooru.Domain.Entities;
+using Cardbooru.Core;
+using Cardbooru.Core.Entities;
 
 namespace Cardbooru.Application.Managers
 {

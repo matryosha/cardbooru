@@ -9,7 +9,7 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\Cardbooru.Domain\Cardbooru.Domain.csproj" />
+		<ProjectReference Include="..\Cardbooru.Core\Cardbooru.Core.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="MvvmCross.Plugin.Messenger" Version="5.7.0" />

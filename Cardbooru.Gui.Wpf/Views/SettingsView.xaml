@@ -7,7 +7,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:helpers="clr-namespace:Cardbooru.Application.Entities;assembly=Cardbooru.Application"
-             xmlns:domain="clr-namespace:Cardbooru.Domain;assembly=Cardbooru.Domain"
+             xmlns:domain="clr-namespace:Cardbooru.Core;assembly=Cardbooru.Core"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1200"
              Loaded="SettingsView_OnLoaded">

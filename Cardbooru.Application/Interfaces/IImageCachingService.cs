@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Cardbooru.Domain;
-using Cardbooru.Domain.Entities;
+using Cardbooru.Core;
+using Cardbooru.Core.Entities;
 
 namespace Cardbooru.Application.Interfaces
 {

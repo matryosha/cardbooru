@@ -19,7 +19,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Cardbooru.Application\Cardbooru.Application.csproj" />
-		<ProjectReference Include="..\Cardbooru.Domain\Cardbooru.Domain.csproj" />
+		<ProjectReference Include="..\Cardbooru.Core\Cardbooru.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

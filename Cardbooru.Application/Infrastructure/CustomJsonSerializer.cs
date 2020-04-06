@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using Cardbooru.Application.Entities;
 using Cardbooru.Application.Interfaces;
-using Cardbooru.Domain;
-using Cardbooru.Domain.Entities;
+using Cardbooru.Core;
+using Cardbooru.Core.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Cardbooru.Domain;
+using Cardbooru.Core;
 
 namespace Cardbooru.Application.Infrastructure
 {
