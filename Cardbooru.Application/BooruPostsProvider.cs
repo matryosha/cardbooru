@@ -83,17 +83,17 @@ namespace Cardbooru.Application
 
         }
 
-        public async Task GetPosts(Action<BooruImage> addImageCallback,
+        public Task GetPosts(Action<BooruImage> addImageCallback,
             int queryPage,
             CancellationToken cancellationToken = default)
         {
-            await GetPosts(
+            return GetPosts(
                 _configuration.ActiveSite,
                 addImageCallback,
                 new List<string>(),
                 queryPage,
                 _configuration.FetchConfiguration.PostLimit,
-                cancellationToken).ConfigureAwait(false);
+                cancellationToken);
         }
 
         public async Task GetNextPosts(Action<BooruImage> addImageCallback,
@@ -157,7 +157,7 @@ namespace Cardbooru.Application
                 Data = image
             };
 
-            addImageCallback.Invoke(booruImage);
+            await Task.Run(() => addImageCallback.Invoke(booruImage)).ConfigureAwait(false);
 
             BooruPreviewImages.Add(booruImage);
         }

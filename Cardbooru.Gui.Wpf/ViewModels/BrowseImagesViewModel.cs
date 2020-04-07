@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Data;
+using System.Windows.Threading;
 using Cardbooru.Application;
 using Cardbooru.Application.Entities;
 using Cardbooru.Application.Infrastructure.Messages;
@@ -145,10 +147,10 @@ namespace Cardbooru.Gui.Wpf.ViewModels
             var wpfBooruImage = new BooruImageWpf(wrapper);
             wpfBooruImage.InitializeImage();
 
-            lock (_booruImagesLockObj)
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
                 BooruImages.Add(wpfBooruImage);
-            }
+            });
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
